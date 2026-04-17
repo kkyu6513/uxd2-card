@@ -329,6 +329,7 @@
   }
   .wf-img-btn:hover { background: #dde3ff; }
   body.viewer .wf-footer-btns { display: none !important; }
+  body.viewer #wf-img-btn { display: block !important; }
 
   /* FLOW MODAL */
   .flow-modal {
@@ -397,6 +398,15 @@
   .qa-n-detail {
     display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
   }
+  .qa-text-input {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: var(--text-p);
+    background: #fff; border: .5px solid var(--border-i); border-radius: 8px;
+    padding: 10px 12px; outline: none; width: 100%; resize: vertical;
+    transition: border-color .15s; line-height: 1.5;
+  }
+  .qa-text-input::placeholder { color: #bbb; }
+  .qa-text-input:focus { border-color: #c04040; }
+  body.viewer .qa-text-input { pointer-events: none; background: var(--bg-sec); }
   .qa-n-detail.hidden { display: none; }
   .qa-step-input {
     font-family: 'Pretendard', sans-serif; font-size: 13px; color: var(--text-p);
@@ -423,7 +433,7 @@
   }
   .qa-step-row-input:focus { border-color: #999; }
   .qa-step-row-input:empty::before { content: attr(data-placeholder); color: #bbb; font-size: 13px; }
-  body.viewer .qa-step-row-input { pointer-events: none; }
+  body.viewer .qa-step-row-input { pointer-events: auto; cursor: pointer; }
   .qa-step-badges { display: none; }
   .qa-step-badge {
     display: flex; align-items: center; gap: 6px;
@@ -1612,6 +1622,16 @@
   });
 
   document.getElementById('wf-img-btn')?.addEventListener('click', () => {
+    const btn = document.getElementById('wf-img-btn');
+    const svgStr = btn._svgStr || (wfRows.length ? generateFlowSVG(wfRows) : null);
+    if (!svgStr) return;
+    const genEl    = document.getElementById('flow-generating');
+    const resultEl = document.getElementById('flow-result');
+    const footerEl = document.getElementById('flow-modal-footer');
+    // 로딩 상태 강제 숨김, 결과 표시
+    if (genEl)    { genEl.style.display = 'none'; }
+    if (resultEl) { resultEl.style.display = 'block'; resultEl.innerHTML = svgStr; }
+    if (footerEl) { footerEl.style.display = ''; }
     document.getElementById('flow-modal').classList.add('open');
   });
 
@@ -2157,7 +2177,7 @@
     wfRows = [];
     renderTools(); renderWorkflow();
     localStorage.removeItem(SAVE_KEY);
-    localStorage.removeItem(AUTO_SAVE_KEY);
+    sessionStorage.removeItem(AUTO_SAVE_KEY);
     showToast('초기화되었습니다');
     setTimeout(() => location.reload(), 800);
   });
@@ -2300,6 +2320,21 @@
       });
     }
 
+    if (snap.toolList)   toolList   = snap.toolList;
+    if (snap.toolActive) toolActive = new Set(snap.toolActive);
+    if (snap.wfRows)     { wfRows = snap.wfRows; renderWorkflow();
+      // 뷰어 모드에서 인포그래픽 자동 생성
+      if (_isViewerMode && wfRows.length > 0) {
+        const imgBtn = document.getElementById('wf-img-btn');
+        if (imgBtn) {
+          const svgStr = generateFlowSVG(wfRows);
+          imgBtn._svgStr = svgStr;
+          imgBtn.style.display = 'block';
+        }
+      }
+    }
+    renderTools();
+
     v('ta-prompt',  snap.taPrompt);
     v('ta-quality', snap.taQuality);
     if (snap.qaData) {
@@ -2330,25 +2365,6 @@
         }
       });
     }
-    const rec = document.getElementById('qa-recommend');
-    if (rec) rec.value = snap.qaRecommend || '';
-
-    const effBoxes = document.querySelectorAll('.eff-box textarea');
-    if (effBoxes[0]) effBoxes[0].value = snap.effBad  || '';
-    if (effBoxes[1]) effBoxes[1].value = snap.effGood || '';
-
-    const insBoxes = document.querySelectorAll('.ins-box textarea');
-    if (insBoxes[0]) insBoxes[0].value = snap.goodPt || '';
-    if (insBoxes[1]) insBoxes[1].value = snap.badPt  || '';
-
-    const secInputs = document.querySelectorAll('.sec:last-of-type input[type="text"]');
-    if (secInputs[0]) secInputs[0].value = snap.refUrl   || '';
-    if (secInputs[1]) secInputs[1].value = snap.oneliner || '';
-
-    if (snap.toolList)   toolList   = snap.toolList;
-    if (snap.toolActive) toolActive = new Set(snap.toolActive);
-    if (snap.wfRows)     { wfRows = snap.wfRows; renderWorkflow(); }
-    renderTools();
   
     document.querySelectorAll('textarea').forEach(ta => {
       ta.style.height = 'auto';
@@ -2663,7 +2679,7 @@
     _autoSaveTimer = setTimeout(() => {
       try {
         const snap = collectSnapData();
-        localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(snap));
+        sessionStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(snap));
         showAutoSaveIndicator('saved');
       } catch(e) {
         console.warn('[AutoSave] 실패:', e);
@@ -2693,24 +2709,18 @@
   // 자동저장 복원 (SAVE_KEY 없을 때만)
   if (!localStorage.getItem(SAVE_KEY)) {
     try {
-      const autoSaved = localStorage.getItem(AUTO_SAVE_KEY);
+      const autoSaved = sessionStorage.getItem(AUTO_SAVE_KEY);
       if (autoSaved) {
+        // 뷰어 모드이거나 자동저장이 있으면 팝업 없이 그냥 복원
         const snap = JSON.parse(autoSaved);
-        // 실제 내용이 있는지 확인
         const hasContent = snap.editName || snap.task || snap.problem || (snap.wfRows && snap.wfRows.length);
-        if (hasContent) {
-          const restore = confirm('자동 저장된 내용이 있습니다.\n복원하시겠습니까?\n\n[확인] 복원  /  [취소] 새로 시작');
-          if (restore) {
-            applySnapData(snap);
-            showToast('✓ 자동 저장된 내용을 복원했습니다');
-          } else {
-            localStorage.removeItem(AUTO_SAVE_KEY);
-          }
+        if (hasContent && !location.hash) {
+          applySnapData(snap);
         } else {
-          localStorage.removeItem(AUTO_SAVE_KEY);
+          sessionStorage.removeItem(AUTO_SAVE_KEY);
         }
       }
-    } catch(e) { localStorage.removeItem(AUTO_SAVE_KEY); }
+    } catch(e) { sessionStorage.removeItem(AUTO_SAVE_KEY); }
   }
 
   // 자동저장 리스너 연결
