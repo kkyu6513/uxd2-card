@@ -1,4 +1,6 @@
-<html lang="ko"><head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta id="__card-snap__" data-snap="">
@@ -40,22 +42,22 @@
   }
   .sub-field { display: flex; flex-direction: column; gap: 2px; }
   .sub-field label { font-size: 11px; color: #888; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; }
-  .sub-field input {
-    background: transparent; border: none; border-bottom: 1px solid #d0d0d0;
-    color: #1a1a1a; font-family: 'Pretendard', sans-serif; font-size: 14px; outline: none; padding: 2px 0; width: 100%;
-  }
-  .sub-field input::placeholder { color: #bbb; }
   .sub-field select {
-    background: transparent; border: none; border-bottom: 1px solid #d0d0d0;
+    background: var(--bg-sec); border: .5px solid var(--border-i); border-radius: 8px;
     color: #1a1a1a; font-family: 'Pretendard', sans-serif; font-size: 14px;
-    outline: none; padding: 2px 0; width: 100%; cursor: pointer;
+    outline: none; padding: 9px 12px; width: 100%; cursor: pointer; height: 40px;
     appearance: none; -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 2px center;
-    padding-right: 18px;
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 28px; transition: border-color .15s;
   }
-  .sub-field select option { background: #fff; color: #1a1a1a; font-size: 16px; }
-  .sub-field select option:disabled { color: #bbb; }
+  .sub-field select:focus { border-color: #999; }
+  .sub-field input {
+    background: var(--bg-sec); border: .5px solid var(--border-i); border-radius: 8px;
+    color: #1a1a1a; font-family: 'Pretendard', sans-serif; font-size: 14px;
+    outline: none; padding: 9px 12px; width: 100%; height: 40px; transition: border-color .15s;
+  }
+  .sub-field input:focus { border-color: #999; }
 
   /* BODY */
   .card-body { background: var(--bg-card); padding: 22px; display: flex; flex-direction: column; gap: 15px; }
@@ -95,9 +97,19 @@
     font-family: 'Pretendard', sans-serif; font-size: 16px; color: var(--text-p);
     background: var(--bg-sec); border: .5px solid var(--border-i); border-radius: 8px;
     padding: 9px 12px; outline: none; transition: border-color .15s, box-shadow .15s;
-    min-width: 0; flex: 1;
+    min-width: 0; flex: 1; height: 40px; cursor: text; line-height: 1.4;
+    overflow: hidden; white-space: nowrap;
   }
+  #edited-name { flex: 0 0 130px; appearance:none; -webkit-appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center; padding-right:26px; }
+  #edited-email { flex: 1; }
+  #edited-tool { flex: 1; }
   .edited-input:focus { border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
+  .edited-input:empty::before { content: attr(data-placeholder); color: #bbb; font-size: 14px; pointer-events: none; }
+  body.viewer .edited-input { pointer-events: none; }
+  body.viewer #edited-email { pointer-events: auto; cursor: default; }
+  body.viewer #edited-email a { cursor: pointer; pointer-events: auto; }
   .edited-sep { font-size: 14px; color: var(--text-m); white-space: nowrap; flex-shrink: 0; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -203,21 +215,39 @@
   .tool-badge:hover .badge-del { color: #888; }
   .tool-badge.active .badge-del { color: #777; }
   .badge-del:hover { color: #e55 !important; }
-  .add-tool-row { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
-  .add-tool-input {
-    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 15px; color: var(--text-p);
-    background: #fafafa; border: .5px dashed var(--border-i); border-radius: 25px;
-    padding: 6px 15px; outline: none; transition: border-color .15s;
-  }
-  .add-tool-input::placeholder { color: #ccc; }
-  .add-tool-input:focus { border-color: #aaa; border-style: solid; }
+  .add-tool-row { margin-top: 8px; }
   .add-tool-btn {
     font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 600;
     color: #888; background: #f0f0f0; border: .5px solid var(--border-i);
-    border-radius: 25px; padding: 6px 15px; cursor: pointer; white-space: nowrap;
+    border-radius: 25px; padding: 6px 16px; cursor: pointer; white-space: nowrap;
     transition: all .15s;
   }
   .add-tool-btn:hover { background: #1a1a1a; color: #eee; border-color: #1a1a1a; }
+  .add-tool-input {
+    width: 100%; font-family: 'Pretendard', sans-serif; font-size: 15px; color: var(--text-p);
+    background: #fff; border: .5px solid var(--border-i); border-radius: 8px;
+    padding: 9px 12px; outline: none; transition: border-color .15s;
+    box-sizing: border-box;
+  }
+  .add-tool-input:focus { border-color: #aaa; }
+  .add-tool-popup {
+    margin-top: 10px; background: #f8f8f8; border: .5px solid var(--border);
+    border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .add-tool-popup.hidden { display: none; }
+  .add-tool-popup-btns { display: flex; gap: 8px; justify-content: flex-end; }
+  .atp-cancel {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 600;
+    color: #888; background: #e8e8e8; border: none; border-radius: 7px;
+    padding: 7px 16px; cursor: pointer; transition: background .15s;
+  }
+  .atp-cancel:hover { background: #ddd; }
+  .atp-save {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 600;
+    color: #eee; background: #1a1a1a; border: none; border-radius: 7px;
+    padding: 7px 16px; cursor: pointer; transition: opacity .15s;
+  }
+  .atp-save:hover { opacity: .85; }
   .tool-memo-list { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
   .tool-memo-row { display: flex; align-items: center; gap: 10px; animation: memoIn .18s ease; }
   @keyframes memoIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
@@ -231,25 +261,207 @@
     background: #fafafa; border: .5px solid var(--border-i); border-radius: 8px;
     padding: 8px 12px; outline: none; transition: border-color .15s, box-shadow .15s;
   }
-  .tool-memo-input::placeholder { color: #ccc; }
   .tool-memo-input:focus { border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
 
   /* WORKFLOW */
-  .flow-steps { display: flex; flex-direction: column; gap: 10px; }
-  .flow-row { display: flex; align-items: center; gap: 10px; }
-  .flow-node {
-    background: #111; color: #ddd; font-size: 12px; font-weight: 600;
-    padding: 10px 12px; border-radius: 6px; white-space: nowrap;
-    min-width: 92px; text-align: center; flex-shrink: 0;
+  .wf-header {
+    display: flex; align-items: center; gap: 6px;
+    padding: 0 4px 8px; border-bottom: .5px solid var(--border); margin-bottom: 6px;
   }
-  .flow-arrow { color: #bbb; font-size: 15px; flex-shrink: 0; }
-  .flow-input {
-    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 15px; color: var(--text-p);
-    background: #fafafa; border: .5px solid var(--border-i); border-radius: 8px;
-    padding: 9px 12px; outline: none; transition: border-color .15s, box-shadow .15s;
+  .wf-header span { font-size: 11px; font-weight: 600; color: #aaa; letter-spacing: .05em; }
+  .wf-col-step  { flex: 0 0 56px; text-align: center; }
+  .wf-col-tool  { flex: 0 0 118px; }
+  .wf-col-intent{ flex: 1; }
+  .wf-col-action{ flex: 1; }
+  .wf-col-del   { flex: 0 0 28px; }
+  .wf-list { display: flex; flex-direction: column; gap: 6px; }
+  .wf-row { display: flex; align-items: center; gap: 6px; }
+  .wf-step {
+    flex: 0 0 56px; font-size: 11px; font-weight: 700; color: #fff;
+    background: #222; border-radius: 6px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .02em; white-space: nowrap; flex-shrink: 0;
   }
-  .flow-input::placeholder { color: var(--text-m); }
-  .flow-input:focus { border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
+  .wf-tool {
+    flex: 0 0 118px; font-family: 'Pretendard', sans-serif; font-size: 13px;
+    color: var(--text-p); background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 0 8px; height: 38px; outline: none; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; padding-right: 22px;
+  }
+  .wf-tool:focus { border-color: #999; }
+  .wf-input {
+    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 14px; color: var(--text-p);
+    background: var(--bg-sec); border: .5px solid var(--border-i); border-radius: 8px;
+    padding: 0 10px; height: 38px; outline: none; transition: border-color .15s; cursor: pointer;
+  }
+  .wf-input:focus { border-color: #999; }
+  .wf-del {
+    flex: 0 0 28px; height: 28px; width: 28px; border-radius: 50%;
+    background: #f0f0f0; border: none; color: #bbb; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .wf-del:hover { background: #e53935; color: #fff; }
+  .wf-add-btn {
+    margin-top: 10px; font-family: 'Pretendard', sans-serif; font-size: 13px;
+    font-weight: 600; color: #888; background: #f0f0f0; border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 8px 16px; cursor: pointer; transition: all .15s; width: 100%;
+  }
+  .wf-add-btn:hover { background: #1a1a1a; color: #eee; border-color: #1a1a1a; }
+  .wf-footer-btns { display: flex; gap: 8px; margin-top: 10px; }
+  .wf-footer-btns .wf-add-btn { flex: 1; margin-top: 0; }
+  .wf-draw-btn {
+    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 700;
+    color: #a8c060; background: #1a2418; border: 1px solid #3a5a2a;
+    border-radius: 8px; padding: 8px 16px; cursor: pointer; transition: all .15s;
+  }
+  .wf-draw-btn:hover { background: #243020; color: #c8e080; }
+  .wf-draw-btn:disabled { opacity: .5; cursor: wait; }
+  .wf-empty {
+    padding: 20px 16px; text-align: center; color: #bbb; font-size: 13px;
+    border: .5px dashed var(--border); border-radius: 8px; line-height: 1.6;
+  }
+  .wf-img-btn {
+    margin-top: 8px; width: 100%; font-family: 'Pretendard', sans-serif;
+    font-size: 13px; font-weight: 600; color: #4f6ef7;
+    background: #eef1ff; border: 1px solid #c7d0ff; border-radius: 8px;
+    padding: 8px 0; cursor: pointer; transition: all .15s;
+  }
+  .wf-img-btn:hover { background: #dde3ff; }
+  body.viewer .wf-footer-btns { display: none !important; }
+
+  /* FLOW MODAL */
+  .flow-modal {
+    display: none; position: fixed; inset: 0; z-index: 10003;
+    background: rgba(0,0,0,.8); align-items: center; justify-content: center; padding: 2rem;
+  }
+  .flow-modal.open { display: flex; animation: lbIn .18s ease; }
+  .flow-modal-box {
+    background: #fff; border-radius: 14px; width: 100%; max-width: 760px;
+    max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+    animation: lbS .18s ease;
+  }
+  .flow-modal-head {
+    background: #212121; padding: 16px 22px;
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .flow-modal-head span { font-size: 14px; font-weight: 700; color: #a8c060; letter-spacing: .06em; }
+  .flow-modal-close { font-size: 22px; color: #777; cursor: pointer; background: none; border: none; }
+  .flow-modal-body { padding: 24px; overflow-y: auto; flex: 1; background: #f8f9fa; }
+  #flow-result { background: #fff; border-radius: 10px; padding: 16px; }
+  .flow-modal-footer {
+    padding: 12px 24px; border-top: .5px solid #eee; flex-shrink: 0;
+  }
+  .flow-save-btn {
+    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 700;
+    color: #fff; background: #4f6ef7; border: none; border-radius: 8px;
+    padding: 11px 0; cursor: pointer; transition: opacity .15s;
+  }
+  .flow-save-btn:hover { opacity: .88; }
+  .flow-img-save-btn {
+    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 700;
+    color: #4f6ef7; background: #eef1ff; border: 1px solid #c7d0ff; border-radius: 8px;
+    padding: 11px 0; cursor: pointer; transition: all .15s;
+  }
+  .flow-img-save-btn:hover { background: #dde3ff; }
+  .flow-img-save-btn:disabled { opacity: .5; cursor: wait; }
+  .flow-generating { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 40px 0; }
+  .flow-spinner {
+    width: 36px; height: 36px; border: 3px solid #eee; border-top-color: #a8c060;
+    border-radius: 50%; animation: spin .8s linear infinite;
+  }
+  .flow-generating span { font-size: 14px; color: #888; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #flow-result svg { width: 100%; height: auto; }
+  body.viewer .wf-input { pointer-events: auto; cursor: pointer; }
+  body.viewer .wf-del, body.viewer .wf-add-btn { display: none !important; }
+
+
+  /* QA CHECKLIST */
+  .qa-list { display: flex; flex-direction: column; gap: 8px; }
+  .qa-row { padding: 12px 14px; background: #fafafa; border: .5px solid var(--border); border-radius: 8px; transition: background .15s; }
+  .qa-row.is-y { background: #f0f7e6; border-color: #c8e08a; }
+  .qa-row.is-n { background: #fff5f5; border-color: #f0b8b8; }
+  .qa-item-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .qa-check-text { font-size: 14px; color: var(--text-s); line-height: 1.5; flex: 1; }
+  .qa-yn-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .qa-y, .qa-n {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 700;
+    width: 36px; height: 30px; border-radius: 6px; border: 1px solid #ddd;
+    background: #fff; cursor: pointer; transition: all .15s;
+  }
+  .qa-y:hover { background: #f0f7e6; border-color: #3e8c4e; color: #3e8c4e; }
+  .qa-n:hover { background: #fff0f0; border-color: #c04040; color: #c04040; }
+  .qa-y.active { background: #3e8c4e; border-color: #3e8c4e; color: #fff; }
+  .qa-n.active { background: #c04040; border-color: #c04040; color: #fff; }
+  .qa-n-detail {
+    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .qa-n-detail.hidden { display: none; }
+  .qa-step-input {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: var(--text-p);
+    background: #fff; border: .5px solid var(--border-i); border-radius: 6px;
+    padding: 7px 10px; outline: none; width: 160px; flex-shrink: 0;
+    transition: border-color .15s;
+  }
+  .qa-content-input {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: var(--text-p);
+    background: #fff; border: .5px solid var(--border-i); border-radius: 6px;
+    padding: 7px 10px; outline: none; flex: 1; min-width: 160px;
+    transition: border-color .15s;
+  }
+  .qa-step-input:focus, .qa-content-input:focus { border-color: #c04040; }
+  body.viewer .qa-y, body.viewer .qa-n { pointer-events: none; }
+  .qa-step-tool-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .qa-step-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+  .qa-step-row { display: flex; align-items: center; gap: 8px; }
+  .qa-step-row-input {
+    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 13px; color: var(--text-p);
+    background: var(--bg-sec); border: .5px solid var(--border-i); border-radius: 8px;
+    padding: 7px 10px; outline: none; cursor: pointer; transition: border-color .15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .qa-step-row-input:focus { border-color: #999; }
+  .qa-step-row-input:empty::before { content: attr(data-placeholder); color: #bbb; font-size: 13px; }
+  body.viewer .qa-step-row-input { pointer-events: none; }
+  .qa-step-badges { display: none; }
+  .qa-step-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: #222; color: #fff; border-radius: 6px;
+    padding: 5px 10px 5px 12px; font-size: 12px; font-weight: 600;
+    font-family: 'Pretendard', sans-serif; white-space: nowrap; flex-shrink: 0;
+  }
+  .qa-step-badge .tool-name { color: #a8c060; font-weight: 400; font-size: 11px; margin-left: 2px; }
+  .qa-step-add-wrap { margin-bottom: 8px; }
+  .qa-step-add-sel {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: #888;
+    background: var(--bg-sec); border: .5px dashed var(--border-i); border-radius: 8px;
+    padding: 7px 28px 7px 12px; outline: none; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    transition: border-color .15s;
+  }
+  .qa-step-add-sel:focus { border-color: #999; }
+  body.viewer .qa-step-add-wrap { display: none; }
+  body.viewer .qa-step-badge-del { display: none; }
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: var(--text-p);
+    background: #fff; border: .5px solid var(--border-i); border-radius: 6px;
+    padding: 7px 28px 7px 10px; outline: none; flex-shrink: 0; width: 160px;
+    appearance: none; -webkit-appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23aaa'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    transition: border-color .15s;
+  }
+  .qa-step-select:focus { border-color: #c04040; }
+  body.viewer .qa-step-select { pointer-events: none; }
+  .qa-single-input { flex: 1; min-width: 0; }
+  .qa-sub-text {
+    display: block; font-size: 11px; color: #aaa; font-weight: 400;
+    margin-top: 3px; line-height: 1.4;
+  }
 
   /* EFFICIENCY */
   .eff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -258,6 +470,7 @@
     border-radius: 8px; padding: 12px 15px; display: flex; flex-direction: column; gap: 5px;
   }
   .eff-box .e-label { font-size: 12px; font-weight: 600; color: var(--text-m); text-transform: uppercase; letter-spacing: .06em; }
+  .eff-box .e-guide { font-size: 11px; color: #bbb; margin: 4px 0 6px; line-height: 1.5; }
   .eff-box textarea { border: none; background: transparent; padding: 0; font-size: 15px; color: var(--text-s); min-height: 50px; box-shadow: none; }
   .eff-box textarea:focus { box-shadow: none; }
 
@@ -483,6 +696,15 @@
     font-family: 'Pretendard', sans-serif; outline: none;
   }
   .text-modal-body textarea:focus { border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
+  .text-modal-footer {
+    padding: 12px 20px; border-top: .5px solid var(--border); display: flex; justify-content: flex-end;
+  }
+  .text-modal-confirm {
+    font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 700;
+    color: #eee; background: #1a1a1a; border: none; border-radius: 8px;
+    padding: 10px 28px; cursor: pointer; transition: opacity .15s;
+  }
+  .text-modal-confirm:hover { opacity: .85; }
 
   /* expand hint on expandable textareas */
   .expand-wrap { position: relative; }
@@ -494,6 +716,58 @@
   }
   .expand-wrap:hover .expand-hint { color: #aaa; }
   .expand-wrap textarea { cursor: pointer; padding-bottom: 28px; }
+  .date-author-row { display: flex; gap: 10px; align-items: center; }
+  .date-author-row input[type="date"] { flex: 0 0 160px; height: 40px; }
+  .date-author-row #edited-name { flex: 0 0 130px; height: 40px; }
+  .date-author-row #edited-email { flex: 1; height: 40px; }
+
+  #problem-input::placeholder { color: #bbb; font-size: 14px; }
+  #problem-input:read-only { color: var(--text-p); }
+
+  /* EMOJI PICKER */
+  .goal-row { display: flex; align-items: center; gap: 8px; }
+  .goal-editable {
+    flex: 1; min-width: 0; font-family: 'Pretendard', sans-serif; font-size: 16px;
+    color: var(--text-p); background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 10px 12px; outline: none; min-height: 44px;
+    line-height: 1.4; transition: border-color .15s, box-shadow .15s; cursor: text;
+  }
+  .goal-editable:focus { border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
+  .goal-editable:empty::before { content: attr(data-placeholder); color: #bbb; font-size: 14px; pointer-events: none; }
+  body.viewer .goal-editable { pointer-events: none; }
+  .emoji-wrap { position: relative; flex-shrink: 0; }
+  .emoji-btn {
+    font-size: 22px; width: 52px; height: 44px;
+    border-radius: 8px; border: .5px solid var(--border-i);
+    background: var(--bg-sec); cursor: pointer; line-height: 1;
+    transition: border-color .15s, background .15s;
+  }
+  .emoji-btn.placeholder { font-size: 12px; color: #bbb; font-family: 'Pretendard', sans-serif; }
+  .emoji-btn:hover { border-color: #999; background: #f0f0f0; }
+  .emoji-picker {
+    display: none; position: absolute; top: 52px; left: 0; z-index: 300;
+    background: #fff; border: .5px solid #ddd; border-radius: 14px;
+    padding: 10px; width: 300px; box-shadow: 0 6px 24px rgba(0,0,0,.14);
+  }
+  .emoji-picker.open { display: block; }
+  .ep-tabs { display: flex; gap: 4px; margin-bottom: 8px; border-bottom: .5px solid #eee; padding-bottom: 8px; }
+  .ep-tab {
+    font-size: 18px; width: 36px; height: 32px; border: none; background: none;
+    border-radius: 6px; cursor: pointer; transition: background .1s;
+  }
+  .ep-tab:hover, .ep-tab.active { background: #f0f0f0; }
+  .ep-grid {
+    display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px;
+    max-height: 200px; overflow-y: auto;
+  }
+  .ep-grid button {
+    font-size: 20px; width: 32px; height: 32px; border: none; background: none;
+    border-radius: 6px; cursor: pointer; transition: background .1s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ep-grid button:hover { background: #f0f0f0; }
+  body.viewer .emoji-btn { pointer-events: none; }
+
   /* ── VIEWER MODE (READ-ONLY) ── */
   body.viewer input,
   body.viewer textarea,
@@ -504,6 +778,8 @@
   body.viewer .img-more,
   body.viewer .img-zone,
   body.viewer .expand-btn { display: none !important; }
+  body.viewer .expand-wrap textarea { pointer-events: auto; cursor: pointer; }
+  body.viewer .expand-hint { pointer-events: none; }
   body.viewer .tool-badge { cursor: default; pointer-events: none; }
   body.viewer .img-thumb { pointer-events: auto; }
   body.viewer .img-thumb img { cursor: zoom-in; }
@@ -569,13 +845,7 @@
     input, textarea, .flow-input { border: none !important; box-shadow: none !important; }
   }
 </style>
-<style id="grabbit-visited-styles">
-        .grabbit-visited,
-        .grabbit-visited:link,
-        .grabbit-visited:visited {
-            color: #551A8B !important; /* Standard visited link purple */
-        }
-    </style></head>
+</head>
 <body>
 
 <div class="lightbox" id="lightbox">
@@ -593,6 +863,9 @@
     <div class="text-modal-body">
       <textarea id="text-modal-ta" placeholder=""></textarea>
     </div>
+    <div class="text-modal-footer" id="text-modal-footer">
+      <button class="text-modal-confirm" id="text-modal-confirm">확인</button>
+    </div>
   </div>
 </div>
 
@@ -607,8 +880,8 @@
     </div>
     <div class="sb-modal-body">
       <div class="sb-status" id="sb-status">
-        <div class="sb-status-dot ok" id="sb-status-dot"></div>
-        <div class="sb-status-txt" id="sb-status-txt">설정이 저장되어 있습니다.</div>
+        <div class="sb-status-dot" id="sb-status-dot"></div>
+        <div class="sb-status-txt" id="sb-status-txt">설정 상태 확인 중...</div>
       </div>
       <div class="sb-desc">
         <strong>최초 1회 설정 후 영구 사용 가능합니다.</strong><br>
@@ -624,7 +897,7 @@
         <input id="sb-key-input" type="password" placeholder="eyJhbGciOiJ...">
       </div>
       <button class="sb-test-btn" id="sb-test-btn">🔍 연결 테스트</button>
-      <div class="sb-test-result ok" id="sb-test-result" style="display: none;">✓ 연결 성공! 저장 버튼을 눌러 적용하세요.</div>
+      <div class="sb-test-result" id="sb-test-result" style="display:none;"></div>
       <button class="sb-save-btn" id="sb-save-btn">저장</button>
       <div class="sb-team-section" id="sb-team-section">
         <div class="sb-divider"></div>
@@ -683,7 +956,7 @@
     <div class="sub-field">
       <label>단계</label>
       <select id="stage-select">
-        <option value="" disabled="" selected="">단계 선택</option>
+        <option value="" disabled selected>단계 선택</option>
         <option value="관리단계">관리단계</option>
         <option value="분석단계">분석단계</option>
         <option value="설계단계">설계단계</option>
@@ -700,19 +973,51 @@
     <!-- 기본 정보 -->
     <div class="sec">
       <div class="sec-title">기본 정보</div>
-      <div class="two-col">
-        <div class="field"><label>활동일</label><input type="date"></div>
-        <div class="field"><label>메타포 목표</label><input type="text" placeholder="목표 입력"></div>
-      </div>
+
+      <!-- 1. 메타포 -->
       <div class="field">
-        <label>Edited by</label>
-        <div class="edited-row">
-          <input type="text" class="edited-input" placeholder="이름" id="edited-name">
-          <input type="text" class="edited-input" placeholder="이메일" id="edited-email">
-          <span class="edited-sep">· Created with</span>
-          <input type="text" class="edited-input" placeholder="주력 도구 (예: Claude AI)" id="edited-tool">
+        <label>메타포</label>
+        <div class="emoji-wrap">
+          <button type="button" class="emoji-btn" id="emoji-btn">선택</button>
+          <div class="emoji-picker" id="emoji-picker">
+            <div class="ep-tabs">
+              <button type="button" class="ep-tab active" data-cat="0">🎯</button>
+              <button type="button" class="ep-tab" data-cat="1">😊</button>
+              <button type="button" class="ep-tab" data-cat="2">🐱</button>
+              <button type="button" class="ep-tab" data-cat="3">🌿</button>
+              <button type="button" class="ep-tab" data-cat="4">⚡</button>
+              <button type="button" class="ep-tab" data-cat="5">💡</button>
+            </div>
+            <div class="ep-grid" id="ep-grid"></div>
+          </div>
         </div>
       </div>
+
+      <!-- 2. 목표 및 문제정의 -->
+      <div class="field">
+        <label>목표 및 문제정의</label>
+        <input type="text" id="problem-input" placeholder="이번 AI 활동으로 해결하려는 목표와 현재 직면한 문제를 함께 기술" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+      </div>
+
+      <!-- 3. 활동일 / 작성자 / 이메일 -->
+      <div class="field">
+        <label>활동일 / 작성자 / 이메일</label>
+        <div class="date-author-row">
+          <input type="date" id="date-input">
+          <select class="edited-input edited-name-sel" id="edited-name">
+              <option value="">작성자 선택</option>
+              <option value="유경구">유경구</option>
+              <option value="이수철">이수철</option>
+              <option value="이고은">이고은</option>
+              <option value="고우정">고우정</option>
+              <option value="정수정">정수정</option>
+              <option value="이태림">이태림</option>
+              <option value="최승일">최승일</option>
+            </select>
+          <div class="edited-input" id="edited-email" contenteditable="true" data-placeholder="이메일"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- 결과물 -->
@@ -721,10 +1026,11 @@
 
       <!-- 복수 이미지 -->
       <div class="field">
-        <label>결과물 캡처 <span id="img-count" style="font-size:11px;color:#999;font-weight:400;"></span></label>
+        <label>AI와 협업하여 완성된 최종 산출물의 화면 캡처이미지 첨부 <span id="img-count" style="font-size:11px;color:#999;font-weight:400;"></span></label>
 
         <!-- 숨긴 file input -->
-        <input type="file" id="img-input" accept="image/*" multiple="" style="position:fixed;top:-999px;left:-999px;opacity:0;">
+        <input type="file" id="img-input" accept="image/*" multiple
+               style="position:fixed;top:-999px;left:-999px;opacity:0;">
 
         <!-- 드롭존: 이미지 없을 때 -->
         <div id="img-zone" class="img-zone">
@@ -743,10 +1049,15 @@
       <!-- 기본 경로 -->
       <div class="field">
         <label>기본 경로</label>
-        <a href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA" target="_blank" rel="noopener noreferrer" class="base-path-link">
+        <a
+          href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="base-path-link"
+        >
           <span class="base-path-icon">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
           <span class="base-path-title">AI 리터러시 활동_UXD2_Google Drive</span>
@@ -769,57 +1080,60 @@
 
     <!-- 도구 -->
     <div class="sec">
-      <div class="sec-title">도구</div>
+      <div class="sec-title">선정 도구</div>
       <div class="field">
-        <label>선정 도구 <span style="color:var(--text-m);font-weight:400;">클릭하여 활성 · ✕로 삭제</span></label>
-        <div class="badge-grid" id="tool-badge-grid"><span class="tool-badge">Perplexity<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Gemini<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Figma<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Make<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Stitch<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Cowork<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Code<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">VS Code<span class="badge-del" title="도구 삭제">✕</span></span></div>
-        <div class="add-tool-row" style="margin-top:8px;">
-          <input class="add-tool-input" id="add-tool-input" type="text" placeholder="도구 이름 입력 후 추가">
+        <label>사용한 AI도구를 선택하고, 의도와, 활동 기록은 아래의 AI WORK FLOW에서 입력하세요.</label>
+        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;">
           <button class="add-tool-btn" id="add-tool-btn">+ 추가</button>
         </div>
-      </div>
-      <div class="field" id="tool-memo-field" style="display:none;">
-        <label>도구별 쓰임 메모</label>
-        <div class="tool-memo-list" id="tool-memo-list"></div>
+
+        <!-- 도구 추가 팝업 -->
+        <div class="add-tool-popup hidden" id="add-tool-popup">
+          <input class="add-tool-input" id="add-tool-input" type="text" placeholder="도구 이름 입력" autocomplete="off">
+          <div class="add-tool-popup-btns">
+            <button class="atp-cancel" id="add-tool-cancel">취소</button>
+            <button class="atp-save" id="add-tool-save">저장</button>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- AI Work Flow -->
     <div class="sec">
       <div class="sec-title">AI Work Flow</div>
-      <div class="flow-steps">
-        <div class="flow-row">
-          <div class="flow-node">입력</div>
-          <span class="flow-arrow">→</span>
-          <input class="flow-input" type="text" placeholder="입력 내용 / 소스 기록">
-        </div>
-        <div class="flow-row">
-          <div class="flow-node">프롬프트 설계</div>
-          <span class="flow-arrow">→</span>
-          <input class="flow-input" type="text" placeholder="프롬프트 설계 방식 기록">
-        </div>
-        <div class="flow-row">
-          <div class="flow-node">AI 처리</div>
-          <span class="flow-arrow">→</span>
-          <input class="flow-input" type="text" placeholder="사용 모델 및 처리 내용">
-        </div>
-        <div class="flow-row">
-          <div class="flow-node">검토/수정</div>
-          <span class="flow-arrow">→</span>
-          <input class="flow-input" type="text" placeholder="검토 및 수정 사항 기록">
-        </div>
-        <div class="flow-row">
-          <div class="flow-node">산출물</div>
-          <span class="flow-arrow">→</span>
-          <input class="flow-input" type="text" placeholder="최종 산출물 설명">
-        </div>
+      <div class="wf-header">
+        <span class="wf-col-step">STEP</span>
+        <span class="wf-col-tool">도구</span>
+        <span class="wf-col-intent">INTENT 의도</span>
+        <span class="wf-col-action">활동</span>
+        <span class="wf-col-del"></span>
       </div>
+      <div class="wf-list" id="wf-list"></div>
+      <div class="wf-footer-btns">
+        <button class="wf-draw-btn" id="wf-draw-btn" style="flex:1;display:none;">✦ 플로우 그리기</button>
+      </div>
+      <button class="wf-img-btn" id="wf-img-btn" style="display:none;">🖼 인포그래픽 보기</button>
+    </div>
 
-      <div class="field" style="margin-top:4px;">
-        <label>최종 결과물 추출을 위한 프롬프트</label>
-        <div class="expand-wrap">
-          <textarea id="ta-prompt" placeholder="최종 결과물 도출에 사용한 핵심 프롬프트를 기록하세요"></textarea>
-          <span class="expand-hint">클릭하여 전체 보기 ↗</span>
+    <!-- 플로우 인포그래픽 모달 -->
+    <div class="flow-modal" id="flow-modal">
+      <div class="flow-modal-box">
+        <div class="flow-modal-head">
+          <span>AI Work Flow 인포그래픽</span>
+          <button class="flow-modal-close" id="flow-modal-close">✕</button>
+        </div>
+        <div class="flow-modal-body" id="flow-modal-body">
+          <div class="flow-generating" id="flow-generating">
+            <div class="flow-spinner"></div>
+            <span>플로우를 분석하고 있어요...</span>
+          </div>
+          <div id="flow-result" style="display:none;"></div>
+        </div>
+        <div class="flow-modal-footer" id="flow-modal-footer" style="display:none;">
+          <div style="display:flex;gap:8px;">
+            <button class="flow-img-save-btn" id="flow-img-save-btn">⬇ 이미지 저장</button>
+            <button class="flow-save-btn" id="flow-save-btn">확인</button>
+          </div>
         </div>
       </div>
     </div>
@@ -827,28 +1141,129 @@
     <!-- 품질 검증 -->
     <div class="sec">
       <div class="sec-title">품질 검증</div>
+
+      <!-- QA 체크리스트 -->
       <div class="field">
-        <label>품질 검증 활동 기록</label>
-        <div class="expand-wrap">
-          <textarea id="ta-quality" placeholder="활동 시 검증 내용 기록, 없을 시 '미진행'"></textarea>
-          <span class="expand-hint">클릭하여 전체 보기 ↗</span>
+        <label>QA 체크리스트</label>
+        <div class="qa-list" id="qa-list">
+          <div class="qa-row" data-key="accuracy">
+            <div class="qa-item-top">
+              <span class="qa-check-text">정확성 — AI 산출물의 내용이 사실에 부합하는가</span>
+              <div class="qa-yn-btns">
+                <button type="button" class="qa-y" data-key="accuracy">Y</button>
+                <button type="button" class="qa-n" data-key="accuracy">N</button>
+              </div>
+            </div>
+            <div class="qa-n-detail hidden" id="qa-detail-accuracy">
+              <div class="qa-step-rows" id="qa-accuracy-rows"></div>
+              <div class="qa-step-add-wrap">
+                <select class="qa-step-add-sel" id="qa-accuracy-step-sel"><option value="">+ 스텝 추가</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="qa-row" data-key="completeness">
+            <div class="qa-item-top">
+              <span class="qa-check-text">완성도 — 요청한 결과물이 누락 없이 완성되었는가</span>
+              <div class="qa-yn-btns">
+                <button type="button" class="qa-y" data-key="completeness">Y</button>
+                <button type="button" class="qa-n" data-key="completeness">N</button>
+              </div>
+            </div>
+            <div class="qa-n-detail hidden" id="qa-detail-completeness">
+              <div class="qa-step-rows" id="qa-completeness-rows"></div>
+              <div class="qa-step-add-wrap">
+                <select class="qa-step-add-sel" id="qa-completeness-step-sel"><option value="">+ 스텝 추가</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="qa-row" data-key="usability">
+            <div class="qa-item-top">
+              <span class="qa-check-text">활용 가능성 — 실무에 바로 적용 가능한 수준인가</span>
+              <div class="qa-yn-btns">
+                <button type="button" class="qa-y" data-key="usability">Y</button>
+                <button type="button" class="qa-n" data-key="usability">N</button>
+              </div>
+            </div>
+            <div class="qa-n-detail hidden" id="qa-detail-usability">
+              <div class="qa-step-rows" id="qa-usability-rows"></div>
+              <div class="qa-step-add-wrap">
+                <select class="qa-step-add-sel" id="qa-usability-step-sel"><option value="">+ 스텝 추가</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="qa-row" data-key="format">
+            <div class="qa-item-top">
+              <span class="qa-check-text">형식 적합성 — 요청한 형식·구조와 일치하는가<span class="qa-sub-text">예: 표로 달라 했는데 글로 왔거나, 항목 순서가 다를 때</span></span>
+              <div class="qa-yn-btns">
+                <button type="button" class="qa-y" data-key="format">Y</button>
+                <button type="button" class="qa-n" data-key="format">N</button>
+              </div>
+            </div>
+            <div class="qa-n-detail hidden" id="qa-detail-format">
+              <div class="qa-step-rows" id="qa-format-rows"></div>
+              <div class="qa-step-add-wrap">
+                <select class="qa-step-add-sel" id="qa-format-step-sel">
+                  <option value="">+ 스텝 추가</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="qa-row" data-key="bias">
+            <div class="qa-item-top">
+              <span class="qa-check-text">편향·오류 검토 — 편향되거나 잘못된 내용은 없는가<span class="qa-sub-text">예: 특정 관점만 강조하거나, 사실과 다른 내용이 포함된 경우</span></span>
+              <div class="qa-yn-btns">
+                <button type="button" class="qa-y" data-key="bias">Y</button>
+                <button type="button" class="qa-n" data-key="bias">N</button>
+              </div>
+            </div>
+            <div class="qa-n-detail hidden" id="qa-detail-bias">
+              <div class="qa-step-rows" id="qa-bias-rows"></div>
+              <div class="qa-step-add-wrap">
+                <select class="qa-step-add-sel" id="qa-bias-step-sel">
+                  <option value="">+ 스텝 추가</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="qa-row" data-key="prompt">
+            <div class="qa-item-top">
+              <span class="qa-check-text">프롬프트 최적화 — 더 나은 결과를 위한 개선 시도를 했는가</span>
+              <div class="qa-yn-btns">
+                <button type="button" class="qa-y" data-key="prompt">Y</button>
+                <button type="button" class="qa-n" data-key="prompt">N</button>
+              </div>
+            </div>
+            <div class="qa-n-detail hidden" id="qa-detail-prompt">
+              <div class="qa-step-rows" id="qa-prompt-rows"></div>
+              <div class="qa-step-add-wrap">
+                <select class="qa-step-add-sel" id="qa-prompt-step-sel"><option value="">+ 스텝 추가</option></select>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="eff-row">
-        <div class="eff-box">
-          <div class="e-label">ai X — 비효율</div>
-          <textarea placeholder="어떤 AI / 어떤 점이 부족했나"></textarea>
-        </div>
-        <div class="eff-box">
-          <div class="e-label">ai O — 효율</div>
-          <textarea placeholder="어떤 AI / 어떤 점이 좋았나"></textarea>
-        </div>
+
+      <!-- 보완 권장 -->
+      <div class="field">
+        <label>✦ 보완 권장</label>
+        <input type="text" id="qa-recommend" placeholder="검토 후 보완이 필요한 사항을 기록하세요" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
       </div>
     </div>
 
     <!-- 인사이트 -->
     <div class="sec">
       <div class="sec-title">인사이트</div>
+      <div class="eff-row">
+        <div class="eff-box">
+          <div class="e-label">ai X — 비효율</div>
+          <div class="e-guide">AI를 사용하지 않았다면 어떤 비효율이 발생했을까요?</div>
+          <textarea placeholder="예: 수작업으로 처리했다면 3시간 이상 소요됐을 것"></textarea>
+        </div>
+        <div class="eff-box">
+          <div class="e-label">ai O — 효율</div>
+          <textarea placeholder="어떤 AI / 어떤 점이 좋았나"></textarea>
+        </div>
+      </div>
       <div class="ins-row">
         <div class="ins-box good">
           <div class="i-tag">Good point</div>
@@ -881,7 +1296,7 @@
       <button class="f-btn cfg" id="cfg-btn" title="Supabase 설정">⚙</button>
       <button class="f-btn clear" id="clear-btn">초기화</button>
       <button class="f-btn share-link" id="share-link-btn">🔗 링크 공유</button>
-      <button class="f-btn save" id="save-btn">저장 &amp; Notion 제출</button>
+      <button class="f-btn save"  id="save-btn">저장 &amp; Notion 제출</button>
       <span class="page-num">01</span>
     </div>
   </div>
@@ -889,20 +1304,341 @@
 </div><!-- /card-wrapper -->
 
 <script>
+  /* ── EMOJI PICKER ── */
+  (function() {
+    const CATS = [
+      ['🎯','🚀','💡','🔥','⚡','🌟','🏆','🎪','🧩','🔬','🎨','🛠','📐','🌱','💎','🦋','🎭','🧭','🔑','🌊','🏔','🎶','📡','🤖','🧲','🔭','⚗️','🧬','⚙️','🔮','🧱','🏗'],
+      ['😊','😎','🤩','🥳','😤','🤔','🧠','👊','✊','🙌','👏','💪','🫶','👁','🫀','🫁','👀','🤝','🙏','👆','☝️','🫵','🎉','🎊','💯','✨','🌈','❤️','🔴','🟠','🟡','🟢'],
+      ['🐉','🦁','🦊','🐺','🦅','🐬','🐯','🦋','🦎','🦑','🦈','🦏','🐘','🦒','🦓','🦬','🐂','🐎','🦌','🦫','🦦','🦥','🐻','🦔','🐧','🦆','🦉','🦚','🦜','🐠','🐙','🦀'],
+      ['🌿','🌲','🌳','🌴','🌵','🌾','🍀','🌺','🌸','🌼','🌻','🌹','🍁','🍂','🍃','☘️','🌱','🌿','🎋','🎍','🍄','🌾','🌊','🏔','🌋','🏜','🏕','⛰️','🗻','🌄','🌅','🌇'],
+      ['⚡','🔥','💧','🌪','❄️','🌊','☄️','🌙','☀️','🌤','⛅','🌦','🌧','⛈','🌩','🌨','🌬','🌫','🌈','🌂','☂️','⛱','⚡','💥','🌟','✨','💫','⭐','🌠','🎇','🎆','🌌'],
+      ['💡','📌','📍','🗺','🧭','📊','📈','📉','🗒','📋','📁','🗂','📂','📅','📆','🗓','📇','📒','📓','📔','📕','📗','📘','📙','📚','📖','🔖','🏷','💰','💳','🔐','🔒'],
+    ];
+    let currentCat = 0;
+    const btn     = document.getElementById('emoji-btn');
+    const picker  = document.getElementById('emoji-picker');
+    const grid    = document.getElementById('ep-grid');
+    const tabs    = document.querySelectorAll('.ep-tab');
+    if (!btn || !picker || !grid) return;
+
+    function renderGrid(cat) {
+      grid.innerHTML = '';
+      CATS[cat].forEach(e => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = e;
+        b.addEventListener('click', ev => {
+          ev.stopPropagation();
+          btn.textContent = e;
+          btn.classList.remove('placeholder');
+          picker.classList.remove('open');
+        });
+        grid.appendChild(b);
+      });
+    }
+
+    renderGrid(0);
+    btn.classList.add('placeholder');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', e => {
+        e.stopPropagation();
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentCat = +tab.dataset.cat;
+        renderGrid(currentCat);
+      });
+    });
+
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      picker.classList.toggle('open');
+    });
+
+    document.addEventListener('click', () => picker.classList.remove('open'));
+  })();
+
+  /* ── AI WORK FLOW ── */
+  let wfRows = [];
+  const QA_KEYS = ['accuracy','completeness','usability','format','bias','prompt'];
+  let qaStepsMap = {}; // { key: [{idx, content}] }
+  QA_KEYS.forEach(k => { qaStepsMap[k] = []; });
+
+  function getToolOptions(selected) {
+    const active = toolList.filter(t => toolActive.has(t));
+    const opts = ['선택', ...active];
+    return opts.map(t =>
+      `<option value="${t === '선택' ? '' : t}" ${selected === t ? 'selected' : ''}>${t}</option>`
+    ).join('');
+  }
+
+  function renderWorkflow() {
+    const list = document.getElementById('wf-list');
+    const drawBtn = document.getElementById('wf-draw-btn');
+    const imgBtn = document.getElementById('wf-img-btn');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (wfRows.length === 0) {
+      list.innerHTML = `<div class="wf-empty">선정 도구에서 사용한 AI 도구를 선택하면 자동으로 워크플로우가 생성됩니다.</div>`;
+      if (drawBtn) drawBtn.style.display = 'none';
+      if (imgBtn) imgBtn.style.display = 'none';
+      syncQaStepSelect();
+      return;
+    }
+
+    if (drawBtn) drawBtn.style.display = '';
+    wfRows.forEach((row, i) => {      const div = document.createElement('div');
+      div.className = 'wf-row';
+      div.innerHTML = `
+        <div class="wf-step">STEP.${i + 1}</div>
+        <select class="wf-tool" data-idx="${i}">${getToolOptions(row.tool)}</select>
+        <input class="wf-input" type="text" data-idx="${i}" data-field="intent" placeholder="의도 입력" value="${row.intent || ''}" readonly onfocus="this.removeAttribute('readonly')">
+        <input class="wf-input" type="text" data-idx="${i}" data-field="action" placeholder="활동 입력" value="${row.action || ''}" readonly onfocus="this.removeAttribute('readonly')">
+        ${i === 0 ? '<span class="wf-col-del"></span>' : '<span class="wf-col-del"></span>'}      `;
+      // 확장 모달 연결
+      div.querySelectorAll('.wf-input').forEach(inp => {
+        inp.addEventListener('click', () => {
+          const field = inp.dataset.field;
+          const label = field === 'intent' ? `STEP.${i+1} 의도` : `STEP.${i+1} 활동`;
+          openTextModal(inp, label);
+        });
+      });
+      // 도구 변경
+      div.querySelector('.wf-tool').addEventListener('change', e => {
+        wfRows[+e.target.dataset.idx].tool = e.target.value;
+        syncQaStepSelect();
+      });
+      // 인풋 변경
+      div.querySelectorAll('.wf-input').forEach(inp => {
+        inp.addEventListener('input', e => {
+          wfRows[+e.target.dataset.idx][e.target.dataset.field] = e.target.value;
+        });
+      });
+      list.appendChild(div);
+    });
+    syncQaStepSelect();
+  }
+
+  document.getElementById('wf-add-btn')?.addEventListener('click', () => {
+    wfRows.push({ tool: '', intent: '', action: '' });
+    renderWorkflow();
+  });
+
+  /* ── FLOW DRAW ── */
+  document.getElementById('wf-draw-btn')?.addEventListener('click', async () => {
+    const filled = wfRows.filter(r => r.intent || r.action || r.tool);
+    if (!filled.length) { showToast('스텝 내용을 먼저 입력해주세요'); return; }
+
+    const modal    = document.getElementById('flow-modal');
+    const genEl    = document.getElementById('flow-generating');
+    const resultEl = document.getElementById('flow-result');
+    const drawBtn  = document.getElementById('wf-draw-btn');
+
+    modal.classList.add('open');
+    genEl.style.display = '';
+    resultEl.style.display = 'none';
+    drawBtn.disabled = true;
+
+    const stepsText = wfRows.map((r, i) =>
+      `STEP.${i+1} | 도구: ${r.tool || '미선택'} | 의도: ${r.intent || '-'} | 활동: ${r.action || '-'}`
+    ).join('\n');
+
+    try {
+      genEl.style.display = 'none';
+      resultEl.style.display = '';
+      const svgStr = generateFlowSVG(wfRows);
+      resultEl.innerHTML = svgStr;
+      document.getElementById('flow-modal-footer').style.display = '';
+      // 저장된 SVG를 이미지 버튼에 연결
+      const imgBtn = document.getElementById('wf-img-btn');
+      if (imgBtn) {
+        imgBtn._svgStr = svgStr;
+        imgBtn.style.display = 'block';
+      }
+    } catch(e) {
+      genEl.style.display = 'none';
+      resultEl.style.display = '';
+      resultEl.innerHTML = `<p style="color:#e53935;text-align:center;padding:20px">오류: ${e.message}</p>`;
+    } finally {
+      drawBtn.disabled = false;
+    }
+  });
+
+  function generateFlowSVG(rows) {
+    const n = rows.length;
+    const W = 640;
+    const pad = 20;
+
+    // ── Summary Flow ──
+    const ROW_MAX = 4; // 한 줄 최대 스텝 수
+    const rows_sum = Math.ceil(n / ROW_MAX);
+    const sumRowH = 80;
+    const sumH = rows_sum * sumRowH + (rows_sum - 1) * 10 + 20;
+    const sumY = 44;
+    let sumItems = '';
+
+    for (let i = 0; i < n; i++) {
+      const rowIdx = Math.floor(i / ROW_MAX);
+      const colIdx = i % ROW_MAX;
+      const colCount = Math.min(ROW_MAX, n - rowIdx * ROW_MAX);
+      const bW = Math.floor((W - pad * 2 - (colCount - 1) * 24) / colCount);
+      const bH = 52;
+      const rx = pad + colIdx * (bW + 24);
+      const ry = sumY + rowIdx * (sumRowH + 10);
+      const cx = rx + bW / 2;
+      const cy = ry + bH / 2;
+      const tool = rows[i].tool || `STEP ${i+1}`;
+
+      sumItems += `
+        <rect x="${rx}" y="${ry}" width="${bW}" height="${bH}" rx="10"
+          fill="#eef1ff" stroke="#4f6ef7" stroke-width="1"/>
+        <circle cx="${rx + 16}" cy="${cy}" r="11" fill="#4f6ef7"/>
+        <text x="${rx + 16}" y="${cy + 4}" text-anchor="middle"
+          font-size="10" font-weight="700" fill="#fff" font-family="sans-serif">${i+1}</text>
+        <text x="${rx + 33}" y="${cy - 6}" font-size="9" fill="#888"
+          font-family="sans-serif">STEP.${i+1}</text>
+        <text x="${rx + 33}" y="${cy + 9}" font-size="12" font-weight="600"
+          fill="#222" font-family="sans-serif">${tool.length > 10 ? tool.slice(0,10)+'…' : tool}</text>`;
+
+      // 같은 줄 다음 스텝으로 화살표
+      const isLastInRow = (colIdx === ROW_MAX - 1) || (i === n - 1);
+      const isLastOverall = i === n - 1;
+      if (!isLastOverall && !isLastInRow) {
+        const ax = rx + bW + 2;
+        const ay = ry + bH / 2;
+        sumItems += `<line x1="${ax}" y1="${ay}" x2="${ax+20}" y2="${ay}"
+          stroke="#4f6ef7" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <polygon points="${ax+20},${ay-4} ${ax+26},${ay} ${ax+20},${ay+4}" fill="#4f6ef7"/>`;
+      }
+      // 줄바꿈 L자 화살표 (마지막 열 → 다음 줄 첫 번째)
+      if (!isLastOverall && isLastInRow) {
+        const nextRowIdx = rowIdx + 1;
+        const nextColCount = Math.min(ROW_MAX, n - nextRowIdx * ROW_MAX);
+        const nextBW = Math.floor((W - pad * 2 - (nextColCount - 1) * 24) / nextColCount);
+        const fromX = rx + bW;
+        const fromY = ry + bH / 2;
+        const toX = pad;
+        const toY = ry + sumRowH + 10 + bH / 2;
+        const midY = ry + Math.round((bH + sumRowH + 10) / 2);
+        sumItems += `<path d="M${fromX} ${fromY} L${fromX + 12} ${fromY} L${fromX + 12} ${midY} L${toX - 12} ${midY} L${toX - 12} ${toY} L${toX} ${toY}"
+          fill="none" stroke="#4f6ef7" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <polygon points="${toX},${toY-4} ${toX+6},${toY} ${toX},${toY+4}" fill="#4f6ef7"/>`;
+      }
+    }
+
+    // ── Detail Flow ──
+    const detailStartY = sumY + sumH + 40;
+    const cardH = 90;
+    const gap = 36;
+    let detailItems = '';
+    let totalDetailH = 0;
+    for (let i = 0; i < n; i++) {
+      const y = detailStartY + i * (cardH + gap);
+      const r = rows[i];
+      const tool = r.tool || '미선택';
+      const intent = r.intent || '-';
+      const action = r.action || '-';
+      const truncate = (s, max) => s.length > max ? s.slice(0, max) + '…' : s;
+
+      detailItems += `
+        <rect x="${pad}" y="${y}" width="${W}" height="${cardH}" rx="12"
+          fill="#fff" stroke="#e8eaed" stroke-width="1"/>
+        <circle cx="${pad + 28}" cy="${y + cardH/2}" r="18" fill="#4f6ef7"/>
+        <text x="${pad + 28}" y="${y + cardH/2 - 5}" text-anchor="middle"
+          font-size="8" fill="#c7d0ff" font-family="sans-serif" font-weight="600">STEP</text>
+        <text x="${pad + 28}" y="${y + cardH/2 + 9}" text-anchor="middle"
+          font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">${i+1}</text>
+        <text x="${pad + 60}" y="${y + cardH/2 - 8}" font-size="9" fill="#aaa"
+          font-family="sans-serif">TOOL</text>
+        <text x="${pad + 60}" y="${y + cardH/2 + 10}" font-size="14" font-weight="700"
+          fill="#222" font-family="sans-serif">${truncate(tool, 12)}</text>
+        <line x1="${pad + 155}" y1="${y + 16}" x2="${pad + 155}" y2="${y + cardH - 16}"
+          stroke="#f0f0f0" stroke-width="1"/>
+        <text x="${pad + 170}" y="${y + cardH/2 - 8}" font-size="9" fill="#aaa"
+          font-family="sans-serif">의도 INTENT</text>
+        <text x="${pad + 170}" y="${y + cardH/2 + 10}" font-size="12" fill="#333"
+          font-family="sans-serif">${truncate(intent, 22)}</text>
+        <line x1="${pad + 390}" y1="${y + 16}" x2="${pad + 390}" y2="${y + cardH - 16}"
+          stroke="#f0f0f0" stroke-width="1"/>
+        <text x="${pad + 405}" y="${y + cardH/2 - 8}" font-size="9" fill="#aaa"
+          font-family="sans-serif">활동</text>
+        <text x="${pad + 405}" y="${y + cardH/2 + 10}" font-size="12" fill="#333"
+          font-family="sans-serif">${truncate(action, 20)}</text>`;
+
+      if (i < n - 1) {
+        const ax = pad + W / 2;
+        const ay = y + cardH + 4;
+        detailItems += `<line x1="${ax}" y1="${ay}" x2="${ax}" y2="${ay + gap - 8}"
+          stroke="#4f6ef7" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <polygon points="${ax-5},${ay+gap-10} ${ax},${ay+gap-4} ${ax+5},${ay+gap-10}"
+          fill="#4f6ef7"/>`;
+      }
+      totalDetailH = y + cardH - detailStartY;
+    }
+
+    const totalH = detailStartY + totalDetailH + 40;
+
+    return `<svg width="100%" viewBox="0 0 680 ${totalH}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="680" height="${totalH}" fill="#f8f9fa" rx="12"/>
+      <text x="${pad}" y="26" font-size="10" font-weight="600" fill="#aaa"
+        font-family="sans-serif" letter-spacing="1">SUMMARY FLOW</text>
+      ${sumItems}
+      <line x1="${pad}" y1="${detailStartY - 20}" x2="${W + pad}" y2="${detailStartY - 20}"
+        stroke="#ececec" stroke-width="1"/>
+      <text x="${pad}" y="${detailStartY - 6}" font-size="10" font-weight="600" fill="#aaa"
+        font-family="sans-serif" letter-spacing="1">DETAIL FLOW</text>
+      ${detailItems}
+    </svg>`;
+  }
+
+  document.getElementById('flow-modal-close')?.addEventListener('click', () => {
+    document.getElementById('flow-modal').classList.remove('open');
+  });
+  document.getElementById('flow-modal')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('flow-modal'))
+      document.getElementById('flow-modal').classList.remove('open');
+  });
+
+  document.getElementById('flow-img-save-btn')?.addEventListener('click', () => {
+    const btn = document.getElementById('flow-img-save-btn');
+    const svgEl = document.querySelector('#flow-result svg');
+    if (!svgEl) return;
+    try {
+      const svgData = new XMLSerializer().serializeToString(svgEl);
+      const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'workflow_infographic.svg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('SVG 이미지 저장 완료 ✓');
+    } catch(e) {
+      showToast('저장 실패: ' + e.message);
+    }
+  });
+
+  document.getElementById('flow-save-btn')?.addEventListener('click', () => {
+    document.getElementById('flow-modal').classList.remove('open');
+  });
+
+  document.getElementById('wf-img-btn')?.addEventListener('click', () => {
+    document.getElementById('flow-modal').classList.add('open');
+  });
+
   /* ── TOOL SYSTEM ── */
   const DEFAULT_TOOLS = ['Perplexity','Claude','Gemini','Figma','Make','Stitch','Claude Cowork','Claude Code','VS Code'];
   let toolList = [...DEFAULT_TOOLS];
   let toolActive = new Set();
-  let toolMemos = {};
   let _isViewerMode = false;
 
   // Supabase 연결 정보 (팀 배포 파일 생성 시 자동 삽입)
-  const _SB_URL = 'https://lcfuclnopswjogidbsix.supabase.co';
-  const _SB_KEY = 'sb_publishable_UhPSyhqgUNMM6G-IHL2x2g_eoMMULsk';
+  const _SB_URL = '';
+  const _SB_KEY = '';
 
   const badgeGrid    = document.getElementById('tool-badge-grid');
-  const memoField    = document.getElementById('tool-memo-field');
-  const memoList     = document.getElementById('tool-memo-list');
   const addInput     = document.getElementById('add-tool-input');
   const addBtn       = document.getElementById('add-tool-btn');
 
@@ -922,63 +1658,66 @@
         e.stopPropagation();
         toolList = toolList.filter(t => t !== name);
         toolActive.delete(name);
-        delete toolMemos[name];
+        wfRows = wfRows.filter(r => r.tool !== name);
         renderTools();
-        renderMemos();
+        renderWorkflow();
+        syncQaStepSelect();
       });
 
       badge.addEventListener('click', () => {
         if (toolActive.has(name)) {
           toolActive.delete(name);
+          // 해당 도구 wfRow 제거
+          wfRows = wfRows.filter(r => r.tool !== name);
         } else {
           toolActive.add(name);
-          if (!toolMemos[name]) toolMemos[name] = '';
+          // 해당 도구 wfRow 자동 추가
+          wfRows.push({ tool: name, intent: '', action: '' });
         }
         renderTools();
-        renderMemos();
+        renderWorkflow();
+        syncQaStepSelect();
       });
 
       badge.append(label, del);
       badgeGrid.appendChild(badge);
     });
+    // + 추가 버튼 항상 마지막에
+    badgeGrid.appendChild(addBtn);
   }
 
-  function renderMemos() {
-    memoList.innerHTML = '';
-    const active = toolList.filter(n => toolActive.has(n));
-    memoField.style.display = active.length ? '' : 'none';
-    active.forEach(name => {
-      const row = document.createElement('div');
-      row.className = 'tool-memo-row';
-
-      const tag = document.createElement('span');
-      tag.className = 'tool-memo-tag';
-      tag.textContent = name;
-
-      const inp = document.createElement('input');
-      inp.className = 'tool-memo-input';
-      inp.type = 'text';
-      inp.placeholder = `${name} 쓰임 기록`;
-      inp.value = toolMemos[name] || '';
-      inp.addEventListener('input', () => { toolMemos[name] = inp.value; });
-
-      row.append(tag, inp);
-      memoList.appendChild(row);
-    });
-  }
 
   function addTool() {
     const val = addInput.value.trim();
     if (!val) return;
     if (!toolList.includes(val)) toolList.push(val);
     addInput.value = '';
+    document.getElementById('add-tool-popup').classList.add('hidden');
     renderTools();
+    renderWorkflow();
   }
 
-  addBtn.addEventListener('click', addTool);
-  addInput.addEventListener('keydown', e => { if (e.key === 'Enter') addTool(); });
+  addBtn.addEventListener('click', () => {
+    const popup = document.getElementById('add-tool-popup');
+    popup.classList.remove('hidden');
+    addInput.focus();
+  });
+
+  document.getElementById('add-tool-save').addEventListener('click', addTool);
+  document.getElementById('add-tool-cancel').addEventListener('click', () => {
+    addInput.value = '';
+    document.getElementById('add-tool-popup').classList.add('hidden');
+  });
+  addInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTool();
+    if (e.key === 'Escape') {
+      addInput.value = '';
+      document.getElementById('add-tool-popup').classList.add('hidden');
+    }
+  });
 
   renderTools();
+  renderWorkflow();
 
   /* ── TEXT EXPAND MODAL ── */
   const textModal      = document.getElementById('text-modal');
@@ -992,17 +1731,23 @@
     textModalTitle.textContent = title;
     textModalTa.value = sourceTa.value;
     textModalTa.placeholder = sourceTa.placeholder;
+    textModalTa.readOnly = _isViewerMode;
     textModal.classList.add('open');
     setTimeout(() => textModalTa.focus(), 50);
   }
 
   function closeTextModal() {
-    if (currentExpandTa) currentExpandTa.value = textModalTa.value;
+    if (currentExpandTa) {
+      currentExpandTa.value = textModalTa.value;
+      // input 이벤트 발생시켜 wfRows 등 리스너에 저장
+      currentExpandTa.dispatchEvent(new Event('input', { bubbles: true }));
+    }
     textModal.classList.remove('open');
     currentExpandTa = null;
   }
 
   textModalClose.addEventListener('click', closeTextModal);
+  document.getElementById('text-modal-confirm').addEventListener('click', closeTextModal);
   textModal.addEventListener('click', e => { if (e.target === textModal) closeTextModal(); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && textModal.classList.contains('open')) closeTextModal();
@@ -1176,7 +1921,10 @@
   }
 
   /* ── SAVE (localStorage) ── */
-  const SAVE_KEY = 'ai_activity_card_v2';
+  const SAVE_KEY = 'ai_activity_card_v3';
+  // 구버전 데이터 자동 삭제
+  localStorage.removeItem('ai_activity_card_v2');
+  localStorage.removeItem('ai_activity_card_v1');
 
   function collectData() {
     const data = {};
@@ -1188,7 +1936,6 @@
     data.images = images;
     data.toolList   = toolList;
     data.toolActive = Array.from(toolActive);
-    data.toolMemos  = toolMemos;
     return data;
   }
 
@@ -1201,8 +1948,7 @@
     if (data.images) { images = data.images; syncImageUI(); }
     if (data.toolList)   { toolList = data.toolList; }
     if (data.toolActive) { toolActive = new Set(data.toolActive); }
-    if (data.toolMemos)  { toolMemos = data.toolMemos; }
-    renderTools(); renderMemos();
+    renderTools();
     document.querySelectorAll('textarea').forEach(ta => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; });
   }
 
@@ -1213,7 +1959,7 @@
   const NOTION_PROXY = 'https://notion-proxy-three.vercel.app';
 
   function getFormValues() {
-    const name    = document.getElementById('edited-name').value.trim();
+    const name    = document.getElementById('edited-name')?.value?.trim() || '';
     const email   = document.getElementById('edited-email').value.trim();
     const tool    = document.getElementById('edited-tool').value.trim();
     const stage   = document.getElementById('stage-select').value;
@@ -1409,11 +2155,24 @@
     document.querySelectorAll('input[type="text"], input[type="date"], input[type="url"], textarea').forEach(el => el.value = '');
     document.getElementById('stage-select').value = '';
     document.querySelectorAll('.flow-input').forEach(i => i.value = '');
+    // contenteditable 필드 초기화
+    ['edited-email','edited-tool','goal-input'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.innerText = '';
+    });
+    // 특수 필드 명시적 초기화
+    const prob = document.getElementById('problem-input'); if (prob) { prob.removeAttribute('readonly'); prob.value = ''; }
+    const nameSelEl = document.getElementById('edited-name'); if (nameSelEl) nameSelEl.value = '';
+    const dateEl = document.getElementById('date-input'); if (dateEl) dateEl.value = '';
+    // 이모지 초기화
+    const emojiBtn = document.getElementById('emoji-btn'); if (emojiBtn) { emojiBtn.textContent = '선택'; emojiBtn.classList.add('placeholder'); }
     images = []; syncImageUI();
     toolList = [...DEFAULT_TOOLS]; toolActive = new Set(); toolMemos = {};
-    renderTools(); renderMemos();
+    wfRows = [];
+    renderTools(); renderWorkflow();
     localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem(AUTO_SAVE_KEY);
     showToast('초기화되었습니다');
+    setTimeout(() => location.reload(), 800);
   });
 
 
@@ -1448,15 +2207,31 @@
     const snap = {
       stage:      document.getElementById('stage-select')?.value || '',
       task:       document.querySelector('.card-sub .sub-field:last-child input')?.value || '',
-      date:       document.querySelector('input[type="date"]')?.value || '',
-      goal:       document.querySelector('.two-col .field:last-child input')?.value || '',
+      date:       document.getElementById('date-input')?.value || '',
+      problem:    document.getElementById('problem-input')?.value || '',
+      goalEmoji:  document.getElementById('emoji-btn')?.classList.contains('placeholder') ? '' : (document.getElementById('emoji-btn')?.textContent || ''),
       editName:   document.getElementById('edited-name')?.value || '',
-      editEmail:  document.getElementById('edited-email')?.value || '',
-      editTool:   document.getElementById('edited-tool')?.value || '',
+      editEmail:  document.getElementById('edited-email')?.innerText.trim() || '',
+      editTool:   document.getElementById('edited-tool')?.innerText.trim() || '',
       driveUrls:  Array.from(document.querySelectorAll('input[type="url"]')).map(el => el.value),
       flowInputs: Array.from(document.querySelectorAll('.flow-input')).map(el => el.value),
       taPrompt:   document.getElementById('ta-prompt')?.value || '',
       taQuality:  document.getElementById('ta-quality')?.value || '',
+      qaChecked:  Array.from(document.querySelectorAll('.qa-check:checked')).map(el => el.dataset.key),
+      qaRecommend: document.getElementById('qa-recommend')?.value || '',
+      qaData: (function() {
+        const d = {};
+        document.querySelectorAll('.qa-row[data-key]').forEach(row => {
+          const key = row.dataset.key;
+          const val = row.classList.contains('is-y') ? 'y' : row.classList.contains('is-n') ? 'n' : '';
+          const step = QA_KEYS.includes(key)
+            ? JSON.stringify(qaStepsMap[key] || [])
+            : (row.querySelector('.qa-step-input')?.value || '');
+          const content = QA_KEYS.includes(key) ? '' : (row.querySelector('.qa-content-input')?.value || '');
+          d[key] = { val, step, content };
+        });
+        return d;
+      })(),
       effBad:     document.querySelectorAll('.eff-box textarea')[0]?.value || '',
       effGood:    document.querySelectorAll('.eff-box textarea')[1]?.value || '',
       goodPt:     document.querySelectorAll('.ins-box textarea')[0]?.value || '',
@@ -1467,7 +2242,7 @@
       images:     images.map(img => ({ src: img.src, name: img.name || '' })),
       toolList:   toolList,
       toolActive: Array.from(toolActive),
-      toolMemos:  toolMemos,
+      wfRows:     wfRows,
     };
     console.log('[UXD2] collectSnapData →', {stage: snap.stage, editName: snap.editName, task: snap.task, goal: snap.goal});
     return snap;
@@ -1482,15 +2257,54 @@
 
     if (snap.stage) { const s = document.getElementById('stage-select'); if (s) s.value = snap.stage; }
     q('.card-sub .sub-field:last-child input', snap.task);
-    q('input[type="date"]', snap.date);
-    q('.two-col .field:last-child input', snap.goal);
-    v('edited-name',  snap.editName);
-    v('edited-email', snap.editEmail);
-    v('edited-tool',  snap.editTool);
+    const dateEl = document.getElementById('date-input');
+    if (dateEl) dateEl.value = snap.date || '';
+    const problemEl = document.getElementById('problem-input');
+    if (problemEl) problemEl.value = snap.problem || '';
+    if (snap.goalEmoji) {
+      const b = document.getElementById('emoji-btn');
+      if (b) { b.textContent = snap.goalEmoji; b.classList.remove('placeholder'); }
+    }
+    const setDiv = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val || ''; };
+    // 뷰어에서 edited-name select를 읽기전용 텍스트로 전환
+    if (_isViewerMode) {
+      const ns = document.getElementById('edited-name');
+      if (ns && snap.editName) {
+        const sp = document.createElement('div');
+        sp.className = 'edited-input'; sp.style.flex = '0 0 130px';
+        sp.textContent = snap.editName;
+        ns.replaceWith(sp);
+      }
+    }
+    const nameEl = document.getElementById('edited-name'); if (nameEl) nameEl.value = snap.editName || '';
+    setDiv('edited-tool',  snap.editTool);
+
+    // 이메일: 뷰어 모드에서는 mailto 링크로 표시
+    const emailEl = document.getElementById('edited-email');
+    if (emailEl) {
+      if (_isViewerMode && snap.editEmail) {
+        emailEl.innerHTML = `<a href="mailto:${snap.editEmail}" style="color:#1a6fc4;text-decoration:underline;">${snap.editEmail}</a>`;
+        emailEl.style.pointerEvents = 'auto';
+      } else {
+        emailEl.innerText = snap.editEmail || '';
+      }
+    }
 
     if (snap.driveUrls) {
-      document.querySelectorAll('input[type="url"]').forEach((el, i) => {
-        if (snap.driveUrls[i] !== undefined) el.value = snap.driveUrls[i];
+      const urlInputs = document.querySelectorAll('input[type="url"]');
+      urlInputs.forEach((el, i) => {
+        if (snap.driveUrls[i] !== undefined) {
+          el.value = snap.driveUrls[i];
+          if (_isViewerMode && snap.driveUrls[i]) {
+            const link = document.createElement('a');
+            link.href = snap.driveUrls[i];
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = snap.driveUrls[i];
+            link.style.cssText = 'color:#1a6fc4;text-decoration:underline;font-size:15px;word-break:break-all;display:block;padding:10px 12px;';
+            el.replaceWith(link);
+          }
+        }
       });
     }
     if (snap.flowInputs) {
@@ -1501,6 +2315,36 @@
 
     v('ta-prompt',  snap.taPrompt);
     v('ta-quality', snap.taQuality);
+    if (snap.qaData) {
+      document.querySelectorAll('.qa-row[data-key]').forEach(row => {
+        const key = row.dataset.key;
+        const d = snap.qaData[key];
+        if (!d) return;
+        row.classList.remove('is-y','is-n');
+        row.querySelector('.qa-y')?.classList.remove('active');
+        row.querySelector('.qa-n')?.classList.remove('active');
+        const detail = document.getElementById('qa-detail-' + key);
+        if (d.val === 'y') {
+          row.classList.add('is-y'); row.querySelector('.qa-y')?.classList.add('active');
+          if (detail) detail.classList.add('hidden');
+        } else if (d.val === 'n') {
+          row.classList.add('is-n'); row.querySelector('.qa-n')?.classList.add('active');
+          if (detail) {
+            detail.classList.remove('hidden');
+            if (QA_KEYS.includes(key) && d.step) {
+              try { qaStepsMap[key] = JSON.parse(d.step); } catch(e) { qaStepsMap[key] = []; }
+              syncQaStepSelect(); renderQaStepRows(key);
+            } else {
+              const stepInp = detail.querySelector('.qa-step-input');
+              if (stepInp) stepInp.value = d.step || '';
+            }
+            const ci = detail.querySelector('.qa-content-input'); if (ci) ci.value = d.content || '';
+          }
+        }
+      });
+    }
+    const rec = document.getElementById('qa-recommend');
+    if (rec) rec.value = snap.qaRecommend || '';
 
     const effBoxes = document.querySelectorAll('.eff-box textarea');
     if (effBoxes[0]) effBoxes[0].value = snap.effBad  || '';
@@ -1516,10 +2360,9 @@
 
     if (snap.toolList)   toolList   = snap.toolList;
     if (snap.toolActive) toolActive = new Set(snap.toolActive);
-    if (snap.toolMemos)  toolMemos  = snap.toolMemos;
+    if (snap.wfRows)     { wfRows = snap.wfRows; renderWorkflow(); }
     renderTools();
-    renderMemos();
-
+  
     document.querySelectorAll('textarea').forEach(ta => {
       ta.style.height = 'auto';
       ta.style.height = ta.scrollHeight + 'px';
@@ -1680,7 +2523,7 @@
   }
 
   document.getElementById('share-link-btn').addEventListener('click', () => {
-    const name = document.getElementById('edited-name')?.value.trim();
+    const name = document.getElementById('edited-name')?.innerText.trim();
     if (!name) {
       alert('Edited by 이름을 입력해주세요.');
       document.getElementById('edited-name')?.focus();
@@ -1689,11 +2532,197 @@
     shareLink({ showModal: true });
   });
 
+  /* ── QA Y/N ── */
+  function syncQaStepSelect() {
+    QA_KEYS.forEach(key => {
+      const sel = document.getElementById(`qa-${key}-step-sel`);
+      if (!sel) return;
+      sel.innerHTML = '<option value="">+ 스텝 추가</option>';
+      wfRows.forEach((row, i) => {
+        if (!qaStepsMap[key].find(s => s.idx === i)) {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = `STEP.${i+1}${row.tool ? ' — ' + row.tool : ''}`;
+          sel.appendChild(opt);
+        }
+      });
+    });
+  }
+
+  function renderQaStepRows(key) {
+    const wrap = document.getElementById(`qa-${key}-rows`);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    qaStepsMap[key].forEach((item, pos) => {
+      const wfRow = wfRows[item.idx];
+      if (!wfRow) return;
+      const div = document.createElement('div');
+      div.className = 'qa-step-row';
+      const badge = document.createElement('div');
+      badge.className = 'qa-step-badge';
+      badge.innerHTML = `STEP.${item.idx+1}${wfRow.tool ? `<span class="tool-name">${wfRow.tool}</span>` : ''}`;
+      const inp = document.createElement('div');
+      inp.className = 'qa-step-row-input';
+      inp.setAttribute('data-placeholder', '내용을 입력해주세요 ↗');
+      inp.textContent = item.content || '';
+      inp.addEventListener('click', () => {
+        const fakeTA = document.createElement('textarea');
+        fakeTA.value = item.content || '';
+        Object.defineProperty(fakeTA, 'value', {
+          get: () => item.content || '',
+          set: (v) => { item.content = v; inp.textContent = v; }
+        });
+        openTextModal(fakeTA, `STEP.${item.idx+1} 문제 내용`);
+      });
+      const del = document.createElement('button');
+      del.className = 'qa-step-badge-del wf-del';
+      del.style.cssText = 'flex-shrink:0;';
+      del.textContent = '✕';
+      del.addEventListener('click', () => {
+        qaStepsMap[key].splice(pos, 1);
+        renderQaStepRows(key);
+        syncQaStepSelect();
+      });
+      div.append(badge, inp, del);
+      wrap.appendChild(div);
+    });
+  }
+
+  QA_KEYS.forEach(key => {
+    document.getElementById(`qa-${key}-step-sel`)?.addEventListener('change', function() {
+      const idx = parseInt(this.value);
+      if (!isNaN(idx)) {
+        qaStepsMap[key].push({ idx, content: '' });
+        renderQaStepRows(key);
+        syncQaStepSelect();
+      }
+      this.value = '';
+    });
+  });
+
+  function updateQaToolBadge() {}
+  function renderQaFormatBadges() { renderQaStepRows('format'); }
+  function renderQaBiasBadges()   { renderQaStepRows('bias'); }
+
+  document.querySelectorAll('.qa-y, .qa-n').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      const row = btn.closest('.qa-row');
+      const isY = btn.classList.contains('qa-y');
+      const detail = document.getElementById('qa-detail-' + key);
+      const yBtn = row.querySelector('.qa-y');
+      const nBtn = row.querySelector('.qa-n');
+      const wasActive = btn.classList.contains('active');
+
+      row.classList.remove('is-y', 'is-n');
+      yBtn.classList.remove('active');
+      nBtn.classList.remove('active');
+
+      if (!wasActive) {
+        btn.classList.add('active');
+        row.classList.add(isY ? 'is-y' : 'is-n');
+        if (!isY && detail) {
+          detail.classList.remove('hidden');
+          if (QA_KEYS.includes(key)) { syncQaStepSelect(); renderQaStepRows(key); }
+        }
+        else if (detail) detail.classList.add('hidden');
+      } else {
+        if (detail) detail.classList.add('hidden');
+      }
+    });
+  });
+
+  /* ── AUTO SAVE (디바운스 1.5초) ── */
+  const AUTO_SAVE_KEY = 'ai_card_autosave_v3';
+  localStorage.removeItem('ai_card_autosave');
+  let _autoSaveTimer = null;
+  let _autoSaveIndicator = null;
+
+  function showAutoSaveIndicator(state) {
+    if (!_autoSaveIndicator) {
+      _autoSaveIndicator = document.createElement('div');
+      _autoSaveIndicator.id = 'auto-save-indicator';
+      _autoSaveIndicator.style.cssText = `
+        position: fixed; bottom: 72px; right: 18px; z-index: 9999;
+        font-family: 'Pretendard', sans-serif; font-size: 12px; font-weight: 500;
+        padding: 6px 12px; border-radius: 20px; transition: opacity .3s;
+        pointer-events: none; opacity: 0;
+      `;
+      document.body.appendChild(_autoSaveIndicator);
+    }
+    if (state === 'saving') {
+      _autoSaveIndicator.textContent = '💾 저장 중...';
+      _autoSaveIndicator.style.background = '#f0f0f0';
+      _autoSaveIndicator.style.color = '#888';
+      _autoSaveIndicator.style.opacity = '1';
+    } else {
+      _autoSaveIndicator.textContent = '✓ 자동 저장됨';
+      _autoSaveIndicator.style.background = '#f0f7e6';
+      _autoSaveIndicator.style.color = '#3e8c4e';
+      _autoSaveIndicator.style.opacity = '1';
+      setTimeout(() => { _autoSaveIndicator.style.opacity = '0'; }, 2000);
+    }
+  }
+
+  function triggerAutoSave() {
+    if (_isViewerMode) return;
+    clearTimeout(_autoSaveTimer);
+    showAutoSaveIndicator('saving');
+    _autoSaveTimer = setTimeout(() => {
+      try {
+        const snap = collectSnapData();
+        localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(snap));
+        showAutoSaveIndicator('saved');
+      } catch(e) {
+        console.warn('[AutoSave] 실패:', e);
+      }
+    }, 1500);
+  }
+
+  function attachAutoSaveListeners() {
+    // 일반 input, textarea, select
+    document.querySelectorAll('input, textarea, select').forEach(el => {
+      el.addEventListener('input', triggerAutoSave);
+      el.addEventListener('change', triggerAutoSave);
+    });
+    // contenteditable div
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      el.addEventListener('input', triggerAutoSave);
+    });
+    // wf-input 클릭 후 팝업에서 확인 → 이미 input 이벤트 발생
+  }
+
   /* ── LOAD ON START ── */
   try {
     const saved = localStorage.getItem(SAVE_KEY);
     if (saved) applyData(JSON.parse(saved));
   } catch(e) {}
+
+  // 자동저장 복원 (SAVE_KEY 없을 때만)
+  if (!localStorage.getItem(SAVE_KEY)) {
+    try {
+      const autoSaved = localStorage.getItem(AUTO_SAVE_KEY);
+      if (autoSaved) {
+        const snap = JSON.parse(autoSaved);
+        // 실제 내용이 있는지 확인
+        const hasContent = snap.editName || snap.task || snap.problem || (snap.wfRows && snap.wfRows.length);
+        if (hasContent) {
+          const restore = confirm('자동 저장된 내용이 있습니다.\n복원하시겠습니까?\n\n[확인] 복원  /  [취소] 새로 시작');
+          if (restore) {
+            applySnapData(snap);
+            showToast('✓ 자동 저장된 내용을 복원했습니다');
+          } else {
+            localStorage.removeItem(AUTO_SAVE_KEY);
+          }
+        } else {
+          localStorage.removeItem(AUTO_SAVE_KEY);
+        }
+      }
+    } catch(e) { localStorage.removeItem(AUTO_SAVE_KEY); }
+  }
+
+  // 자동저장 리스너 연결
+  setTimeout(attachAutoSaveListeners, 500);
 
   // URL 해시 ID로 Supabase에서 카드 복원 (뷰어 모드)
   (function() {
@@ -1726,8 +2755,6 @@
   }
 
   syncImageUI();
-  renderMemos();
 </script>
-
-
-</body></html>
+</body>
+</html>
