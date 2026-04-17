@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
+<html lang="ko"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta id="__card-snap__" data-snap="">
@@ -844,7 +842,8 @@
     .f-btn, .lightbox, .thumb-actions, .img-add-btn { display: none !important; }
     input, textarea, .flow-input { border: none !important; box-shadow: none !important; }
   }
-</style>
+#cfg-btn, #clear-btn, #save-btn { display:none !important; }
+  </style>
 </head>
 <body>
 
@@ -880,8 +879,8 @@
     </div>
     <div class="sb-modal-body">
       <div class="sb-status" id="sb-status">
-        <div class="sb-status-dot" id="sb-status-dot"></div>
-        <div class="sb-status-txt" id="sb-status-txt">설정 상태 확인 중...</div>
+        <div class="sb-status-dot ok" id="sb-status-dot"></div>
+        <div class="sb-status-txt" id="sb-status-txt">설정이 저장되어 있습니다.</div>
       </div>
       <div class="sb-desc">
         <strong>최초 1회 설정 후 영구 사용 가능합니다.</strong><br>
@@ -897,7 +896,7 @@
         <input id="sb-key-input" type="password" placeholder="eyJhbGciOiJ...">
       </div>
       <button class="sb-test-btn" id="sb-test-btn">🔍 연결 테스트</button>
-      <div class="sb-test-result" id="sb-test-result" style="display:none;"></div>
+      <div class="sb-test-result ok" id="sb-test-result" style="display: none;">✓ 연결 성공! 저장 버튼을 눌러 적용하세요.</div>
       <button class="sb-save-btn" id="sb-save-btn">저장</button>
       <div class="sb-team-section" id="sb-team-section">
         <div class="sb-divider"></div>
@@ -956,7 +955,7 @@
     <div class="sub-field">
       <label>단계</label>
       <select id="stage-select">
-        <option value="" disabled selected>단계 선택</option>
+        <option value="" disabled="" selected="">단계 선택</option>
         <option value="관리단계">관리단계</option>
         <option value="분석단계">분석단계</option>
         <option value="설계단계">설계단계</option>
@@ -978,7 +977,7 @@
       <div class="field">
         <label>메타포</label>
         <div class="emoji-wrap">
-          <button type="button" class="emoji-btn" id="emoji-btn">선택</button>
+          <button type="button" class="emoji-btn placeholder" id="emoji-btn">선택</button>
           <div class="emoji-picker" id="emoji-picker">
             <div class="ep-tabs">
               <button type="button" class="ep-tab active" data-cat="0">🎯</button>
@@ -988,7 +987,7 @@
               <button type="button" class="ep-tab" data-cat="4">⚡</button>
               <button type="button" class="ep-tab" data-cat="5">💡</button>
             </div>
-            <div class="ep-grid" id="ep-grid"></div>
+            <div class="ep-grid" id="ep-grid"><button type="button">🎯</button><button type="button">🚀</button><button type="button">💡</button><button type="button">🔥</button><button type="button">⚡</button><button type="button">🌟</button><button type="button">🏆</button><button type="button">🎪</button><button type="button">🧩</button><button type="button">🔬</button><button type="button">🎨</button><button type="button">🛠</button><button type="button">📐</button><button type="button">🌱</button><button type="button">💎</button><button type="button">🦋</button><button type="button">🎭</button><button type="button">🧭</button><button type="button">🔑</button><button type="button">🌊</button><button type="button">🏔</button><button type="button">🎶</button><button type="button">📡</button><button type="button">🤖</button><button type="button">🧲</button><button type="button">🔭</button><button type="button">⚗️</button><button type="button">🧬</button><button type="button">⚙️</button><button type="button">🔮</button><button type="button">🧱</button><button type="button">🏗</button></div>
           </div>
         </div>
       </div>
@@ -996,7 +995,7 @@
       <!-- 2. 목표 및 문제정의 -->
       <div class="field">
         <label>목표 및 문제정의</label>
-        <input type="text" id="problem-input" placeholder="이번 AI 활동으로 해결하려는 목표와 현재 직면한 문제를 함께 기술" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+        <input type="text" id="problem-input" placeholder="이번 AI 활동으로 해결하려는 목표와 현재 직면한 문제를 함께 기술" autocomplete="new-password" readonly="" onfocus="this.removeAttribute('readonly')">
       </div>
 
       <!-- 3. 활동일 / 작성자 / 이메일 -->
@@ -1029,8 +1028,7 @@
         <label>AI와 협업하여 완성된 최종 산출물의 화면 캡처이미지 첨부 <span id="img-count" style="font-size:11px;color:#999;font-weight:400;"></span></label>
 
         <!-- 숨긴 file input -->
-        <input type="file" id="img-input" accept="image/*" multiple
-               style="position:fixed;top:-999px;left:-999px;opacity:0;">
+        <input type="file" id="img-input" accept="image/*" multiple="" style="position:fixed;top:-999px;left:-999px;opacity:0;">
 
         <!-- 드롭존: 이미지 없을 때 -->
         <div id="img-zone" class="img-zone">
@@ -1049,15 +1047,10 @@
       <!-- 기본 경로 -->
       <div class="field">
         <label>기본 경로</label>
-        <a
-          href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="base-path-link"
-        >
+        <a href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA" target="_blank" rel="noopener noreferrer" class="base-path-link">
           <span class="base-path-icon">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
           </span>
           <span class="base-path-title">AI 리터러시 활동_UXD2_Google Drive</span>
@@ -1083,9 +1076,7 @@
       <div class="sec-title">선정 도구</div>
       <div class="field">
         <label>사용한 AI도구를 선택하고, 의도와, 활동 기록은 아래의 AI WORK FLOW에서 입력하세요.</label>
-        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;">
-          <button class="add-tool-btn" id="add-tool-btn">+ 추가</button>
-        </div>
+        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;"><span class="tool-badge">Perplexity<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Gemini<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Figma<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Make<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Stitch<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Cowork<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Code<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">VS Code<span class="badge-del" title="도구 삭제">✕</span></span><button class="add-tool-btn" id="add-tool-btn">+ 추가</button></div>
 
         <!-- 도구 추가 팝업 -->
         <div class="add-tool-popup hidden" id="add-tool-popup">
@@ -1108,7 +1099,7 @@
         <span class="wf-col-action">활동</span>
         <span class="wf-col-del"></span>
       </div>
-      <div class="wf-list" id="wf-list"></div>
+      <div class="wf-list" id="wf-list"><div class="wf-empty">선정 도구에서 사용한 AI 도구를 선택하면 자동으로 워크플로우가 생성됩니다.</div></div>
       <div class="wf-footer-btns">
         <button class="wf-draw-btn" id="wf-draw-btn" style="flex:1;display:none;">✦ 플로우 그리기</button>
       </div>
@@ -1202,9 +1193,7 @@
             <div class="qa-n-detail hidden" id="qa-detail-format">
               <div class="qa-step-rows" id="qa-format-rows"></div>
               <div class="qa-step-add-wrap">
-                <select class="qa-step-add-sel" id="qa-format-step-sel">
-                  <option value="">+ 스텝 추가</option>
-                </select>
+                <select class="qa-step-add-sel" id="qa-format-step-sel"><option value="">+ 스텝 추가</option></select>
               </div>
             </div>
           </div>
@@ -1219,9 +1208,7 @@
             <div class="qa-n-detail hidden" id="qa-detail-bias">
               <div class="qa-step-rows" id="qa-bias-rows"></div>
               <div class="qa-step-add-wrap">
-                <select class="qa-step-add-sel" id="qa-bias-step-sel">
-                  <option value="">+ 스텝 추가</option>
-                </select>
+                <select class="qa-step-add-sel" id="qa-bias-step-sel"><option value="">+ 스텝 추가</option></select>
               </div>
             </div>
           </div>
@@ -1246,7 +1233,7 @@
       <!-- 보완 권장 -->
       <div class="field">
         <label>✦ 보완 권장</label>
-        <input type="text" id="qa-recommend" placeholder="검토 후 보완이 필요한 사항을 기록하세요" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+        <input type="text" id="qa-recommend" placeholder="검토 후 보완이 필요한 사항을 기록하세요" autocomplete="new-password" readonly="" onfocus="this.removeAttribute('readonly')">
       </div>
     </div>
 
@@ -1296,7 +1283,7 @@
       <button class="f-btn cfg" id="cfg-btn" title="Supabase 설정">⚙</button>
       <button class="f-btn clear" id="clear-btn">초기화</button>
       <button class="f-btn share-link" id="share-link-btn">🔗 링크 공유</button>
-      <button class="f-btn save"  id="save-btn">저장 &amp; Notion 제출</button>
+      <button class="f-btn save" id="save-btn">저장 &amp; Notion 제출</button>
       <span class="page-num">01</span>
     </div>
   </div>
@@ -1635,8 +1622,8 @@
   let _isViewerMode = false;
 
   // Supabase 연결 정보 (팀 배포 파일 생성 시 자동 삽입)
-  const _SB_URL = '';
-  const _SB_KEY = '';
+  const _SB_URL = 'https://lcfuclnopswjogidbsix.supabase.co';
+  const _SB_KEY = 'sb_publishable_UhPSyhqgUNMM6G-IHL2x2g_eoMMULsk';
 
   const badgeGrid    = document.getElementById('tool-badge-grid');
   const addInput     = document.getElementById('add-tool-input');
@@ -2492,6 +2479,11 @@
     src = src.replace(/const _SB_KEY = '[^']*'/, `const _SB_KEY = '${key}'`);
     // snap 비우기
     src = src.replace(/(<meta id="__card-snap__" data-snap=")[^"]*(")/,  '$1$2');
+    // 팀 배포 파일에서 관리자 버튼 CSS로 숨기기
+    src = src.replace(
+      '</style>',
+      '#cfg-btn, #clear-btn, #save-btn { display:none !important; }\n  </style>'
+    );
 
     const fname = 'UXD2_AI활동기록카드.html';
     const blob = new Blob([src], { type: 'text/html;charset=utf-8' });
@@ -2756,5 +2748,5 @@
 
   syncImageUI();
 </script>
-</body>
-</html>
+
+</body></html>
