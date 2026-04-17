@@ -17,7 +17,7 @@
     background: #e4e4e4; min-height: 100vh;
     padding: 3.8rem 1.2rem; display: flex; justify-content: center; align-items: flex-start;
   }
-  .card-wrapper { width: 675px; animation: fadeUp .4s ease both; }
+  .card-wrapper { width: 675px; max-width: 100%; animation: fadeUp .4s ease both; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
 
@@ -569,7 +569,13 @@
     input, textarea, .flow-input { border: none !important; box-shadow: none !important; }
   }
 </style>
-</head>
+<style id="grabbit-visited-styles">
+        .grabbit-visited,
+        .grabbit-visited:link,
+        .grabbit-visited:visited {
+            color: #551A8B !important; /* Standard visited link purple */
+        }
+    </style></head>
 <body>
 
 <div class="lightbox" id="lightbox">
@@ -585,7 +591,7 @@
       <button class="text-modal-close" id="text-modal-close">✕</button>
     </div>
     <div class="text-modal-body">
-      <textarea id="text-modal-ta" placeholder="" style="height: 0px;"></textarea>
+      <textarea id="text-modal-ta" placeholder=""></textarea>
     </div>
   </div>
 </div>
@@ -812,7 +818,7 @@
       <div class="field" style="margin-top:4px;">
         <label>최종 결과물 추출을 위한 프롬프트</label>
         <div class="expand-wrap">
-          <textarea id="ta-prompt" placeholder="최종 결과물 도출에 사용한 핵심 프롬프트를 기록하세요" style="height: 89px;"></textarea>
+          <textarea id="ta-prompt" placeholder="최종 결과물 도출에 사용한 핵심 프롬프트를 기록하세요"></textarea>
           <span class="expand-hint">클릭하여 전체 보기 ↗</span>
         </div>
       </div>
@@ -824,18 +830,18 @@
       <div class="field">
         <label>품질 검증 활동 기록</label>
         <div class="expand-wrap">
-          <textarea id="ta-quality" placeholder="활동 시 검증 내용 기록, 없을 시 '미진행'" style="height: 89px;"></textarea>
+          <textarea id="ta-quality" placeholder="활동 시 검증 내용 기록, 없을 시 '미진행'"></textarea>
           <span class="expand-hint">클릭하여 전체 보기 ↗</span>
         </div>
       </div>
       <div class="eff-row">
         <div class="eff-box">
           <div class="e-label">ai X — 비효율</div>
-          <textarea placeholder="어떤 AI / 어떤 점이 부족했나" style="height: 50px;"></textarea>
+          <textarea placeholder="어떤 AI / 어떤 점이 부족했나"></textarea>
         </div>
         <div class="eff-box">
           <div class="e-label">ai O — 효율</div>
-          <textarea placeholder="어떤 AI / 어떤 점이 좋았나" style="height: 50px;"></textarea>
+          <textarea placeholder="어떤 AI / 어떤 점이 좋았나"></textarea>
         </div>
       </div>
     </div>
@@ -846,11 +852,11 @@
       <div class="ins-row">
         <div class="ins-box good">
           <div class="i-tag">Good point</div>
-          <textarea placeholder="잘 된 점을 자유롭게 기록" style="height: 55px;"></textarea>
+          <textarea placeholder="잘 된 점을 자유롭게 기록"></textarea>
         </div>
         <div class="ins-box bad">
           <div class="i-tag">Bad point</div>
-          <textarea placeholder="아쉬운 점을 자유롭게 기록" style="height: 55px;"></textarea>
+          <textarea placeholder="아쉬운 점을 자유롭게 기록"></textarea>
         </div>
       </div>
       <div class="field">
@@ -1722,5 +1728,6 @@
   syncImageUI();
   renderMemos();
 </script>
+
 
 </body></html>
