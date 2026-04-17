@@ -1,4 +1,6 @@
-<html lang="ko"><head>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta id="__card-snap__" data-snap="">
@@ -17,7 +19,7 @@
     background: #e4e4e4; min-height: 100vh;
     padding: 3.8rem 1.2rem; display: flex; justify-content: center; align-items: flex-start;
   }
-  .card-wrapper { width: 675px; animation: fadeUp .4s ease both; }
+  .card-wrapper { width: 675px; max-width: 100%; animation: fadeUp .4s ease both; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
 
@@ -569,13 +571,7 @@
     input, textarea, .flow-input { border: none !important; box-shadow: none !important; }
   }
 </style>
-<style id="grabbit-visited-styles">
-        .grabbit-visited,
-        .grabbit-visited:link,
-        .grabbit-visited:visited {
-            color: #551A8B !important; /* Standard visited link purple */
-        }
-    </style></head>
+</head>
 <body>
 
 <div class="lightbox" id="lightbox">
@@ -607,8 +603,8 @@
     </div>
     <div class="sb-modal-body">
       <div class="sb-status" id="sb-status">
-        <div class="sb-status-dot ok" id="sb-status-dot"></div>
-        <div class="sb-status-txt" id="sb-status-txt">설정이 저장되어 있습니다.</div>
+        <div class="sb-status-dot" id="sb-status-dot"></div>
+        <div class="sb-status-txt" id="sb-status-txt">설정 상태 확인 중...</div>
       </div>
       <div class="sb-desc">
         <strong>최초 1회 설정 후 영구 사용 가능합니다.</strong><br>
@@ -683,7 +679,7 @@
     <div class="sub-field">
       <label>단계</label>
       <select id="stage-select">
-        <option value="" disabled="" selected="">단계 선택</option>
+        <option value="" disabled selected>단계 선택</option>
         <option value="관리단계">관리단계</option>
         <option value="분석단계">분석단계</option>
         <option value="설계단계">설계단계</option>
@@ -724,7 +720,8 @@
         <label>결과물 캡처 <span id="img-count" style="font-size:11px;color:#999;font-weight:400;"></span></label>
 
         <!-- 숨긴 file input -->
-        <input type="file" id="img-input" accept="image/*" multiple="" style="position:fixed;top:-999px;left:-999px;opacity:0;">
+        <input type="file" id="img-input" accept="image/*" multiple
+               style="position:fixed;top:-999px;left:-999px;opacity:0;">
 
         <!-- 드롭존: 이미지 없을 때 -->
         <div id="img-zone" class="img-zone">
@@ -743,10 +740,15 @@
       <!-- 기본 경로 -->
       <div class="field">
         <label>기본 경로</label>
-        <a href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA" target="_blank" rel="noopener noreferrer" class="base-path-link">
+        <a
+          href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="base-path-link"
+        >
           <span class="base-path-icon">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </span>
           <span class="base-path-title">AI 리터러시 활동_UXD2_Google Drive</span>
@@ -772,7 +774,7 @@
       <div class="sec-title">도구</div>
       <div class="field">
         <label>선정 도구 <span style="color:var(--text-m);font-weight:400;">클릭하여 활성 · ✕로 삭제</span></label>
-        <div class="badge-grid" id="tool-badge-grid"><span class="tool-badge">Perplexity<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Gemini<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Figma<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Make<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Stitch<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Cowork<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Code<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">VS Code<span class="badge-del" title="도구 삭제">✕</span></span></div>
+        <div class="badge-grid" id="tool-badge-grid"></div>
         <div class="add-tool-row" style="margin-top:8px;">
           <input class="add-tool-input" id="add-tool-input" type="text" placeholder="도구 이름 입력 후 추가">
           <button class="add-tool-btn" id="add-tool-btn">+ 추가</button>
@@ -881,7 +883,7 @@
       <button class="f-btn cfg" id="cfg-btn" title="Supabase 설정">⚙</button>
       <button class="f-btn clear" id="clear-btn">초기화</button>
       <button class="f-btn share-link" id="share-link-btn">🔗 링크 공유</button>
-      <button class="f-btn save" id="save-btn">저장 &amp; Notion 제출</button>
+      <button class="f-btn save"  id="save-btn">저장 &amp; Notion 제출</button>
       <span class="page-num">01</span>
     </div>
   </div>
@@ -897,8 +899,8 @@
   let _isViewerMode = false;
 
   // Supabase 연결 정보 (팀 배포 파일 생성 시 자동 삽입)
-  const _SB_URL = 'https://lcfuclnopswjogidbsix.supabase.co';
-  const _SB_KEY = 'sb_publishable_UhPSyhqgUNMM6G-IHL2x2g_eoMMULsk';
+  const _SB_URL = '';
+  const _SB_KEY = '';
 
   const badgeGrid    = document.getElementById('tool-badge-grid');
   const memoField    = document.getElementById('tool-memo-field');
@@ -1728,5 +1730,5 @@
   syncImageUI();
   renderMemos();
 </script>
-
-</body></html>
+</body>
+</html>
