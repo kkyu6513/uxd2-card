@@ -908,8 +908,10 @@ function renderCards() {
       e.stopPropagation();
       if (!confirm(`"${c.task||c._id}" 카드를 삭제할까요?\n이 작업은 되돌릴 수 없습니다.`)) return;
       try {
-        const res = await fetch(`${SB_URL}/rest/v1/cards?id=eq.${c._id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json'}});
+        const res = await fetch(`${SB_URL}/rest/v1/cards?id=eq.${c._id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation'}});
         if (!res.ok) throw new Error('삭제 실패');
+        const deleted = await res.json();
+        if (!Array.isArray(deleted) || deleted.length === 0) throw new Error('RLS 정책으로 삭제가 차단됨 (Supabase에서 DELETE 정책을 추가하세요)');
         allCards=allCards.filter(x=>x._id!==c._id); updateStats(); updateBadges(); renderCards();
       } catch(err) { alert('삭제 실패: '+err.message); }
     });
@@ -1043,7 +1045,14 @@ function updateSelBar() {
       btn.disabled=true; btn.textContent='삭제 중...';
       const ids = cked.map(cb=>cb.dataset.id);
       try {
-        for (const id of ids) await fetch(`${SB_URL}/rest/v1/cards?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json'}});
+        let blocked = 0;
+        for (const id of ids) {
+          const r = await fetch(`${SB_URL}/rest/v1/cards?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation'}});
+          if (!r.ok) throw new Error('삭제 실패');
+          const d = await r.json();
+          if (!Array.isArray(d) || d.length === 0) blocked++;
+        }
+        if (blocked > 0) throw new Error(`${blocked}개가 RLS 정책으로 차단됨 (Supabase에서 DELETE 정책을 추가하세요)`);
         allCards=allCards.filter(c=>!ids.includes(c._id));
         mount.innerHTML=''; updateStats(); updateBadges(); renderCards();
       } catch(e) { alert('삭제 실패: '+e.message); btn.disabled=false; btn.textContent='🗑 선택 항목 삭제'; }
@@ -1063,12 +1072,17 @@ document.getElementById('sel-del-btn')?.addEventListener('click', async () => {
   btn.disabled = true; btn.textContent = '삭제 중...';
   const ids = checked.map(cb => cb.dataset.id);
   try {
+    let blocked = 0;
     for (const id of ids) {
-      await fetch(`${SB_URL}/rest/v1/cards?id=eq.${id}`, {
+      const r = await fetch(`${SB_URL}/rest/v1/cards?id=eq.${id}`, {
         method: 'DELETE',
-        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' }
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }
       });
+      if (!r.ok) throw new Error('삭제 실패');
+      const d = await r.json();
+      if (!Array.isArray(d) || d.length === 0) blocked++;
     }
+    if (blocked > 0) throw new Error(`${blocked}개가 RLS 정책으로 차단됨 (Supabase에서 DELETE 정책을 추가하세요)`);
     allCards = allCards.filter(c => !ids.includes(c._id));
     updateStats(); updateBadges(); renderCards();
   } catch(e) { alert('삭제 실패: ' + e.message); }
@@ -1184,12 +1198,17 @@ document.getElementById('btn-del-unnamed')?.addEventListener('click', async () =
   btn.disabled = true; btn.querySelector('.export-label').textContent = '삭제 중...';
   try {
     const ids = unnamed.map(c => c._id);
+    let blocked = 0;
     for (const id of ids) {
-      await fetch(`${SB_URL}/rest/v1/cards?id=eq.${id}`, {
+      const r = await fetch(`${SB_URL}/rest/v1/cards?id=eq.${id}`, {
         method: 'DELETE',
-        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' }
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' }
       });
+      if (!r.ok) throw new Error('삭제 실패');
+      const d = await r.json();
+      if (!Array.isArray(d) || d.length === 0) blocked++;
     }
+    if (blocked > 0) throw new Error(`${blocked}개가 RLS 정책으로 차단됨 (Supabase에서 DELETE 정책을 추가하세요)`);
     allCards = allCards.filter(c => !ids.includes(c._id));
     updateStats(); updateBadges(); renderCards();
     alert(`${ids.length}개 삭제 완료`);
