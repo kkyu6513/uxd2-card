@@ -15,9 +15,9 @@
   body {
     font-family: 'Pretendard', sans-serif;
     background: #e4e4e4; min-height: 100vh;
-    padding: 3.8rem 1.2rem; display: flex; justify-content: center; align-items: flex-start;
+    padding: 0; display: flex; justify-content: center; align-items: flex-start;
   }
-  .card-wrapper { width: 675px; max-width: 100%; animation: fadeUp .4s ease both; }
+  .card-wrapper { width: 100%; max-width: 768px; animation: fadeUp .4s ease both; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
 
@@ -127,14 +127,26 @@
 
   .img-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
   .img-thumb {
-    position: relative; border-radius: 10px; overflow: hidden;
-    border: .5px solid #e0e0e0; aspect-ratio: 4/3; background: #f0f0f0;
+    position: relative; border-radius: 10px;
+    border: .5px solid #e0e0e0; background: #f0f0f0;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .img-thumb-img-wrap {
+    position: relative; aspect-ratio: 4/3; overflow: hidden; flex-shrink: 0;
   }
   .img-thumb img {
     width: 100%; height: 100%; object-fit: cover; display: block;
     cursor: zoom-in; transition: transform .2s;
   }
   .img-thumb:hover img { transform: scale(1.04); }
+  .img-caption {
+    font-family: 'Pretendard', sans-serif; font-size: 12px; color: #555;
+    background: #fff; border: none; border-top: .5px solid #e8e8e8;
+    padding: 6px 10px; width: 100%; outline: none; resize: none;
+    line-height: 1.5; min-height: 52px;
+  }
+  .img-caption::placeholder { color: #bbb; }
+  body.viewer .img-caption { pointer-events: none; background: #fafafa; }
   .thumb-del {
     position: absolute; top: 5px; right: 5px;
     width: 28px; height: 28px; border-radius: 50%;
@@ -184,28 +196,131 @@
   .base-path-title { font-size: 15px; font-weight: 600; color: #333; flex: 1; }
   .base-path-arrow { font-size: 16px; color: #aaa; flex-shrink: 0; }
 
-  /* DRIVE LINKS */
-  .drive-list { display: flex; flex-direction: column; gap: 10px; }
-  .drive-row { display: flex; align-items: center; gap: 10px; }
+  /* DRIVE LINKS TABLE */
+  .drive-table {
+    width: 100%; border-collapse: collapse; margin-top: 4px;
+    border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden;
+  }
+  .drive-table thead tr { background: #f2f2f2; }
+  .drive-table th {
+    padding: 9px 12px; font-size: 11px; font-weight: 700;
+    color: #888; letter-spacing: .06em; text-transform: uppercase;
+    text-align: left; border-bottom: 1px solid #e0e0e0; white-space: nowrap;
+  }
+  .drive-table tbody tr { border-bottom: 1px solid #ececec; transition: background .12s; }
+  .drive-table tbody tr:last-child { border-bottom: none; }
+  .drive-table tbody tr:hover { background: #fafafa; }
+  .drive-table td { padding: 10px 12px; vertical-align: middle; }
+
+  /* 컬럼 너비 */
+  .dt-col-type    { width: 88px; }
+  .dt-col-action  { width: 64px; text-align: center; }
+  .dt-col-title   { }
+  .dt-col-process { width: 110px; }
+
   .drive-tag {
-    font-size: 12px; font-weight: 600; color: #ccc; border-radius: 5px;
-    padding: 6px 11px; white-space: nowrap; min-width: 78px; text-align: center;
+    display: inline-block; font-size: 11px; font-weight: 700;
+    color: #ccc; border-radius: 5px; padding: 4px 10px;
+    white-space: nowrap; text-align: center; width: 100%;
   }
   .drive-tag.t1{background:#2e2e2e} .drive-tag.t2{background:#363636}
   .drive-tag.t3{background:#3e3e3e} .drive-tag.t4{background:#464646}
-  .drive-row input { flex: 1; font-size: 15px; }
 
+  .dt-title-cell { max-width: 0; }
+  .drive-reg-link {
+    font-size: 13px; color: #3a78d4; text-decoration: none;
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .drive-reg-link:hover { text-decoration: underline; }
+  .dt-empty { font-size: 13px; color: #ccc; }
+
+  .drive-reg-process {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    color: #555; background: #efefef; border-radius: 4px;
+    padding: 3px 8px; white-space: nowrap;
+  }
+
+  /* 등록 / 수정 버튼 */
+  .drive-reg-btn {
+    font-family: 'Pretendard', sans-serif; font-size: 11px; font-weight: 700;
+    color: #888; background: transparent; border: 1px dashed #bbb;
+    border-radius: 6px; padding: 5px 10px; cursor: pointer; white-space: nowrap;
+    transition: all .15s;
+  }
+  .drive-reg-btn:hover { color: #3a78d4; border-color: #3a78d4; background: rgba(58,120,212,.05); }
+  .drive-reg-edit {
+    font-family: 'Pretendard', sans-serif; font-size: 11px; font-weight: 600;
+    color: #888; background: none; border: 1px solid #ddd;
+    border-radius: 6px; padding: 5px 10px; cursor: pointer; white-space: nowrap;
+    transition: all .15s;
+  }
+  .drive-reg-edit:hover { color: #333; border-color: #aaa; }
+
+  /* 드라이브 링크 등록 모달 */
+  .drive-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 3000; display: flex; align-items: center; justify-content: center;
+    animation: lbIn .15s ease;
+  }
+  .drive-modal-box {
+    background: #fff; border-radius: 16px; width: 360px; max-width: calc(100vw - 32px);
+    box-shadow: 0 8px 40px rgba(0,0,0,.2); overflow: hidden;
+  }
+  .drive-modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid #eee;
+  }
+  .drive-modal-head span { font-size: 14px; font-weight: 700; color: #222; }
+  .drive-modal-close { background: none; border: none; font-size: 18px; color: #aaa; cursor: pointer; }
+  .drive-modal-close:hover { color: #555; }
+  .drive-modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .drive-modal-field { display: flex; flex-direction: column; gap: 5px; }
+  .drive-modal-field label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: .05em; text-transform: uppercase; }
+  .drive-modal-field input,
+  .drive-modal-field select {
+    width: 100%; border: 1px solid #ddd; border-radius: 8px;
+    padding: 9px 12px; font-family: 'Pretendard', sans-serif; font-size: 14px;
+    color: #222; background: #fafafa; outline: none; transition: border-color .15s;
+  }
+  .drive-modal-field input:focus,
+  .drive-modal-field select:focus { border-color: #3a78d4; background: #fff; }
+  .drive-modal-field input::placeholder { color: #bbb; }
+  .drive-modal-footer {
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 14px 20px; border-top: 1px solid #eee;
+  }
+  .drive-modal-cancel {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 600;
+    color: #888; background: #f0f0f0; border: none; border-radius: 8px;
+    padding: 9px 18px; cursor: pointer;
+  }
+  .drive-modal-cancel:hover { background: #e4e4e4; }
+  .drive-modal-save {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 700;
+    color: #fff; background: #3a3a3a; border: none; border-radius: 8px;
+    padding: 9px 20px; cursor: pointer;
+  }
+  .drive-modal-save:hover { background: #555; }
+
+  /* DATA SOURCE */  body.viewer
   /* TOOL BADGES */
-  .badge-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .badge-grid { display: flex; flex-wrap: wrap; gap: 0; padding: 4px 0; align-items: center; }
   .tool-badge {
-    font-size: 14px; padding: 6px 12px 6px 15px; border-radius: 25px;
+    font-size: 14px; padding: 10px 18px 10px 20px; margin: 3px; border-radius: 25px;
     border: .5px solid var(--border-i); color: var(--text-s); background: #f8f8f8;
     cursor: pointer; transition: all .15s; user-select: none;
     font-family: 'Pretendard', sans-serif; font-weight: 500;
-    display: inline-flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 10px;
   }
   .tool-badge:hover { border-color: #aaa; background: #f0f0f0; }
   .tool-badge.active { background: #1a1a1a; color: #eee; border-color: #1a1a1a; }
+  .badge-count {
+    font-size: 11px; font-weight: 700; color: #fff; background: #555;
+    border-radius: 50%; min-width: 18px; height: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 4px; margin-left: 2px; line-height: 1;
+  }
+  .tool-badge.active .badge-count { background: #a8c060; color: #1a1a1a; }
   .badge-del {
     font-size: 16px; line-height: 1; color: #bbb; cursor: pointer;
     padding: 0 1px; transition: color .12s;
@@ -213,12 +328,12 @@
   .tool-badge:hover .badge-del { color: #888; }
   .tool-badge.active .badge-del { color: #777; }
   .badge-del:hover { color: #e55 !important; }
-  .add-tool-row { margin-top: 8px; }
+  .add-tool-row { margin-top: 0; }
   .add-tool-btn {
     font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 600;
     color: #888; background: #f0f0f0; border: .5px solid var(--border-i);
-    border-radius: 25px; padding: 6px 16px; cursor: pointer; white-space: nowrap;
-    transition: all .15s;
+    border-radius: 25px; padding: 10px 18px; cursor: pointer; white-space: nowrap;
+    transition: all .15s; align-self: center; margin: 3px;
   }
   .add-tool-btn:hover { background: #1a1a1a; color: #eee; border-color: #1a1a1a; }
   .add-tool-input {
@@ -269,9 +384,9 @@
   .wf-header span { font-size: 11px; font-weight: 600; color: #aaa; letter-spacing: .05em; }
   .wf-col-step  { flex: 0 0 56px; text-align: center; }
   .wf-col-tool  { flex: 0 0 118px; }
-  .wf-col-intent{ flex: 1; }
-  .wf-col-action{ flex: 1; }
-  .wf-col-del   { flex: 0 0 28px; }
+  .wf-col-detail{ flex: 1; }
+  .wf-col-time  { flex: 0 0 72px; text-align: center; }
+  .wf-col-actions { flex: 0 0 56px; display: flex; justify-content: center; }
   .wf-list { display: flex; flex-direction: column; gap: 6px; }
   .wf-row { display: flex; align-items: center; gap: 6px; }
   .wf-step {
@@ -289,19 +404,90 @@
     background-repeat: no-repeat; background-position: right 8px center; padding-right: 22px;
   }
   .wf-tool:focus { border-color: #999; }
-  .wf-input {
-    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 14px; color: var(--text-p);
-    background: var(--bg-sec); border: .5px solid var(--border-i); border-radius: 8px;
-    padding: 0 10px; height: 38px; outline: none; transition: border-color .15s; cursor: pointer;
+  .wf-detail-btn {
+    flex: 1; font-family: 'Pretendard', sans-serif; font-size: 13px;
+    color: #888; background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 0 12px; height: 38px; cursor: pointer;
+    text-align: left; transition: all .15s; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
   }
-  .wf-input:focus { border-color: #999; }
-  .wf-del {
-    flex: 0 0 28px; height: 28px; width: 28px; border-radius: 50%;
-    background: #f0f0f0; border: none; color: #bbb; font-size: 14px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: all .15s; flex-shrink: 0;
+  .wf-detail-btn:hover { border-color: #aaa; background: #f5f5f5; }
+  .wf-detail-btn.has-data { color: var(--text-p); font-weight: 500; }
+  .wf-row-actions {
+    flex: 0 0 56px; display: flex; align-items: center; justify-content: center; gap: 4px;
   }
-  .wf-del:hover { background: #e53935; color: #fff; }
+  .wf-row-add, .wf-row-del {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: none; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s; flex-shrink: 0; line-height: 1;
+  }
+  .wf-row-add { background: #f0f0f0; color: #888; }
+  .wf-row-add:hover { background: #3a78d4; color: #fff; }
+  .wf-row-del { background: #f0f0f0; color: #bbb; }
+  .wf-row-del:hover { background: #e53935; color: #fff; }
+  .wf-time {
+    flex: 0 0 72px; font-family: 'Pretendard', sans-serif; font-size: 13px;
+    color: var(--text-p); background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 0 6px; height: 38px; outline: none;
+    text-align: center; transition: border-color .15s;
+  }
+  .wf-time:focus { border-color: #999; }
+  .wf-time::placeholder { color: #ccc; font-size: 12px; }
+  .wf-total {
+    display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+    padding: 8px 4px 0; margin-top: 4px; border-top: .5px solid var(--border);
+  }
+  .wf-total-label { font-size: 12px; font-weight: 600; color: #888; }
+  .wf-total-value { font-size: 14px; font-weight: 700; color: var(--text-p); }
+
+  /* WF 상세 입력 모달 */
+  .wf-modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.45);
+    z-index: 3000; display: flex; align-items: center; justify-content: center;
+    animation: lbIn .15s ease;
+  }
+  .wf-modal-box {
+    background: #fff; border-radius: 16px; width: 420px; max-width: calc(100vw - 32px);
+    box-shadow: 0 8px 40px rgba(0,0,0,.2); overflow: hidden;
+  }
+  .wf-modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid #eee;
+  }
+  .wf-modal-head span { font-size: 14px; font-weight: 700; color: #222; }
+  .wf-modal-close { background: none; border: none; font-size: 18px; color: #aaa; cursor: pointer; }
+  .wf-modal-close:hover { color: #555; }
+  .wf-modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .wf-modal-field { display: flex; flex-direction: column; gap: 5px; }
+  .wf-modal-field label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: .05em; text-transform: uppercase; }
+  .wf-modal-field input,
+  .wf-modal-field textarea {
+    width: 100%; border: 1px solid #ddd; border-radius: 8px;
+    padding: 9px 12px; font-family: 'Pretendard', sans-serif; font-size: 14px;
+    color: #222; background: #fafafa; outline: none; transition: border-color .15s;
+  }
+  .wf-modal-field textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+  .wf-modal-field input:focus,
+  .wf-modal-field textarea:focus { border-color: #3a78d4; background: #fff; }
+  .wf-modal-field input::placeholder,
+  .wf-modal-field textarea::placeholder { color: #bbb; }
+  .wf-modal-footer {
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding: 14px 20px; border-top: 1px solid #eee;
+  }
+  .wf-modal-cancel {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 600;
+    color: #888; background: #f0f0f0; border: none; border-radius: 8px;
+    padding: 9px 18px; cursor: pointer;
+  }
+  .wf-modal-cancel:hover { background: #e4e4e4; }
+  .wf-modal-save {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 700;
+    color: #fff; background: #3a3a3a; border: none; border-radius: 8px;
+    padding: 9px 20px; cursor: pointer;
+  }
+  .wf-modal-save:hover { background: #555; }
   .wf-add-btn {
     margin-top: 10px; font-family: 'Pretendard', sans-serif; font-size: 13px;
     font-weight: 600; color: #888; background: #f0f0f0; border: .5px solid var(--border-i);
@@ -330,6 +516,7 @@
   .wf-img-btn:hover { background: #dde3ff; }
   body.viewer .wf-footer-btns { display: none !important; }
   body.viewer #wf-img-btn { display: block !important; }
+  body.viewer #wf-img-btn.wf-empty-viewer { display: none !important; }
 
   /* FLOW MODAL */
   .flow-modal {
@@ -374,8 +561,8 @@
   .flow-generating span { font-size: 14px; color: #888; }
   @keyframes spin { to { transform: rotate(360deg); } }
   #flow-result svg { width: 100%; height: auto; }
-  body.viewer .wf-input { pointer-events: auto; cursor: pointer; }
-  body.viewer .wf-del, body.viewer .wf-add-btn { display: none !important; }
+  body.viewer .wf-detail-btn { pointer-events: auto; cursor: pointer; }
+  body.viewer .wf-row-add, body.viewer .wf-row-del, body.viewer .wf-add-btn { display: none !important; }
 
 
   /* QA CHECKLIST */
@@ -471,17 +658,6 @@
     margin-top: 3px; line-height: 1.4;
   }
 
-  /* EFFICIENCY */
-  .eff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .eff-box {
-    background: #fafafa; border: .5px solid var(--border);
-    border-radius: 8px; padding: 12px 15px; display: flex; flex-direction: column; gap: 5px;
-  }
-  .eff-box .e-label { font-size: 12px; font-weight: 600; color: var(--text-m); text-transform: uppercase; letter-spacing: .06em; }
-  .eff-box .e-guide { font-size: 11px; color: #bbb; margin: 4px 0 6px; line-height: 1.5; }
-  .eff-box textarea { border: none; background: transparent; padding: 0; font-size: 15px; color: var(--text-s); min-height: 50px; box-shadow: none; }
-  .eff-box textarea:focus { box-shadow: none; }
-
   /* INSIGHT */
   .ins-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .ins-box {
@@ -493,6 +669,99 @@
   .ins-box.bad  .i-tag { color: #b03030; }
   .ins-box textarea { border: none; background: transparent; padding: 0; font-size: 15px; color: var(--text-s); min-height: 55px; box-shadow: none; }
   .ins-box textarea:focus { box-shadow: none; }
+  .ins-guide {
+    font-size: 13px; color: #999; margin-bottom: 10px; line-height: 1.5;
+  }
+  /* 커스텀 드롭다운 */
+  .ins-dd-wrap { position: relative; margin-bottom: 8px; }
+  .ins-dd-trigger {
+    width: 100%; font-family: 'Pretendard', sans-serif; font-size: 13px;
+    color: var(--text-s); background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 9px 12px; height: 38px; cursor: pointer;
+    text-align: left; transition: border-color .15s;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ins-dd-trigger:hover { border-color: #aaa; }
+  .ins-dd-panel {
+    display: none; position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px;
+    background: #fff; border: 1px solid #ddd; border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.12); z-index: 100;
+    max-height: 320px; overflow-y: auto;
+  }
+  .ins-dd-panel.open { display: block; }
+  /* 직접 작성하기 */
+  .ins-dd-direct {
+    padding: 10px 14px; font-size: 13px; font-weight: 600; color: #3a78d4;
+    cursor: pointer; border-bottom: 1px solid #eee; transition: background .1s;
+  }
+  .ins-dd-direct:hover { background: #f0f6ff; }
+  /* 아코디언 그룹 */
+  .ins-dd-group { border-bottom: 1px solid #f0f0f0; }
+  .ins-dd-group:last-child { border-bottom: none; }
+  .ins-dd-group-title {
+    padding: 10px 14px; font-size: 12px; font-weight: 700; color: #555;
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    transition: background .1s; user-select: none; letter-spacing: .03em;
+  }
+  .ins-dd-group-title:hover { background: #fafafa; }
+  .ins-dd-group-title::after { content: '▼'; font-size: 9px; color: #bbb; transition: transform .2s; }
+  .ins-dd-group-title.open::after { transform: rotate(180deg); }
+  .ins-dd-group-items { display: none; }
+  .ins-dd-group-items.open { display: block; }
+  .ins-dd-item {
+    padding: 8px 14px 8px 28px; font-size: 13px; color: #444;
+    cursor: pointer; transition: background .1s; line-height: 1.4;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .ins-dd-item:hover { background: #f5f5f5; }
+  .ins-dd-item input[type="checkbox"] {
+    margin-top: 2px; flex-shrink: 0; cursor: pointer;
+    accent-color: #3a78d4; width: 16px; height: 16px;
+  }
+  .ins-dd-item label { cursor: pointer; flex: 1; }
+  .ins-dd-footer {
+    padding: 10px 14px; border-top: 1px solid #eee;
+    display: flex; justify-content: flex-end; position: sticky; bottom: 0; background: #fff;
+  }
+  .ins-dd-confirm {
+    font-family: 'Pretendard', sans-serif; font-size: 13px; font-weight: 700;
+    color: #fff; background: #3a3a3a; border: none; border-radius: 8px;
+    padding: 8px 20px; cursor: pointer; transition: background .15s;
+  }
+  .ins-dd-confirm:hover { background: #555; }
+  /* 태그 */
+  .ins-tags { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+  .ins-tag-box {
+    border: 1px solid #e8e8e8; border-radius: 8px; overflow: hidden;
+  }
+  .ins-tag-box-title {
+    font-size: 11px; font-weight: 700; color: #888; letter-spacing: .04em;
+    padding: 6px 12px; background: #f5f5f5;
+  }
+  .ins-box.good .ins-tag-box-title { background: #e8f5e9; color: #2e7d32; }
+  .ins-box.bad .ins-tag-box-title  { background: #fce4ec; color: #c62828; }
+  .ins-box.aix .ins-tag-box-title  { background: #fff3e0; color: #e65100; }
+  .ins-box.aio .ins-tag-box-title  { background: #e3f2fd; color: #1565c0; }
+  .ins-box.aix .i-tag { color: #e65100; }
+  .ins-box.aio .i-tag { color: #1565c0; }
+  .ins-tag-box-list { display: flex; flex-direction: column; }
+  .ins-tag-box-item {
+    font-size: 13px; color: #444; padding: 7px 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid #f0f0f0;
+  }
+  .ins-tag-box-item:first-child { border-top: none; }
+  .ins-tag-del {
+    font-size: 13px; cursor: pointer; color: #bbb; line-height: 1;
+    transition: color .12s; flex-shrink: 0; padding: 0 2px;
+  }
+  .ins-tag-del:hover { color: #e53935; }
+  .ins-direct-ta {
+    width: 100%; border: none; background: transparent; outline: none;
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: #444;
+    resize: vertical; min-height: 40px; line-height: 1.5;
+  }
+  .ins-direct-ta::placeholder { color: #bbb; }
 
   /* MY LINK BANNER */
 
@@ -729,7 +998,71 @@
   .date-author-row #edited-name { flex: 0 0 130px; height: 40px; }
   .date-author-row #edited-email { flex: 1; height: 40px; }
 
+
+  /* ── COMBO SELECT (목표/문제 드롭다운) ── */
+  .combo-wrap { position: relative; }
+  .combo-wrap input { width: 100%; padding-right: 32px !important; }
+  .combo-arrow {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    pointer-events: none; color: #aaa; font-size: 10px;
+  }
+  .combo-dropdown {
+    display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: #fff; border: .5px solid #ddd; border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.12); z-index: 500;
+    max-height: 320px; overflow-y: auto;
+  }
+  .combo-dropdown.open { display: block; }
+  .combo-option {
+    padding: 9px 14px 9px 28px; font-size: 13px; color: #333; cursor: pointer;
+    font-family: 'Pretendard', sans-serif; transition: background .1s;
+    border-bottom: .5px solid #f5f5f5;
+  }
+  .combo-option:last-child { border-bottom: none; }
+  .combo-option:hover, .combo-option.active { background: #f5f5f5; color: #111; }
+  .combo-option.hidden { display: none; }
+  .combo-group {
+    border-bottom: .5px solid #eee;
+  }
+  .combo-group:last-child { border-bottom: none; }
+  .combo-group-header {
+    padding: 10px 14px;
+    font-size: 12px; font-weight: 700; color: #888;
+    letter-spacing: .05em;
+    font-family: 'Pretendard', sans-serif;
+    background: #fafafa;
+    cursor: pointer; user-select: none;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: background .1s;
+  }
+  .combo-group-header:hover { background: #f0f0f0; }
+  .combo-group-header::after { content: '▼'; font-size: 9px; color: #bbb; transition: transform .2s; }
+  .combo-group-header.open::after { transform: rotate(180deg); }
+  .combo-group-header.hidden { display: none; }
+  .combo-group-items { display: none; }
+  .combo-group-items.open { display: block; }
+  .gp-guide {
+    font-size: 12px; color: #888; font-family: 'Pretendard', sans-serif;
+    background: #f7f7f7; border: .5px solid #e8e8e8; border-radius: 8px;
+    padding: 8px 12px; line-height: 1.6; margin-bottom: 4px;
+  }
+  .gp-guide strong { color: #555; font-weight: 600; }
+  .combo-direct-item { font-weight: 600; color: #555; border-bottom: none; }
+  .combo-direct-item:hover { background: #f0f0f0; }
+
   #problem-input::placeholder { color: #bbb; font-size: 14px; }
+  #task-input::placeholder { color: #bbb; font-size: 14px; }
+  .gp-direct-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .gp-direct-label { font-size: 11px; color: #888; font-weight: 600; font-family: 'Pretendard', sans-serif; letter-spacing: .04em; }
+  .gp-direct-textarea {
+    width: 100%; font-family: 'Pretendard', sans-serif; font-size: 14px;
+    color: #1a1a1a; background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 9px 12px; outline: none; resize: none;
+    line-height: 1.5; transition: border-color .15s;
+  }
+  .gp-direct-textarea:focus { border-color: #999; }
+  .gp-direct-textarea::placeholder { color: #bbb; font-size: 14px; }
+  #goal-input-text::placeholder { color: #bbb; font-size: 14px; }
   #problem-input:read-only { color: var(--text-p); }
 
   /* EMOJI PICKER */
@@ -758,6 +1091,18 @@
     padding: 10px; width: 300px; box-shadow: 0 6px 24px rgba(0,0,0,.14);
   }
   .emoji-picker.open { display: block; }
+  .ep-guide {
+    font-size: 12px; color: #888; margin-bottom: 8px; line-height: 1.4;
+    font-family: 'Pretendard', sans-serif;
+  }
+  .ep-search {
+    width: 100%; font-family: 'Pretendard', sans-serif; font-size: 13px;
+    border: 1px solid #e0e0e0; border-radius: 8px; padding: 7px 10px;
+    outline: none; margin-bottom: 8px; color: #333; background: #f9f9f9;
+    transition: border-color .15s;
+  }
+  .ep-search:focus { border-color: #999; background: #fff; }
+  .ep-search::placeholder { color: #bbb; }
   .ep-tabs { display: flex; gap: 4px; margin-bottom: 8px; border-bottom: .5px solid #eee; padding-bottom: 8px; }
   .ep-tab {
     font-size: 18px; width: 36px; height: 32px; border: none; background: none;
@@ -791,59 +1136,233 @@
   body.viewer .tool-badge { cursor: default; pointer-events: none; }
   body.viewer .img-thumb { pointer-events: auto; }
   body.viewer .img-thumb img { cursor: zoom-in; }
+  .wf-time.viewer-empty-time::placeholder { color: #e53935; font-style: italic; }
+  .viewer-empty-msg { font-size: 12px; color: #e53935; font-style: italic; font-family: 'Pretendard', sans-serif; }
+  input.viewer-empty::placeholder { color: #e53935 !important; }
+  input.viewer-empty, textarea.viewer-empty { color: #e53935 !important; }
+  body.viewer .ins-dd-trigger { pointer-events: none; opacity: 0.5; cursor: default; }
+  body.viewer .ins-dd-panel { display: none !important; }
+  body.viewer .ins-tag-del { display: none !important; }
+  body.viewer .ins-dd-direct { display: none !important; }
+  body.viewer .ins-direct-box textarea { pointer-events: none; }
+  body.viewer .ins-direct-close { display: none !important; }
   body.viewer .sub-field input,
   body.viewer .flow-input,
   body.viewer .edited-input,
   body.viewer .tool-memo-input { background: transparent; border-color: transparent; }
 
   /* ── MOBILE RESPONSIVE ── */
-  @media (max-width: 560px) {
-    body { padding: 0; background: #fff; }
-    .card-wrapper { width: 100%; border-radius: 0; }
-    .card-header { border-radius: 0; }
+  /* ── 태블릿 (768px 이하) ── */
+  /* ── AI 자동 채우기 모달 ── */
+  .ai-fill-overlay {
+    display: none; position: fixed; inset: 0; z-index: 10010;
+    background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: center; padding: 16px;
+    overflow-y: auto;
+  }
+  .ai-fill-overlay.open { display: flex; animation: lbIn .18s ease; }
+  .ai-fill-box {
+    background: #fff; border-radius: 16px; width: 100%; max-width: 640px;
+    max-height: calc(100vh - 32px); display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3); margin-top: 0;
+  }
+  .ai-fill-head {
+    background: #1a1a1a; padding: 18px 22px;
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .ai-fill-head-title { color: #fff; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .ai-fill-head-sub { color: #888; font-size: 12px; margin-top: 2px; }
+  .ai-fill-close { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 4px; line-height: 1; }
+  .ai-fill-close:hover { color: #fff; }
+  .ai-fill-body { padding: 20px 22px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+  .ai-fill-guide {
+    font-size: 13px; color: #555; background: #f8f8f8; border: .5px solid #e8e8e8;
+    border-radius: 10px; padding: 12px 14px; line-height: 1.7;
+  }
+  .ai-fill-guide strong { color: #1a1a1a; }
+  .ai-fill-guide ul { margin: 6px 0 0 16px; }
+  .ai-fill-guide li { margin-bottom: 2px; }
+  .ai-fill-ta {
+    width: 100%; min-height: 180px; max-height: 300px; resize: vertical;
+    font-family: 'Pretendard', sans-serif; font-size: 13px; color: #1a1a1a;
+    background: #fff; border: 1.5px solid #d0d0d0; border-radius: 10px;
+    padding: 12px 14px; outline: none; line-height: 1.6;
+    transition: border-color .15s;
+  }
+  .ai-fill-ta:focus { border-color: #a8c060; }
+  .ai-fill-ta::placeholder { color: #bbb; font-size: 13px; }
+  .ai-fill-footer { padding: 14px 22px; border-top: .5px solid #eee; display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0; }
+  .ai-fill-cancel { font-family: 'Pretendard', sans-serif; font-size: 14px; color: #888; background: #f0f0f0; border: .5px solid #ddd; border-radius: 8px; padding: 10px 18px; cursor: pointer; }
+  .ai-fill-cancel:hover { background: #e8e8e8; }
+  .ai-fill-run {
+    font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 700;
+    color: #1a2418; background: #a8c060; border: none; border-radius: 8px;
+    padding: 10px 22px; cursor: pointer; transition: background .15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .ai-fill-run:hover { background: #96ad50; }
+  .ai-fill-run:disabled { opacity: .6; cursor: wait; }
+  .ai-fill-progress {
+    display: none; align-items: center; gap: 10px;
+    font-size: 13px; color: #555; padding: 8px 0;
+  }
+  .ai-fill-progress.show { display: flex; }
+  .ai-fill-spinner {
+    width: 18px; height: 18px; border: 2px solid #e0e0e0;
+    border-top-color: #a8c060; border-radius: 50%;
+    animation: spin .7s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-fill-prompt-guide {
+    background: #1a1a1a; border-radius: 10px; padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .ai-fill-prompt-guide-title {
+    font-size: 12px; font-weight: 700; color: #a8c060; letter-spacing: .02em;
+  }
+  .ai-fill-prompt-guide-copy {
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .ai-fill-prompt-guide-text {
+    font-size: 12px; color: #ccc; line-height: 1.7; flex: 1;
+    white-space: pre-wrap; word-break: break-all;
+    max-height: 120px; overflow-y: auto;
+    background: #2a2a2a; border-radius: 6px; padding: 8px 10px;
+  }
+  .ai-fill-prompt-copy-btn {
+    font-family: 'Pretendard', sans-serif; font-size: 12px; font-weight: 600;
+    color: #1a1a1a; background: #a8c060; border: none; border-radius: 6px;
+    padding: 6px 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: background .15s;
+  }
+  .ai-fill-prompt-copy-btn:hover { background: #96ad50; }
+  .ai-fill-result {
+    display: none; font-size: 13px; color: #3a7a20; background: #f0f7e6;
+    border: .5px solid #c8e08a; border-radius: 8px; padding: 10px 14px; line-height: 1.6;
+  }
+  .ai-fill-result.show { display: block; }
+  .ai-fill-result.error { color: #c00; background: #fff0f0; border-color: #f0b0b0; }
+  .f-btn.ai-fill { color: #a8c060; background: #1a2418; border-color: #3a5a2a; }
+  .f-btn.ai-fill:hover { background: #243020; color: #c8e080; border-color: #5a8a3a; }
+
+  @media (max-width: 768px) {
+    body { padding: 0; background: #f0f0f0; }
+    .card-wrapper { border-radius: 0; }
+    .card-header { border-radius: 0; padding: 14px 18px; }
     .card-footer { border-radius: 0; }
-
-    /* 2열 → 1열 */
+    .card-sub { grid-template-columns: 1fr; padding: 10px 16px; gap: 8px; }
+    .card-body { padding: 14px; gap: 12px; }
+    .sec { padding: 14px 16px; }
     .two-col { grid-template-columns: 1fr; }
-    .card-sub { grid-template-columns: 1fr; }
-
-    /* 효율·인사이트 2열 → 1열 */
     .eff-row { grid-template-columns: 1fr; }
     .ins-row { grid-template-columns: 1fr; }
+    .date-author-row { flex-wrap: wrap; gap: 8px; }
+    .date-author-row input[type="date"] { flex: 1 1 140px; }
+    .date-author-row #edited-name { flex: 1 1 120px; }
+    .date-author-row #edited-email { flex: 1 1 160px; }
+    .drive-table { font-size: 13px; }
+    .dt-col-type { width: 72px; }
+    .dt-col-action { width: 54px; }
+    .dt-col-process { width: 90px; }
+    .wf-col-step { flex: 0 0 46px; font-size: 11px; }
+    .wf-col-tool { flex: 0 0 100px; }
+    .wf-col-time { flex: 0 0 60px; }
+    .wf-col-actions { flex: 0 0 48px; }
+    .combo-dropdown { max-height: 260px; }
+    .ins-dd-panel { max-height: 260px; }
+    .gp-guide { font-size: 12px; }
+    .sec-title { font-size: 14px; }
+    .field label { font-size: 13px; }
+    .datasrc-grid { grid-template-columns: 1fr; }
+  }
 
-    /* Edited by 세로 정렬 */
-    .edited-row { flex-direction: column; align-items: stretch; }
-    .edited-sep { text-align: left; padding: 2px 0; }
-
-    /* 드라이브 태그 최소 너비 축소 */
-    .drive-tag { min-width: 65px; font-size: 11px; padding: 5px 8px; }
-
-    /* 푸터 버튼 감싸기 */
-    .card-footer { flex-direction: column; gap: 12px; align-items: stretch; padding: 18px 20px; }
-    .footer-right { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+  /* ── 모바일 (480px 이하) ── */
+  @media (max-width: 480px) {
+    body { padding: 0; background: #fff; overflow-x: hidden; }
+    .card-wrapper { max-width: 100%; width: 100%; border-radius: 0; }
+    .card-header { border-radius: 0; padding: 14px 16px; }
+    .card-footer { border-radius: 0; flex-direction: column; gap: 10px; align-items: stretch; padding: 14px 16px; }
+    .footer-right { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
     .footer-slogan { font-size: 10px; }
+    .f-btn { padding: 8px 12px; font-size: 13px; }
+    .brand-label { font-size: 12px; letter-spacing: .04em; }
+    .card-sub { padding: 10px 16px; gap: 8px; }
+    .card-body { padding: 12px; gap: 10px; }
+    .sec { padding: 13px 14px; gap: 10px; }
+    .sec-title { font-size: 14px; }
 
-    /* 플로우 노드 너비 축소 */
-    .flow-node { min-width: 75px; font-size: 11px; padding: 8px 9px; }
+    /* 기본정보: 활동일/작성자/이메일 세로 */
+    .date-author-row { flex-direction: column; gap: 8px; }
+    .date-author-row input[type="date"],
+    .date-author-row #edited-name,
+    .date-author-row #edited-email { flex: unset; width: 100%; height: 44px; }
 
-    /* 카드 내부 여백 */
-    .card-body { padding: 15px; }
-    .sec { padding: 15px 18px; }
+    /* 드라이브 테이블 */
+    .drive-table { font-size: 12px; }
+    .dt-col-type { width: 56px; }
+    .dt-col-action { width: 46px; }
+    .dt-col-process { width: 76px; }
+    .drive-tag { min-width: 52px; font-size: 10px; padding: 4px 6px; }
+    .drive-reg-btn, .drive-reg-edit { font-size: 11px; padding: 4px 6px; }
 
-    /* iOS date input 네이티브 UI 깨짐 수정 */
-    input[type="date"] {
-      -webkit-appearance: none;
-      appearance: none;
-      min-height: 48px;
-      display: block;
-    }
-    input[type="date"]::-webkit-date-and-time-value {
-      text-align: left;
-      padding: 0;
-      margin: 0;
-    }
+    /* WF: 시간·액션 열 축소 */
+    .wf-col-step { flex: 0 0 38px; font-size: 10px; }
+    .wf-col-tool { flex: 0 0 88px; font-size: 12px; }
+    .wf-col-time { flex: 0 0 52px; }
+    .wf-col-actions { flex: 0 0 42px; }
+    .wf-row { gap: 4px; }
+    .wf-detail-btn { font-size: 12px; padding: 6px 8px; }
+    .wf-time { font-size: 12px; padding: 6px 4px; }
+    .wf-row-add, .wf-row-del { width: 20px; height: 20px; font-size: 13px; }
 
-    /* 모바일 링크 배너 */
+    /* WF 헤더 */
+    .wf-header { font-size: 11px; }
+
+    /* QA */
+    .qa-row { padding: 10px 12px; }
+    .qa-check-text { font-size: 13px; }
+    .qa-y, .qa-n { width: 32px; height: 28px; font-size: 12px; }
+
+    /* 플로우 인포그래픽 */
+    .flow-node { min-width: 65px; font-size: 10px; padding: 6px 7px; }
+
+    /* 콤보박스 */
+    .combo-dropdown { max-height: 240px; }
+    .combo-group-header { font-size: 10px; padding: 6px 12px 3px; }
+    .combo-option { font-size: 13px; padding: 8px 12px; }
+
+    /* 인사이트 드롭다운 */
+    .ins-dd-panel { max-height: 240px; }
+    .ins-dd-trigger { font-size: 13px; padding: 7px 12px; }
+
+    /* 이미지 그리드 3열 → 2열 */
+    .img-grid { grid-template-columns: repeat(2, 1fr); }
+
+    /* iOS date */
+    input[type="date"] { -webkit-appearance: none; appearance: none; min-height: 44px; display: block; }
+    input[type="date"]::-webkit-date-and-time-value { text-align: left; padding: 0; margin: 0; }
+
+    /* 모달 */
+    .wf-modal-box { padding: 16px; margin: 0 8px; }
+    .drive-modal-box { margin: 0 12px; }
+    .text-modal-box { margin: 0 8px; max-height: 90vh; }
+  }
+
+  @media (max-width: 360px) {
+    .card-header { padding: 12px 14px; }
+    .brand-label { font-size: 11px; }
+    .card-body { padding: 10px; gap: 8px; }
+    .sec { padding: 12px; }
+    .wf-col-tool { flex: 0 0 76px; font-size: 11px; }
+    .wf-detail-btn { font-size: 11px; padding: 5px 6px; }
+    .drive-table { font-size: 11px; }
+    .dt-col-type { width: 48px; }
+    .dt-col-action { width: 40px; }
+    .dt-col-process { width: 68px; }
+    .f-btn { padding: 7px 10px; font-size: 12px; }
+    .img-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+    .combo-dropdown { max-height: 200px; }
+    .ins-dd-panel { max-height: 200px; }
   }
 
   @media print {
@@ -884,18 +1403,31 @@
 <div class="sb-modal" id="sb-modal">
   <div class="sb-modal-box">
     <div class="sb-modal-head">
-      <span>⚙ Supabase 연결 설정</span>
+      <span>⚙ 연결 설정</span>
       <button class="sb-modal-close" id="sb-modal-close">✕</button>
     </div>
     <div class="sb-modal-body">
       <div class="sb-status" id="sb-status">
         <div class="sb-status-dot ok" id="sb-status-dot"></div>
-        <div class="sb-status-txt" id="sb-status-txt">설정이 저장되어 있습니다.</div>
+        <div class="sb-status-txt" id="sb-status-txt">Supabase ✓  |  Gemini Key 미입력</div>
       </div>
-      <div class="sb-desc">
-        <strong>최초 1회 설정 후 영구 사용 가능합니다.</strong><br>
-        Supabase 무료 계정이 필요합니다.<br><br>
-        <a href="https://supabase.com" target="_blank">→ supabase.com 에서 무료 가입 ↗</a>
+
+      <!-- Gemini API Key -->
+      <div class="sb-divider" style="margin:4px 0 2px"></div>
+      <div class="sb-field">
+        <label>✨ GEMINI API KEY <span style="font-size:10px;color:#a8c060;font-weight:400;text-transform:none;">— AI 자동 채우기에 사용 (무료)</span></label>
+        <input id="anthropic-key-input" type="password" placeholder="AIzaSy...">
+      </div>
+      <div style="font-size:11px;color:#888;line-height:1.5;padding:2px 0 4px;">
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#a8c060;">→ aistudio.google.com 에서 무료 발급 ↗</a><br>
+        Key는 이 브라우저에만 저장됩니다. 외부로 전송되지 않습니다.
+      </div>
+
+      <!-- Supabase -->
+      <div class="sb-divider" style="margin:4px 0 2px"></div>
+      <div class="sb-desc" style="font-size:12px;color:#888;padding:2px 0;">
+        <strong style="color:#ccc;">Supabase 연결</strong>&nbsp;&nbsp;
+        <a href="https://supabase.com" target="_blank" style="color:#888;">→ supabase.com ↗</a>
       </div>
       <div class="sb-field">
         <label>SUPABASE PROJECT URL</label>
@@ -905,8 +1437,8 @@
         <label>SUPABASE ANON KEY</label>
         <input id="sb-key-input" type="password" placeholder="eyJhbGciOiJ...">
       </div>
-      <button class="sb-test-btn" id="sb-test-btn">🔍 연결 테스트</button>
-      <div class="sb-test-result ok" id="sb-test-result" style="display: none;">✓ 연결 성공! 저장 버튼을 눌러 적용하세요.</div>
+      <button class="sb-test-btn" id="sb-test-btn">🔍 Supabase 연결 테스트</button>
+      <div class="sb-test-result" id="sb-test-result" style="display:none;"></div>
       <button class="sb-save-btn" id="sb-save-btn">저장</button>
       <div class="sb-team-section" id="sb-team-section">
         <div class="sb-divider"></div>
@@ -973,7 +1505,28 @@
         <option value="배포및완료단계">배포및완료단계</option>
       </select>
     </div>
-    <div class="sub-field"><label>Task / 소재명</label><input type="text" placeholder="소재명 입력"></div>
+    <div class="sub-field">
+      <label>Task / 소재명</label>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <div class="emoji-wrap" style="flex-shrink:0;">
+          <button type="button" class="emoji-btn placeholder" id="emoji-btn">선택</button>
+          <div class="emoji-picker" id="emoji-picker">
+            <div class="ep-guide">활동 성격에 맞는 이모지(메타포)를 선택하세요</div>
+            <input type="text" class="ep-search" id="ep-search" placeholder="이모지 검색 (예: 🎯 또는 키워드)" autocomplete="off">
+            <div class="ep-tabs" id="ep-tabs">
+              <button type="button" class="ep-tab active" data-cat="0">🎯</button>
+              <button type="button" class="ep-tab" data-cat="1">😊</button>
+              <button type="button" class="ep-tab" data-cat="2">🐱</button>
+              <button type="button" class="ep-tab" data-cat="3">🌿</button>
+              <button type="button" class="ep-tab" data-cat="4">⚡</button>
+              <button type="button" class="ep-tab" data-cat="5">💡</button>
+            </div>
+            <div class="ep-grid" id="ep-grid"><button type="button">🎯</button><button type="button">🚀</button><button type="button">💡</button><button type="button">🔥</button><button type="button">⚡</button><button type="button">🌟</button><button type="button">🏆</button><button type="button">🎪</button><button type="button">🧩</button><button type="button">🔬</button><button type="button">🎨</button><button type="button">🛠</button><button type="button">📐</button><button type="button">🌱</button><button type="button">💎</button><button type="button">🦋</button><button type="button">🎭</button><button type="button">🧭</button><button type="button">🔑</button><button type="button">🌊</button><button type="button">🏔</button><button type="button">🎶</button><button type="button">📡</button><button type="button">🤖</button><button type="button">🧲</button><button type="button">🔭</button><button type="button">⚗️</button><button type="button">🧬</button><button type="button">⚙️</button><button type="button">🔮</button><button type="button">🧱</button><button type="button">🏗</button><button type="button">🎓</button><button type="button">🏅</button><button type="button">🥇</button><button type="button">🥈</button><button type="button">🥉</button><button type="button">🏁</button><button type="button">🎖</button><button type="button">📦</button><button type="button">🧰</button><button type="button">🪛</button><button type="button">🔧</button><button type="button">🔩</button><button type="button">⛏</button><button type="button">🪚</button><button type="button">🗜</button><button type="button">🧪</button><button type="button">🔎</button><button type="button">🔍</button><button type="button">💻</button><button type="button">🖥</button><button type="button">⌨️</button><button type="button">🖱</button><button type="button">🖨</button><button type="button">📱</button><button type="button">📲</button><button type="button">🔋</button><button type="button">💾</button><button type="button">💿</button><button type="button">📀</button><button type="button">🧮</button><button type="button">🪄</button><button type="button">🎲</button><button type="button">♟️</button></div>
+          </div>
+        </div>
+        <input type="text" id="task-input" placeholder="소재명 입력" style="flex:1; font-size:14px; font-family:'Pretendard',sans-serif; font-weight:400; color:#1a1a1a;">
+      </div>
+    </div>
   </div>
 
   <!-- BODY -->
@@ -983,29 +1536,26 @@
     <div class="sec">
       <div class="sec-title">기본 정보</div>
 
-      <!-- 1. 메타포 -->
-      <div class="field">
-        <label>메타포</label>
-        <div class="emoji-wrap">
-          <button type="button" class="emoji-btn placeholder" id="emoji-btn">선택</button>
-          <div class="emoji-picker" id="emoji-picker">
-            <div class="ep-tabs">
-              <button type="button" class="ep-tab active" data-cat="0">🎯</button>
-              <button type="button" class="ep-tab" data-cat="1">😊</button>
-              <button type="button" class="ep-tab" data-cat="2">🐱</button>
-              <button type="button" class="ep-tab" data-cat="3">🌿</button>
-              <button type="button" class="ep-tab" data-cat="4">⚡</button>
-              <button type="button" class="ep-tab" data-cat="5">💡</button>
-            </div>
-            <div class="ep-grid" id="ep-grid"><button type="button">🎯</button><button type="button">🚀</button><button type="button">💡</button><button type="button">🔥</button><button type="button">⚡</button><button type="button">🌟</button><button type="button">🏆</button><button type="button">🎪</button><button type="button">🧩</button><button type="button">🔬</button><button type="button">🎨</button><button type="button">🛠</button><button type="button">📐</button><button type="button">🌱</button><button type="button">💎</button><button type="button">🦋</button><button type="button">🎭</button><button type="button">🧭</button><button type="button">🔑</button><button type="button">🌊</button><button type="button">🏔</button><button type="button">🎶</button><button type="button">📡</button><button type="button">🤖</button><button type="button">🧲</button><button type="button">🔭</button><button type="button">⚗️</button><button type="button">🧬</button><button type="button">⚙️</button><button type="button">🔮</button><button type="button">🧱</button><button type="button">🏗</button></div>
-          </div>
-        </div>
-      </div>
-
       <!-- 2. 목표 및 문제정의 -->
       <div class="field">
         <label>목표 및 문제정의</label>
-        <input type="text" id="problem-input" placeholder="이번 AI 활동으로 해결하려는 목표와 현재 직면한 문제를 함께 기술" autocomplete="new-password" readonly="" onfocus="this.removeAttribute('readonly')">
+        <div id="gp-guide" class="gp-guide" style="display:none;">
+          아래 항목에서 선택하거나, <strong>✏️ 직접 작성하기</strong>를 눌러 자유롭게 입력할 수 있습니다.
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="combo-wrap">
+            <input type="text" id="goal-input-text" placeholder="🎯 목표 선택 또는 직접 입력" autocomplete="off">
+            <span class="combo-arrow">▼</span>
+            <div class="combo-dropdown" id="goal-dropdown"><div class="combo-option combo-direct-item" style="padding-left: 14px; font-weight: 600; color: rgb(58, 120, 212); border-bottom: 1px solid rgb(238, 238, 238);">✏️ 직접 작성하기</div><div class="combo-group"><div class="combo-group-header">📋 계획</div><div class="combo-group-items"><div class="combo-option">AI를 통한 프로젝트 목표와 범위를 명확하게 정의한다</div><div class="combo-option">AI를 통한 이해관계자 요구사항을 빠르게 수집하고 정리한다</div><div class="combo-option">AI를 통한 일정·리소스 계획서를 구조화하여 작성한다</div><div class="combo-option">AI를 통한 리스크 항목을 사전에 식별하고 대응 방안을 마련한다</div><div class="combo-option">AI를 통한 프로젝트 착수 보고서 및 제안서 초안을 완성한다</div><div class="combo-option">AI를 통한 WBS(작업분류체계)를 자동 분해하여 정리한다</div><div class="combo-option">AI를 통한 팀 역할과 책임(RACI)을 명확하게 문서화한다</div><div class="combo-option">AI를 통한 이해관계자 인터뷰 가이드와 질문지를 빠르게 작성한다</div><div class="combo-option">AI를 통한 프로젝트 헌장(Project Charter)을 구조화하여 작성한다</div><div class="combo-option">AI를 통한 예산·비용 계획서 초안을 빠르게 완성한다</div><div class="combo-option">AI를 통한 유사 프로젝트 레퍼런스를 수집하고 벤치마크를 정리한다</div><div class="combo-option">AI를 통한 팀 온보딩 자료와 킥오프 자료를 빠르게 준비한다</div><div class="combo-option">AI를 통한 커뮤니케이션 계획서를 작성하고 보고 주기를 정의한다</div><div class="combo-option">AI를 통한 프로젝트 성공 기준(KPI)을 명확하게 정의하고 문서화한다</div><div class="combo-option">AI를 통한 조달 계획과 외부 리소스 활용 방안을 정리한다</div><div class="combo-option">AI를 통한 범위 기술서(Scope Statement)를 명확하게 작성한다</div><div class="combo-option">AI를 통한 유관 부서·팀과의 협력 방식과 접점을 사전에 정의한다</div></div></div><div class="combo-group"><div class="combo-group-header">🗂 관리</div><div class="combo-group-items"><div class="combo-option">AI를 통한 회의록과 액션아이템을 자동으로 정리한다</div><div class="combo-option">AI를 통한 이슈·변경 이력을 체계적으로 추적하고 기록한다</div><div class="combo-option">AI를 통한 진행 상황 보고서를 빠르게 작성한다</div><div class="combo-option">AI를 통한 팀 내 커뮤니케이션 문서를 일관된 형식으로 작성한다</div><div class="combo-option">AI를 통한 피드백을 수집하고 우선순위를 결정한다</div><div class="combo-option">AI를 통한 프로젝트 산출물의 버전을 일관되게 관리한다</div><div class="combo-option">AI를 통한 팀 규칙·가이드라인 문서를 표준화하고 업데이트한다</div><div class="combo-option">AI를 통한 프로젝트 대시보드 항목과 지표를 정의하고 구성한다</div><div class="combo-option">AI를 통한 변경 요청(CR) 프로세스를 표준화하고 문서화한다</div><div class="combo-option">AI를 통한 품질 관리 계획과 검토 기준을 수립한다</div><div class="combo-option">AI를 통한 팀 내 의사결정 기록을 체계적으로 남긴다</div><div class="combo-option">AI를 통한 반복 회의 아젠다 템플릿을 표준화하여 시간을 절약한다</div><div class="combo-option">AI를 통한 스프린트·이터레이션 회고 결과를 빠르게 정리한다</div><div class="combo-option">AI를 통한 리소스 투입 현황과 잔여 업무량을 시각화한다</div><div class="combo-option">AI를 통한 외부 협력사·벤더 커뮤니케이션 문서를 일관되게 작성한다</div><div class="combo-option">AI를 통한 프로젝트 종료 조건과 인수인계 기준을 명확히 정의한다</div><div class="combo-option">AI를 통한 팀 성과 지표를 정리하고 다음 단계 목표와 연결한다</div></div></div><div class="combo-group"><div class="combo-group-header">🔍 분석</div><div class="combo-group-items"><div class="combo-option">AI를 통한 사용자 인터뷰·설문 결과를 코딩하고 패턴을 파악한다</div><div class="combo-option">AI를 통한 리서치 데이터를 구조화하고 인사이트를 도출한다</div><div class="combo-option">AI를 통한 경쟁사·벤치마크 분석 자료를 신속하게 작성한다</div><div class="combo-option">AI를 통한 고객 VOC 데이터를 분류하고 핵심 문제를 추출한다</div><div class="combo-option">AI를 통한 요구사항을 분석하여 기능·비기능 항목으로 분리한다</div><div class="combo-option">AI를 통한 페르소나와 사용자 시나리오를 구체화한다</div><div class="combo-option">AI를 통한 현행 시스템의 문제점과 개선 방향을 문서화한다</div><div class="combo-option">AI를 통한 데이터 분석 결과를 설득력 있는 스토리로 구성한다</div><div class="combo-option">AI를 통한 사용자 행동 데이터를 분석하고 주요 패턴을 시각화한다</div><div class="combo-option">AI를 통한 친화도 다이어그램(Affinity Diagram)을 빠르게 구성한다</div><div class="combo-option">AI를 통한 핵심 사용자 문제를 HMW 질문 형식으로 재정의한다</div><div class="combo-option">AI를 통한 AS-IS / TO-BE 현황을 비교하고 갭(Gap)을 문서화한다</div><div class="combo-option">AI를 통한 이해관계자 분석 및 관심사·영향도 매트릭스를 작성한다</div><div class="combo-option">AI를 통한 정량·정성 데이터를 통합하여 종합 인사이트를 도출한다</div><div class="combo-option">AI를 통한 서비스 사용 맥락과 환경(Context)을 체계적으로 기술한다</div><div class="combo-option">AI를 통한 사용자 여정 지도(Journey Map) 초안을 빠르게 완성한다</div><div class="combo-option">AI를 통한 분석 결과를 바탕으로 핵심 과제와 기회 영역을 정의한다</div><div class="combo-option">AI를 통한 도메인 지식·전문 용어를 빠르게 정리하고 팀과 공유한다</div></div></div><div class="combo-group"><div class="combo-group-header">✏️ 설계</div><div class="combo-group-items"><div class="combo-option">AI를 통한 서비스 흐름(IA·플로우차트)을 빠르게 시각화한다</div><div class="combo-option">AI를 통한 기능 명세서와 화면 정의서 초안을 완성한다</div><div class="combo-option">AI를 통한 복수의 설계 대안을 비교하고 의사결정 근거를 정리한다</div><div class="combo-option">AI를 통한 UX 라이팅 및 마이크로카피를 다양하게 생성한다</div><div class="combo-option">AI를 통한 디자인 시스템 컴포넌트 명세를 체계적으로 작성한다</div><div class="combo-option">AI를 통한 프로토타입 피드백을 반영하여 설계를 빠르게 개선한다</div><div class="combo-option">AI를 통한 접근성·다국어 요구사항을 설계 단계에 반영한다</div><div class="combo-option">AI를 통한 와이어프레임 설명 문구와 주석을 빠르게 작성한다</div><div class="combo-option">AI를 통한 인터랙션 명세와 전환 조건을 명확하게 문서화한다</div><div class="combo-option">AI를 통한 콘텐츠 전략과 정보 계층 구조를 빠르게 정의한다</div><div class="combo-option">AI를 통한 화면별 엣지 케이스와 예외 상황을 체계적으로 정리한다</div><div class="combo-option">AI를 통한 다양한 레이아웃 대안을 빠르게 탐색하고 비교한다</div><div class="combo-option">AI를 통한 설계 원칙과 의사결정 기준을 팀 문서로 정리한다</div><div class="combo-option">AI를 통한 사용자 오류 메시지와 피드백 문구를 일관되게 작성한다</div><div class="combo-option">AI를 통한 반응형·다해상도 대응 설계 기준을 문서화한다</div><div class="combo-option">AI를 통한 온보딩 플로우와 첫 사용 경험 시나리오를 구체화한다</div><div class="combo-option">AI를 통한 설계 산출물 체크리스트를 작성하고 완성도를 검토한다</div></div></div><div class="combo-group"><div class="combo-group-header">⚙️ 구현</div><div class="combo-group-items"><div class="combo-option">AI를 통한 코드 작성·수정·디버깅을 신속하게 처리한다</div><div class="combo-option">AI를 통한 반복 작업을 자동화하여 개발 시간을 단축한다</div><div class="combo-option">AI를 통한 기술 문서와 API 명세를 빠르게 작성한다</div><div class="combo-option">AI를 통한 코드 리뷰 코멘트를 명확하고 일관되게 작성한다</div><div class="combo-option">AI를 통한 구현 중 발생한 이슈의 원인을 빠르게 분석한다</div><div class="combo-option">AI를 통한 도구·라이브러리 활용법을 빠르게 파악하고 적용한다</div><div class="combo-option">AI를 통한 산출물의 오탈자·논리 오류를 신속하게 교정한다</div><div class="combo-option">AI를 통한 구현 전 기술 스펙과 환경 설정 문서를 빠르게 정리한다</div><div class="combo-option">AI를 통한 코드 컨벤션과 네이밍 규칙을 표준화하여 문서화한다</div><div class="combo-option">AI를 통한 복잡한 로직을 주석과 함께 명확하게 설명한다</div><div class="combo-option">AI를 통한 빌드·배포 스크립트 작성과 자동화 설정을 처리한다</div><div class="combo-option">AI를 통한 외부 라이브러리·API 사용법을 빠르게 파악하고 적용한다</div><div class="combo-option">AI를 통한 성능 병목 지점을 분석하고 개선 방향을 도출한다</div><div class="combo-option">AI를 통한 데이터 모델과 DB 스키마 설계 문서를 작성한다</div><div class="combo-option">AI를 통한 개발 중 발생한 기술 부채를 목록화하고 우선순위를 정한다</div><div class="combo-option">AI를 통한 구현 완료 후 셀프 체크리스트를 작성하고 품질을 검토한다</div><div class="combo-option">AI를 통한 팀 내 재사용 가능한 컴포넌트·모듈을 정리하고 공유한다</div></div></div><div class="combo-group"><div class="combo-group-header">🧪 테스트</div><div class="combo-group-items"><div class="combo-option">AI를 통한 QA 체크리스트와 테스트 시나리오를 작성한다</div><div class="combo-option">AI를 통한 테스트 결과를 정리하고 버그 리포트를 작성한다</div><div class="combo-option">AI를 통한 사용성 테스트 결과를 분석하고 개선점을 도출한다</div><div class="combo-option">AI를 통한 회귀 테스트 항목을 자동으로 생성하고 정리한다</div><div class="combo-option">AI를 통한 AI 결과물의 정확성·신뢰성을 검증하는 기준을 만든다</div><div class="combo-option">AI를 통한 테스트 커버리지를 높이기 위한 시나리오를 확장한다</div><div class="combo-option">AI를 통한 탐색적 테스트 차터를 빠르게 작성하고 실행 범위를 정의한다</div><div class="combo-option">AI를 통한 테스트 환경 설정 가이드를 명확하게 문서화한다</div><div class="combo-option">AI를 통한 버그 재현 절차와 우선순위 기준을 표준화한다</div><div class="combo-option">AI를 통한 성능·부하 테스트 계획서와 기준치를 정의한다</div><div class="combo-option">AI를 통한 접근성(Accessibility) 검증 항목을 체크리스트로 작성한다</div><div class="combo-option">AI를 통한 크로스브라우저·크로스디바이스 테스트 매트릭스를 작성한다</div><div class="combo-option">AI를 통한 테스트 완료 기준(Exit Criteria)을 명확하게 정의한다</div><div class="combo-option">AI를 통한 회귀 테스트 자동화 범위와 우선순위를 결정한다</div><div class="combo-option">AI를 통한 사용자 수용 테스트(UAT) 가이드와 시나리오를 작성한다</div><div class="combo-option">AI를 통한 테스트 결과를 요약하여 이해관계자에게 보고한다</div></div></div><div class="combo-group"><div class="combo-group-header">🚀 배포 &amp; 완료</div><div class="combo-group-items"><div class="combo-option">AI를 통한 배포 체크리스트와 롤백 계획을 문서화한다</div><div class="combo-option">AI를 통한 사용자 매뉴얼과 운영 가이드를 빠르게 작성한다</div><div class="combo-option">AI를 통한 릴리즈 노트와 변경 이력을 일관된 형식으로 작성한다</div><div class="combo-option">AI를 통한 프로젝트 완료 보고서와 회고 문서를 작성한다</div><div class="combo-option">AI를 통한 팀 내 학습 인사이트를 정리하고 다음 프로젝트에 연결한다</div><div class="combo-option">AI를 통한 배포 후 모니터링 지표와 대응 기준을 정의한다</div><div class="combo-option">AI를 통한 배포 전 최종 검토 항목과 승인 프로세스를 문서화한다</div><div class="combo-option">AI를 통한 서비스 오픈 공지문과 안내 메시지를 작성한다</div><div class="combo-option">AI를 통한 배포 후 모니터링 항목과 이상 감지 기준을 정의한다</div><div class="combo-option">AI를 통한 핫픽스·긴급 대응 절차를 사전에 정의하고 공유한다</div><div class="combo-option">AI를 통한 프로젝트 완료 후 KPI 달성 여부를 분석하고 보고한다</div><div class="combo-option">AI를 통한 서비스 운영 단계의 지속 개선 백로그를 정리한다</div><div class="combo-option">AI를 통한 고객 지원팀을 위한 FAQ와 대응 가이드를 빠르게 작성한다</div><div class="combo-option">AI를 통한 프로젝트에서 얻은 교훈(Lessons Learned)을 체계적으로 기록한다</div><div class="combo-option">AI를 통한 다음 프로젝트를 위한 재사용 가능한 템플릿을 정리한다</div><div class="combo-option">AI를 통한 팀 기여도와 성과를 정리하여 공식 문서로 남긴다</div></div></div></div>
+          </div>
+          <textarea id="goal-direct" class="gp-direct-textarea" placeholder="목표를 자유롭게 직접 작성하세요" rows="2" autocomplete="off" style="display:none;"></textarea>
+          <div class="combo-wrap">
+            <input type="text" id="problem-input" placeholder="⚡ 문제 선택 또는 직접 입력" autocomplete="off">
+            <span class="combo-arrow">▼</span>
+            <div class="combo-dropdown" id="problem-dropdown"><div class="combo-option combo-direct-item" style="padding-left: 14px; font-weight: 600; color: rgb(58, 120, 212); border-bottom: 1px solid rgb(238, 238, 238);">✏️ 직접 작성하기</div><div class="combo-group"><div class="combo-group-header">📋 계획</div><div class="combo-group-items"><div class="combo-option">프로젝트 목표와 범위가 모호해서 방향을 잡기 어렵다</div><div class="combo-option">이해관계자별 요구사항이 달라 합의점을 찾기 어렵다</div><div class="combo-option">일정 산정 근거가 부족해 현실적인 계획을 세우기 어렵다</div><div class="combo-option">리스크 항목을 사전에 식별하는 체계가 없다</div><div class="combo-option">착수 단계에서 팀원 간 역할과 책임이 불명확하다</div><div class="combo-option">유사 프로젝트의 선례가 없어 기준을 잡기 어렵다</div><div class="combo-option">초기 요구사항이 계속 바뀌어 계획 수정이 반복된다</div><div class="combo-option">프로젝트 목적과 기대 효과를 이해관계자에게 설득하기 어렵다</div><div class="combo-option">일정 내 달성 가능한 범위와 불가능한 범위를 구분하기 어렵다</div><div class="combo-option">예산 산정 근거가 부족해 현실적인 계획을 세우기 어렵다</div><div class="combo-option">팀 구성이 확정되기 전 역할 분배를 미리 설계하기 어렵다</div><div class="combo-option">비슷한 선례가 없어 공수 추정이 주먹구구식이 된다</div><div class="combo-option">초기 기획 단계에서 기술적 실현 가능성을 판단하기 어렵다</div><div class="combo-option">다수의 이해관계자 의견을 취합해 하나의 방향으로 정리하기 어렵다</div><div class="combo-option">계획 수립 후 승인 과정에서 불필요한 반복 수정이 발생한다</div><div class="combo-option">프로젝트 우선순위가 조직 내에서 자주 바뀌어 방향 잡기 어렵다</div><div class="combo-option">외부 의존성(타팀·벤더)이 많아 일정을 확정하기 어렵다</div></div></div><div class="combo-group"><div class="combo-group-header">🗂 관리</div><div class="combo-group-items"><div class="combo-option">이슈와 변경사항이 많아 추적·관리가 어렵다</div><div class="combo-option">회의 내용이 문서화되지 않아 나중에 혼선이 생긴다</div><div class="combo-option">팀원마다 문서 형식과 수준이 달라 통일이 어렵다</div><div class="combo-option">피드백을 반영하는 과정에서 버전 관리가 혼란스럽다</div><div class="combo-option">진행 상황을 이해관계자에게 명확하게 전달하기 어렵다</div><div class="combo-option">작업 우선순위를 정하는 기준이 불명확하다</div><div class="combo-option">작업 범위가 자주 바뀌어 산출물을 처음부터 다시 작성한다</div><div class="combo-option">산출물 관리 체계가 없어 최신 버전을 찾는 데 시간이 걸린다</div><div class="combo-option">팀원 간 업무 진행 상황을 실시간으로 파악하기 어렵다</div><div class="combo-option">의사결정 후 근거가 기록되지 않아 나중에 혼선이 생긴다</div><div class="combo-option">갑작스러운 요구사항 변경에 유연하게 대응하기 어렵다</div><div class="combo-option">여러 프로젝트를 동시에 관리하며 우선순위 조율이 어렵다</div><div class="combo-option">보고 형식이 매번 달라 보고서 작성에 시간이 낭비된다</div><div class="combo-option">이슈가 발생했을 때 책임 소재와 대응 주체가 불명확하다</div><div class="combo-option">팀원 온보딩이 느려 프로젝트 초반 속도가 나지 않는다</div><div class="combo-option">협업 도구가 너무 많아 정보가 분산되고 관리가 어렵다</div><div class="combo-option">프로젝트 완료 기준이 불명확해 언제 끝내야 할지 모른다</div></div></div><div class="combo-group"><div class="combo-group-header">🔍 분석</div><div class="combo-group-items"><div class="combo-option">리서치 데이터가 많지만 인사이트 도출이 느리다</div><div class="combo-option">정보가 너무 많아 핵심을 추려내는 데 시간이 오래 걸린다</div><div class="combo-option">인터뷰·설문 결과를 정리하는 데 너무 많은 시간이 걸린다</div><div class="combo-option">데이터 분석 결과를 설득력 있게 전달하기 어렵다</div><div class="combo-option">사용자 니즈와 비즈니스 요구사항 사이의 균형을 잡기 어렵다</div><div class="combo-option">요구사항이 모호해서 기능과 비기능을 구분하기 어렵다</div><div class="combo-option">다양한 관점의 아이디어를 혼자 발산하는 데 한계가 있다</div><div class="combo-option">현행 시스템의 문제를 객관적으로 파악하기 어렵다</div><div class="combo-option">인터뷰 참여자 모집과 일정 조율에 많은 시간이 소비된다</div><div class="combo-option">수집한 데이터의 신뢰성과 대표성을 확신하기 어렵다</div><div class="combo-option">정성 데이터를 정량화하여 설득력 있게 제시하기 어렵다</div><div class="combo-option">분석 결과가 너무 많아 핵심 인사이트 3가지를 고르기 어렵다</div><div class="combo-option">팀마다 데이터를 해석하는 관점이 달라 합의가 어렵다</div><div class="combo-option">리서치 결과가 실제 설계에 반영되지 않고 묻히는 경우가 많다</div><div class="combo-option">도메인 지식이 부족해 전문 용어와 업무 맥락을 이해하기 어렵다</div><div class="combo-option">분석 기간이 촉박해 충분한 검토 없이 인사이트를 도출한다</div><div class="combo-option">이전 리서치 자료가 정리되지 않아 중복 작업이 발생한다</div><div class="combo-option">사용자 맥락(Context)을 충분히 반영하지 못한 분석이 나온다</div></div></div><div class="combo-group"><div class="combo-group-header">✏️ 설계</div><div class="combo-group-items"><div class="combo-option">초안 작성 시 어떻게 시작해야 할지 막막하다</div><div class="combo-option">복잡한 사용자 여정을 빠르게 시각화하기 어렵다</div><div class="combo-option">작성한 문서의 논리 구조가 탄탄한지 확신이 없다</div><div class="combo-option">아이디어는 있지만 구체화하는 과정이 막힌다</div><div class="combo-option">디자인 시스템·가이드라인 일관성을 유지하기 어렵다</div><div class="combo-option">설계 결정의 근거를 문서로 남기지 못하고 있다</div><div class="combo-option">프로토타입 피드백을 빠르게 반영하고 재검증하기 어렵다</div><div class="combo-option">설계 방향에 대한 팀 내 합의가 이루어지지 않아 작업이 지연된다</div><div class="combo-option">화면 수가 많아 엣지 케이스와 예외 처리를 빠뜨리기 쉽다</div><div class="combo-option">UX 설계와 개발 구현 간의 간극이 커서 싱크가 자주 어긋난다</div><div class="combo-option">같은 컴포넌트가 화면마다 다르게 설계되어 일관성이 없다</div><div class="combo-option">설계 변경이 자주 일어나 개발팀과의 소통 비용이 크다</div><div class="combo-option">이해관계자가 설계 의도를 이해하지 못해 반복 설명이 필요하다</div><div class="combo-option">접근성·다국어 요구사항이 설계 후반에 추가되어 재작업이 발생한다</div><div class="combo-option">콘텐츠 확정 전에 설계가 진행되어 나중에 레이아웃을 다시 조정한다</div><div class="combo-option">설계 산출물 형식이 팀마다 달라 핸드오프 시 혼선이 생긴다</div><div class="combo-option">여러 대안 중 어떤 것을 선택해야 할지 판단 기준이 없다</div></div></div><div class="combo-group"><div class="combo-group-header">⚙️ 구현</div><div class="combo-group-items"><div class="combo-option">반복되는 단순 작업에 너무 많은 시간이 소비된다</div><div class="combo-option">구현 중 발생한 이슈의 원인을 파악하는 데 시간이 걸린다</div><div class="combo-option">기술 문서가 부족해 도구·API 활용에 시간이 많이 든다</div><div class="combo-option">산출물의 오류를 마지막에 발견해 수정 비용이 크다</div><div class="combo-option">여러 도구를 오가며 작업하느라 흐름이 자주 끊긴다</div><div class="combo-option">AI 결과물의 정확성·신뢰성을 검증하는 기준이 없다</div><div class="combo-option">프롬프트 품질이 낮아 원하는 결과물이 잘 나오지 않는다</div><div class="combo-option">요구사항 해석의 차이로 구현 결과가 설계와 달라진다</div><div class="combo-option">기존 코드 구조를 파악하는 데 시간이 너무 많이 걸린다</div><div class="combo-option">기술 부채가 쌓여 새로운 기능 추가가 점점 어려워진다</div><div class="combo-option">개발 환경 차이로 인해 로컬에서는 되는데 서버에서 안 된다</div><div class="combo-option">외부 API 변경이나 장애로 인해 개발 일정이 틀어진다</div><div class="combo-option">코드 리뷰 기준이 없어 품질이 사람마다 다르게 나온다</div><div class="combo-option">비기능 요구사항(성능·보안)이 후반에 제시되어 재작업이 발생한다</div><div class="combo-option">테스트 없이 배포해야 하는 상황이 반복된다</div><div class="combo-option">팀원 간 구현 방식이 달라 통합 시 충돌이 발생한다</div><div class="combo-option">구현 중 요구사항이 바뀌어 이미 완성한 코드를 다시 짜야 한다</div></div></div><div class="combo-group"><div class="combo-group-header">🧪 테스트</div><div class="combo-group-items"><div class="combo-option">테스트 시나리오 작성에 시간이 너무 많이 걸린다</div><div class="combo-option">버그 재현 조건을 명확하게 문서화하기 어렵다</div><div class="combo-option">사용성 테스트 결과를 빠르게 분류하고 정리하기 어렵다</div><div class="combo-option">마감 압박으로 충분한 테스트 없이 산출물을 제출하게 된다</div><div class="combo-option">테스트 커버리지가 부족해 예상치 못한 오류가 발생한다</div><div class="combo-option">비개발 이해관계자에게 테스트 결과를 전달하기 어렵다</div><div class="combo-option">테스트 환경이 실제 운영과 달라 신뢰성 있는 결과를 얻기 어렵다</div><div class="combo-option">버그 수정 후 다른 곳이 깨지는 사이드 이펙트가 반복된다</div><div class="combo-option">테스트 결과를 개발팀에 전달하는 형식이 표준화되어 있지 않다</div><div class="combo-option">시간 부족으로 중요 기능 외의 엣지 케이스를 테스트하지 못한다</div><div class="combo-option">비개발 직군이 UAT를 수행할 때 진행 방법을 몰라 지연된다</div><div class="combo-option">이전 테스트 결과가 문서화되지 않아 같은 버그가 반복된다</div><div class="combo-option">성능 테스트 기준치가 없어 통과·실패 판단이 주관적이 된다</div><div class="combo-option">테스트 범위가 명확하지 않아 무엇을 어디까지 해야 할지 모른다</div><div class="combo-option">접근성 검증 항목을 테스트 단계에서 뒤늦게 확인하게 된다</div><div class="combo-option">버그 우선순위 판단 기준이 없어 수정 순서를 정하기 어렵다</div></div></div><div class="combo-group"><div class="combo-group-header">🚀 배포 &amp; 완료</div><div class="combo-group-items"><div class="combo-option">배포 전 체크리스트가 없어 누락 항목이 발생한다</div><div class="combo-option">운영 가이드·매뉴얼 작성에 불필요하게 많은 시간이 든다</div><div class="combo-option">프로젝트 완료 후 회고와 학습 정리가 잘 이루어지지 않는다</div><div class="combo-option">이전 프로젝트 인사이트가 다음 작업에 연결되지 않는다</div><div class="combo-option">팀 내 지식이 개인에게 집중되어 공유가 안 된다</div><div class="combo-option">배포 후 모니터링 기준과 대응 방안이 정의되어 있지 않다</div><div class="combo-option">배포 직전 예상치 못한 이슈가 발생해 일정이 지연된다</div><div class="combo-option">롤백 기준과 절차가 명확하지 않아 장애 대응이 느리다</div><div class="combo-option">배포 후 사용자 피드백을 체계적으로 수집하는 체계가 없다</div><div class="combo-option">운영 이관 후 담당자가 바뀌면 히스토리를 파악하기 어렵다</div><div class="combo-option">배포 완료 후 실제 성과 측정이 이루어지지 않는다</div><div class="combo-option">프로젝트 종료 후 팀이 해산되면서 노하우가 사라진다</div><div class="combo-option">다음 프로젝트를 위한 인수인계 문서가 부실하게 작성된다</div><div class="combo-option">서비스 오픈 후 예상보다 많은 문의와 오류 신고가 몰린다</div><div class="combo-option">배포 이후 지속적인 개선을 위한 우선순위 정리가 안 된다</div><div class="combo-option">완료 보고 이후 이해관계자의 추가 요청이 계속 이어진다</div></div></div></div>
+          </div>
+          <textarea id="problem-direct" class="gp-direct-textarea" placeholder="문제를 자유롭게 직접 작성하세요" rows="2" autocomplete="off" style="display:none;"></textarea>
+        </div>
       </div>
 
       <!-- 3. 활동일 / 작성자 / 이메일 -->
@@ -1068,17 +1618,120 @@
         </a>
       </div>
 
-      <!-- 드라이브 링크 4종 -->
+      <!-- 드라이브 링크 4종 — 테이블 -->
       <div class="field">
         <label>구글 드라이브 링크</label>
         <p class="drive-guide">결과물을 업로드한 링크를 올려주세요.</p>
-        <div class="drive-list">
-          <div class="drive-row"><span class="drive-tag t1">소재</span><input type="url" placeholder="https://drive.google.com/..."></div>
-          <div class="drive-row"><span class="drive-tag t2">중간 결과</span><input type="url" placeholder="https://drive.google.com/..."></div>
-          <div class="drive-row"><span class="drive-tag t3">최종 결과</span><input type="url" placeholder="https://drive.google.com/..."></div>
-          <div class="drive-row"><span class="drive-tag t4">프롬프트</span><input type="url" placeholder="https://drive.google.com/..."></div>
+        <table class="drive-table">
+          <thead>
+            <tr>
+              <th class="dt-col-type">구분</th>
+              <th class="dt-col-action"></th>
+              <th class="dt-col-title">타이틀</th>
+              <th class="dt-col-process">가공여부</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="drive-row-material">
+              <td><span class="drive-tag t1">소스</span></td>
+              <td>
+                <button type="button" class="drive-reg-btn" id="drive-reg-btn-material" onclick="openDriveModal('material')">+ 등록</button>
+                <button type="button" class="drive-reg-edit" id="drive-reg-edit-material" onclick="openDriveModal('material')" style="display:none;">수정</button>
+              </td>
+              <td class="dt-title-cell">
+                <a class="drive-reg-link" id="drive-reg-link-material" href="#" target="_blank" rel="noopener" style="display:none;"></a>
+                <span class="dt-empty" id="dt-empty-material">—</span>
+              </td>
+              <td><span class="drive-reg-process" id="drive-reg-process-material"></span></td>
+              <input type="hidden" id="drive-material">
+              <input type="hidden" id="drive-material-name">
+              <input type="hidden" id="drive-material-process">
+            </tr>
+            <tr id="drive-row-mid">
+              <td><span class="drive-tag t2">중간 결과</span></td>
+              <td>
+                <button type="button" class="drive-reg-btn" id="drive-reg-btn-mid" onclick="openDriveModal('mid')">+ 등록</button>
+                <button type="button" class="drive-reg-edit" id="drive-reg-edit-mid" onclick="openDriveModal('mid')" style="display:none;">수정</button>
+              </td>
+              <td class="dt-title-cell">
+                <a class="drive-reg-link" id="drive-reg-link-mid" href="#" target="_blank" rel="noopener" style="display:none;"></a>
+                <span class="dt-empty" id="dt-empty-mid">—</span>
+              </td>
+              <td><span class="drive-reg-process" id="drive-reg-process-mid"></span></td>
+              <input type="hidden" id="drive-mid">
+              <input type="hidden" id="drive-mid-name">
+              <input type="hidden" id="drive-mid-process">
+            </tr>
+            <tr id="drive-row-final">
+              <td><span class="drive-tag t3">최종 결과</span></td>
+              <td>
+                <button type="button" class="drive-reg-btn" id="drive-reg-btn-final" onclick="openDriveModal('final')">+ 등록</button>
+                <button type="button" class="drive-reg-edit" id="drive-reg-edit-final" onclick="openDriveModal('final')" style="display:none;">수정</button>
+              </td>
+              <td class="dt-title-cell">
+                <a class="drive-reg-link" id="drive-reg-link-final" href="#" target="_blank" rel="noopener" style="display:none;"></a>
+                <span class="dt-empty" id="dt-empty-final">—</span>
+              </td>
+              <td><span class="drive-reg-process" id="drive-reg-process-final"></span></td>
+              <input type="hidden" id="drive-final">
+              <input type="hidden" id="drive-final-name">
+              <input type="hidden" id="drive-final-process">
+            </tr>
+            <tr id="drive-row-prompt">
+              <td><span class="drive-tag t4">프롬프트</span></td>
+              <td>
+                <button type="button" class="drive-reg-btn" id="drive-reg-btn-prompt" onclick="openDriveModal('prompt')">+ 등록</button>
+                <button type="button" class="drive-reg-edit" id="drive-reg-edit-prompt" onclick="openDriveModal('prompt')" style="display:none;">수정</button>
+              </td>
+              <td class="dt-title-cell">
+                <a class="drive-reg-link" id="drive-reg-link-prompt" href="#" target="_blank" rel="noopener" style="display:none;"></a>
+                <span class="dt-empty" id="dt-empty-prompt">—</span>
+              </td>
+              <td><span class="drive-reg-process" id="drive-reg-process-prompt"></span></td>
+              <input type="hidden" id="drive-prompt">
+              <input type="hidden" id="drive-prompt-name">
+              <input type="hidden" id="drive-prompt-process">
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 드라이브 링크 등록 팝업 모달 -->
+      <div class="drive-modal-overlay" id="drive-modal-overlay" style="display:none;" onclick="closeDriveModal(event)">
+        <div class="drive-modal-box">
+          <div class="drive-modal-head">
+            <span id="drive-modal-title">링크 등록</span>
+            <button type="button" class="drive-modal-close" onclick="closeDriveModal()">✕</button>
+          </div>
+          <div class="drive-modal-body">
+            <div class="drive-modal-field">
+              <label>타이틀</label>
+              <input type="text" id="drive-modal-name-input" placeholder="파일 또는 폴더 이름 입력" autocomplete="off">
+            </div>
+            <div class="drive-modal-field">
+              <label>URL</label>
+              <input type="text" id="drive-modal-url-input" placeholder="https://drive.google.com/..." autocomplete="off">
+            </div>
+            <div class="drive-modal-field">
+              <label>가공 여부</label>
+              <select id="drive-modal-process-input">
+                <option value="" disabled="" selected="">선택</option>
+                <option value="원본">원본 그대로 사용</option>
+                <option value="가공">가공·정제 후 사용</option>
+                <option value="혼합">원본 + 가공 혼합</option>
+                <option value="생성">AI로 직접 생성</option>
+                <option value="해당없음">해당 없음</option>
+              </select>
+            </div>
+          </div>
+          <div class="drive-modal-footer">
+            <button type="button" class="drive-modal-cancel" onclick="closeDriveModal()">취소</button>
+            <button type="button" class="drive-modal-save" onclick="saveDriveModal()">등록</button>
+          </div>
         </div>
       </div>
+
+
     </div>
 
     <!-- 도구 -->
@@ -1086,7 +1739,7 @@
       <div class="sec-title">선정 도구</div>
       <div class="field">
         <label>사용한 AI도구를 선택하고, 의도와, 활동 기록은 아래의 AI WORK FLOW에서 입력하세요.</label>
-        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;"><span class="tool-badge">Perplexity<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Gemini<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Figma<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Make<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Stitch<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Cowork<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Code<span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">VS Code<span class="badge-del" title="도구 삭제">✕</span></span><button class="add-tool-btn" id="add-tool-btn">+ 추가</button></div>
+        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;"><span class="tool-badge">Perplexity<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Gemini<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Figma<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Make<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Stitch<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Cowork<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Code<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">VS Code<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><button class="add-tool-btn" id="add-tool-btn">+ 추가</button></div>
 
         <!-- 도구 추가 팝업 -->
         <div class="add-tool-popup hidden" id="add-tool-popup">
@@ -1105,12 +1758,44 @@
       <div class="wf-header">
         <span class="wf-col-step">STEP</span>
         <span class="wf-col-tool">도구</span>
-        <span class="wf-col-intent">INTENT 의도</span>
-        <span class="wf-col-action">활동</span>
-        <span class="wf-col-del"></span>
+        <span class="wf-col-detail">내용</span>
+        <span class="wf-col-time">시간(분)</span>
+        <span class="wf-col-actions"></span>
       </div>
       <div class="wf-list" id="wf-list"><div class="wf-empty">선정 도구에서 사용한 AI 도구를 선택하면 자동으로 워크플로우가 생성됩니다.</div></div>
+      <div class="wf-total" id="wf-total" style="display:none;">
+        <span class="wf-total-label">총 소요시간</span>
+        <span class="wf-total-value" id="wf-total-value">0분</span>
+      </div>
       <div class="wf-footer-btns">
+
+      <!-- WF 상세 입력 모달 -->
+      <div class="wf-modal-overlay" id="wf-modal-overlay" style="display:none;">
+        <div class="wf-modal-box">
+          <div class="wf-modal-head">
+            <span id="wf-modal-title">STEP 상세 입력</span>
+            <button type="button" class="wf-modal-close" onclick="closeWfModal()">✕</button>
+          </div>
+          <div class="wf-modal-body">
+            <div class="wf-modal-field">
+              <label>INTENT 의도</label>
+              <input type="text" id="wf-modal-intent" placeholder="이 스텝의 목적·의도를 입력하세요" autocomplete="off">
+            </div>
+            <div class="wf-modal-field">
+              <label>활동</label>
+              <textarea id="wf-modal-action" placeholder="수행한 활동 내용을 입력하세요" rows="3"></textarea>
+            </div>
+            <div class="wf-modal-field">
+              <label>Good 프롬프트</label>
+              <textarea id="wf-modal-prompt" placeholder="만족도 높은 프롬프트를 기록하세요" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="wf-modal-footer">
+            <button type="button" class="wf-modal-cancel" onclick="closeWfModal()">취소</button>
+            <button type="button" class="wf-modal-save" onclick="saveWfModal()">저장</button>
+          </div>
+        </div>
+      </div>
         <button class="wf-draw-btn" id="wf-draw-btn" style="flex:1;display:none;">✦ 플로우 그리기</button>
       </div>
       <button class="wf-img-btn" id="wf-img-btn" style="display:none;">🖼 인포그래픽 보기</button>
@@ -1250,46 +1935,171 @@
     <!-- 인사이트 -->
     <div class="sec">
       <div class="sec-title">인사이트</div>
-      <div class="eff-row">
-        <div class="eff-box">
-          <div class="e-label">ai X — 비효율</div>
-          <div class="e-guide">AI를 사용하지 않았다면 어떤 비효율이 발생했을까요?</div>
-          <textarea placeholder="예: 수작업으로 처리했다면 3시간 이상 소요됐을 것"></textarea>
-        </div>
-        <div class="eff-box">
-          <div class="e-label">ai O — 효율</div>
-          <textarea placeholder="어떤 AI / 어떤 점이 좋았나"></textarea>
+      <div class="ins-section">
+        <p class="ins-guide">항목을 선택하거나, 직접 입력할 수 있습니다. (복수 선택 가능)</p>
+        <div class="ins-row">
+          <div class="ins-box aix">
+            <div class="i-tag">ai X — 비효율</div>
+            <div class="ins-tags" id="aix-tags">
+              <div class="ins-tag-box ins-direct-box" id="aix-direct-box" style="display:none;">
+                <div class="ins-tag-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+                  <span>직접작성</span><span class="ins-direct-close" id="aix-direct-close" style="font-size:12px;cursor:pointer;color:inherit;opacity:.6;">✕</span>
+                </div>
+                <div style="padding:8px 12px;">
+                  <textarea id="aix-direct" class="ins-direct-ta" placeholder="AI 미사용 시 예상 비효율을 직접 입력" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="ins-dd-wrap" id="aix-dd-wrap">
+              <button type="button" class="ins-dd-trigger" id="aix-dd-trigger"><span>항목 선택</span><span style="color:#bbb;font-size:10px;">▼</span></button>
+              <div class="ins-dd-panel" id="aix-dd-panel"></div>
+            </div>
+          </div>
+          <div class="ins-box aio">
+            <div class="i-tag">ai O — 효율</div>
+            <div class="ins-tags" id="aio-tags">
+              <div class="ins-tag-box ins-direct-box" id="aio-direct-box" style="display:none;">
+                <div class="ins-tag-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+                  <span>직접작성</span><span class="ins-direct-close" id="aio-direct-close" style="font-size:12px;cursor:pointer;color:inherit;opacity:.6;">✕</span>
+                </div>
+                <div style="padding:8px 12px;">
+                  <textarea id="aio-direct" class="ins-direct-ta" placeholder="AI 활용으로 얻은 효율을 직접 입력" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="ins-dd-wrap" id="aio-dd-wrap">
+              <button type="button" class="ins-dd-trigger" id="aio-dd-trigger"><span>항목 선택</span><span style="color:#bbb;font-size:10px;">▼</span></button>
+              <div class="ins-dd-panel" id="aio-dd-panel"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="ins-row">
-        <div class="ins-box good">
-          <div class="i-tag">Good point</div>
-          <textarea placeholder="잘 된 점을 자유롭게 기록"></textarea>
-        </div>
-        <div class="ins-box bad">
-          <div class="i-tag">Bad point</div>
-          <textarea placeholder="아쉬운 점을 자유롭게 기록"></textarea>
+      <div class="ins-section">
+        <p class="ins-guide">항목을 선택하거나, 직접 입력할 수 있습니다. (복수 선택 가능)</p>
+        <div class="ins-row">
+          <div class="ins-box good">
+            <div class="i-tag">Good point</div>
+            <div class="ins-tags" id="good-tags">
+              <div class="ins-tag-box ins-direct-box" id="good-direct-box" style="display:none;">
+                <div class="ins-tag-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+                  <span>직접작성</span><span class="ins-direct-close" id="good-direct-close" style="font-size:12px;cursor:pointer;color:inherit;opacity:.6;">✕</span>
+                </div>
+                <div style="padding:8px 12px;">
+                  <textarea id="good-direct" class="ins-direct-ta" placeholder="잘 된 점을 직접 입력" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="ins-dd-wrap" id="good-dd-wrap">
+              <button type="button" class="ins-dd-trigger" id="good-dd-trigger"><span>항목 선택</span><span style="color:#bbb;font-size:10px;">▼</span></button>
+              <div class="ins-dd-panel" id="good-dd-panel"></div>
+            </div>
+          </div>
+          <div class="ins-box bad">
+            <div class="i-tag">Bad point</div>
+            <div class="ins-tags" id="bad-tags">
+              <div class="ins-tag-box ins-direct-box" id="bad-direct-box" style="display:none;">
+                <div class="ins-tag-box-title" style="display:flex;justify-content:space-between;align-items:center;">
+                  <span>직접작성</span><span class="ins-direct-close" id="bad-direct-close" style="font-size:12px;cursor:pointer;color:inherit;opacity:.6;">✕</span>
+                </div>
+                <div style="padding:8px 12px;">
+                  <textarea id="bad-direct" class="ins-direct-ta" placeholder="아쉬운 점을 직접 입력" rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="ins-dd-wrap" id="bad-dd-wrap">
+              <button type="button" class="ins-dd-trigger" id="bad-dd-trigger"><span>항목 선택</span><span style="color:#bbb;font-size:10px;">▼</span></button>
+              <div class="ins-dd-panel" id="bad-dd-panel"></div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="field">
         <label>도움받은 글/영상 링크</label>
-        <input type="text" placeholder="URL 또는 제목 입력">
+        <input type="text" id="ref-input" placeholder="URL 또는 제목 입력">
       </div>
       <div class="field">
         <label>새로 알게 된 개인 사실/정보 한마디</label>
-        <input type="text" placeholder="한 줄 요약">
+        <input type="text" id="discovery-input" placeholder="한 줄 요약">
       </div>
     </div>
 
   </div><!-- /card-body -->
 
   <!-- FOOTER -->
+  <!-- AI 자동 채우기 모달 -->
+  <div class="ai-fill-overlay" id="ai-fill-overlay">
+    <div class="ai-fill-box">
+      <div class="ai-fill-head">
+        <div>
+          <div class="ai-fill-head-title">✨ AI로 자동 채우기</div>
+          <div class="ai-fill-head-sub">AI 활동 내용을 붙여넣으면 카드 필드를 자동으로 채워드립니다</div>
+        </div>
+        <button class="ai-fill-close" id="ai-fill-close">✕</button>
+      </div>
+      <div class="ai-fill-body">
+        <div class="ai-fill-guide">
+          <strong>📋 이렇게 사용하세요</strong>
+          <ul>
+            <li>사용한 AI 툴에게 아래 프롬프트를 요청하고 받은 답변을 붙여넣기</li>
+            <li>작업 메모, 회의록, 활동 요약 텍스트도 OK</li>
+            <li><strong>여러 AI 툴을 사용했다면?</strong> 각 툴에서 받은 답변을 아래처럼 하나로 합쳐서 붙여넣기</li>
+          </ul>
+          <div style="margin-top:8px;background:#f0f0f0;border-radius:8px;padding:10px 12px;font-size:12px;color:#555;line-height:1.8;max-height:80px;overflow-y:auto;">
+            <div style="font-weight:700;color:#333;margin-bottom:4px;">✏️ 여러 툴 사용 시 작성 예시</div>
+            [Claude 작업]<br>
+            WBS 작성, 코드 구현, 오류 디버깅 등...<br><br>
+            [Gemini 작업]<br>
+            디자인 레퍼런스 리서치, 이미지 분석 등...<br><br>
+            [Figma 작업]<br>
+            와이어프레임 제작, 컴포넌트 정리 등...<br><br>
+            <span style="color:#888;">→ 툴 이름을 [ ] 로 구분해서 하나의 텍스트로 합치면 AI가 자동으로 도구별 Work Flow를 분리해서 채워줍니다.</span>
+          </div>
+        </div>
+        <div class="ai-fill-prompt-guide">
+          <div class="ai-fill-prompt-guide-title">💡 사용한 AI 툴에게 아래 내용을 그대로 요청하고, 받은 답변을 붙여넣어 주세요</div>
+          <div class="ai-fill-prompt-guide-copy" id="ai-fill-prompt-copy">
+            <div class="ai-fill-prompt-guide-text" id="ai-fill-prompt-text">지금까지 이 대화창에서 너와 대화한 모든 내용을 카드에 자동으로 넣을 수 있게 내용을 요약해. 아래의 항목으로 내용을 요약해
+
+1. 오늘 어떤 작업을 했나요? (작업 주제/소재명)
+2. 프로젝트 어떤 단계였나요? (계획/분석/설계/구현/테스트/배포)
+3. 어떤 AI 도구를 사용했나요? (Claude, Gemini, Figma 등)
+4. 이 작업으로 달성하려 한 목표는?
+5. 작업 전 직면한 문제나 어려움은?
+6. 각 도구로 구체적으로 무엇을 했나요? (단계별로)
+7. 각 단계별 소요 시간은? (분 단위)
+8. AI 덕분에 잘 된 점은?
+9. AI 활용에서 아쉬웠던 점은?
+10. AI 없이 했다면 어땠을까요?
+11. AI 덕분에 얻은 것은? (시간 단축, 품질 향상 등)
+12. 새로 알게 된 사실이나 인사이트는?
+13. 결과물 품질은 어떤가요? (정확성/완성도/활용가능성)
+14. 보완이 필요한 사항이 있다면?</div>
+            <button type="button" class="ai-fill-prompt-copy-btn" onclick="(function(){const t=document.getElementById('ai-fill-prompt-text');const txt=t.innerText;navigator.clipboard.writeText(txt).then(()=&gt;{const b=document.querySelector('.ai-fill-prompt-copy-btn');b.textContent='✓ 복사됨';setTimeout(()=&gt;{b.textContent='복사';},2000);});})();">복사</button>
+          </div>
+        </div>
+        <textarea class="ai-fill-ta" id="ai-fill-ta" placeholder="AI 활동 내용을 여기에 붙여넣어 주세요.
+
+예시) Claude에게 WBS 작성을 요청했고, 결과물을 Figma에서 시각화했습니다. 처음에는 요구사항 정의가 불명확해서 3번 수정..."></textarea>
+        <div class="ai-fill-progress" id="ai-fill-progress">
+          <div class="ai-fill-spinner"></div>
+          <span id="ai-fill-progress-txt">AI가 내용을 분석하고 있어요...</span>
+        </div>
+        <div class="ai-fill-result" id="ai-fill-result"></div>
+      </div>
+      <div class="ai-fill-footer">
+        <button class="ai-fill-cancel" id="ai-fill-cancel">취소</button>
+        <button class="ai-fill-run" id="ai-fill-run">✨ 자동 채우기</button>
+      </div>
+    </div>
+  </div>
+
   <div class="card-footer">
     <div class="footer-slogan">
       We find the most practical user experience of this era.<br>
       And create new value through design that is correct.
     </div>
     <div class="footer-right">
+      <button class="f-btn ai-fill" id="ai-fill-btn">✨ AI 자동 채우기</button>
       <button class="f-btn cfg" id="cfg-btn" title="Supabase 설정">⚙</button>
       <button class="f-btn clear" id="clear-btn">초기화</button>
       <button class="f-btn share-link" id="share-link-btn">🔗 링크 공유</button>
@@ -1303,24 +2113,485 @@
 <script>
   /* ── EMOJI PICKER ── */
   (function() {
+
+  /* ── COMBO BOX (목표 / 문제 드롭다운) ── */
+    const GOAL_OPTIONS = [
+    { group: '📋 계획' },
+    { label: 'AI를 통한 프로젝트 목표와 범위를 명확하게 정의한다' },
+    { label: 'AI를 통한 이해관계자 요구사항을 빠르게 수집하고 정리한다' },
+    { label: 'AI를 통한 일정·리소스 계획서를 구조화하여 작성한다' },
+    { label: 'AI를 통한 리스크 항목을 사전에 식별하고 대응 방안을 마련한다' },
+    { label: 'AI를 통한 프로젝트 착수 보고서 및 제안서 초안을 완성한다' },
+    { label: 'AI를 통한 WBS(작업분류체계)를 자동 분해하여 정리한다' },
+    { label: 'AI를 통한 팀 역할과 책임(RACI)을 명확하게 문서화한다' },
+
+
+    { label: 'AI를 통한 이해관계자 인터뷰 가이드와 질문지를 빠르게 작성한다' },
+    { label: 'AI를 통한 프로젝트 헌장(Project Charter)을 구조화하여 작성한다' },
+    { label: 'AI를 통한 예산·비용 계획서 초안을 빠르게 완성한다' },
+    { label: 'AI를 통한 유사 프로젝트 레퍼런스를 수집하고 벤치마크를 정리한다' },
+    { label: 'AI를 통한 팀 온보딩 자료와 킥오프 자료를 빠르게 준비한다' },
+    { label: 'AI를 통한 커뮤니케이션 계획서를 작성하고 보고 주기를 정의한다' },
+    { label: 'AI를 통한 프로젝트 성공 기준(KPI)을 명확하게 정의하고 문서화한다' },
+    { label: 'AI를 통한 조달 계획과 외부 리소스 활용 방안을 정리한다' },
+    { label: 'AI를 통한 범위 기술서(Scope Statement)를 명확하게 작성한다' },
+    { label: 'AI를 통한 유관 부서·팀과의 협력 방식과 접점을 사전에 정의한다' },
+
+    { group: '🗂 관리' },
+    { label: 'AI를 통한 회의록과 액션아이템을 자동으로 정리한다' },
+    { label: 'AI를 통한 이슈·변경 이력을 체계적으로 추적하고 기록한다' },
+    { label: 'AI를 통한 진행 상황 보고서를 빠르게 작성한다' },
+    { label: 'AI를 통한 팀 내 커뮤니케이션 문서를 일관된 형식으로 작성한다' },
+    { label: 'AI를 통한 피드백을 수집하고 우선순위를 결정한다' },
+    { label: 'AI를 통한 프로젝트 산출물의 버전을 일관되게 관리한다' },
+    { label: 'AI를 통한 팀 규칙·가이드라인 문서를 표준화하고 업데이트한다' },
+
+
+    { label: 'AI를 통한 프로젝트 대시보드 항목과 지표를 정의하고 구성한다' },
+    { label: 'AI를 통한 변경 요청(CR) 프로세스를 표준화하고 문서화한다' },
+    { label: 'AI를 통한 품질 관리 계획과 검토 기준을 수립한다' },
+    { label: 'AI를 통한 팀 내 의사결정 기록을 체계적으로 남긴다' },
+    { label: 'AI를 통한 반복 회의 아젠다 템플릿을 표준화하여 시간을 절약한다' },
+    { label: 'AI를 통한 스프린트·이터레이션 회고 결과를 빠르게 정리한다' },
+    { label: 'AI를 통한 리소스 투입 현황과 잔여 업무량을 시각화한다' },
+    { label: 'AI를 통한 외부 협력사·벤더 커뮤니케이션 문서를 일관되게 작성한다' },
+    { label: 'AI를 통한 프로젝트 종료 조건과 인수인계 기준을 명확히 정의한다' },
+    { label: 'AI를 통한 팀 성과 지표를 정리하고 다음 단계 목표와 연결한다' },
+
+    { group: '🔍 분석' },
+    { label: 'AI를 통한 사용자 인터뷰·설문 결과를 코딩하고 패턴을 파악한다' },
+    { label: 'AI를 통한 리서치 데이터를 구조화하고 인사이트를 도출한다' },
+    { label: 'AI를 통한 경쟁사·벤치마크 분석 자료를 신속하게 작성한다' },
+    { label: 'AI를 통한 고객 VOC 데이터를 분류하고 핵심 문제를 추출한다' },
+    { label: 'AI를 통한 요구사항을 분석하여 기능·비기능 항목으로 분리한다' },
+    { label: 'AI를 통한 페르소나와 사용자 시나리오를 구체화한다' },
+    { label: 'AI를 통한 현행 시스템의 문제점과 개선 방향을 문서화한다' },
+    { label: 'AI를 통한 데이터 분석 결과를 설득력 있는 스토리로 구성한다' },
+
+
+    { label: 'AI를 통한 사용자 행동 데이터를 분석하고 주요 패턴을 시각화한다' },
+    { label: 'AI를 통한 친화도 다이어그램(Affinity Diagram)을 빠르게 구성한다' },
+    { label: 'AI를 통한 핵심 사용자 문제를 HMW 질문 형식으로 재정의한다' },
+    { label: 'AI를 통한 AS-IS / TO-BE 현황을 비교하고 갭(Gap)을 문서화한다' },
+    { label: 'AI를 통한 이해관계자 분석 및 관심사·영향도 매트릭스를 작성한다' },
+    { label: 'AI를 통한 정량·정성 데이터를 통합하여 종합 인사이트를 도출한다' },
+    { label: 'AI를 통한 서비스 사용 맥락과 환경(Context)을 체계적으로 기술한다' },
+    { label: 'AI를 통한 사용자 여정 지도(Journey Map) 초안을 빠르게 완성한다' },
+    { label: 'AI를 통한 분석 결과를 바탕으로 핵심 과제와 기회 영역을 정의한다' },
+    { label: 'AI를 통한 도메인 지식·전문 용어를 빠르게 정리하고 팀과 공유한다' },
+
+    { group: '✏️ 설계' },
+    { label: 'AI를 통한 서비스 흐름(IA·플로우차트)을 빠르게 시각화한다' },
+    { label: 'AI를 통한 기능 명세서와 화면 정의서 초안을 완성한다' },
+    { label: 'AI를 통한 복수의 설계 대안을 비교하고 의사결정 근거를 정리한다' },
+    { label: 'AI를 통한 UX 라이팅 및 마이크로카피를 다양하게 생성한다' },
+    { label: 'AI를 통한 디자인 시스템 컴포넌트 명세를 체계적으로 작성한다' },
+    { label: 'AI를 통한 프로토타입 피드백을 반영하여 설계를 빠르게 개선한다' },
+    { label: 'AI를 통한 접근성·다국어 요구사항을 설계 단계에 반영한다' },
+
+
+    { label: 'AI를 통한 와이어프레임 설명 문구와 주석을 빠르게 작성한다' },
+    { label: 'AI를 통한 인터랙션 명세와 전환 조건을 명확하게 문서화한다' },
+    { label: 'AI를 통한 콘텐츠 전략과 정보 계층 구조를 빠르게 정의한다' },
+    { label: 'AI를 통한 화면별 엣지 케이스와 예외 상황을 체계적으로 정리한다' },
+    { label: 'AI를 통한 다양한 레이아웃 대안을 빠르게 탐색하고 비교한다' },
+    { label: 'AI를 통한 설계 원칙과 의사결정 기준을 팀 문서로 정리한다' },
+    { label: 'AI를 통한 사용자 오류 메시지와 피드백 문구를 일관되게 작성한다' },
+    { label: 'AI를 통한 반응형·다해상도 대응 설계 기준을 문서화한다' },
+    { label: 'AI를 통한 온보딩 플로우와 첫 사용 경험 시나리오를 구체화한다' },
+    { label: 'AI를 통한 설계 산출물 체크리스트를 작성하고 완성도를 검토한다' },
+
+    { group: '⚙️ 구현' },
+    { label: 'AI를 통한 코드 작성·수정·디버깅을 신속하게 처리한다' },
+    { label: 'AI를 통한 반복 작업을 자동화하여 개발 시간을 단축한다' },
+    { label: 'AI를 통한 기술 문서와 API 명세를 빠르게 작성한다' },
+    { label: 'AI를 통한 코드 리뷰 코멘트를 명확하고 일관되게 작성한다' },
+    { label: 'AI를 통한 구현 중 발생한 이슈의 원인을 빠르게 분석한다' },
+    { label: 'AI를 통한 도구·라이브러리 활용법을 빠르게 파악하고 적용한다' },
+    { label: 'AI를 통한 산출물의 오탈자·논리 오류를 신속하게 교정한다' },
+
+
+    { label: 'AI를 통한 구현 전 기술 스펙과 환경 설정 문서를 빠르게 정리한다' },
+    { label: 'AI를 통한 코드 컨벤션과 네이밍 규칙을 표준화하여 문서화한다' },
+    { label: 'AI를 통한 복잡한 로직을 주석과 함께 명확하게 설명한다' },
+    { label: 'AI를 통한 빌드·배포 스크립트 작성과 자동화 설정을 처리한다' },
+    { label: 'AI를 통한 외부 라이브러리·API 사용법을 빠르게 파악하고 적용한다' },
+    { label: 'AI를 통한 성능 병목 지점을 분석하고 개선 방향을 도출한다' },
+    { label: 'AI를 통한 데이터 모델과 DB 스키마 설계 문서를 작성한다' },
+    { label: 'AI를 통한 개발 중 발생한 기술 부채를 목록화하고 우선순위를 정한다' },
+    { label: 'AI를 통한 구현 완료 후 셀프 체크리스트를 작성하고 품질을 검토한다' },
+    { label: 'AI를 통한 팀 내 재사용 가능한 컴포넌트·모듈을 정리하고 공유한다' },
+
+    { group: '🧪 테스트' },
+    { label: 'AI를 통한 QA 체크리스트와 테스트 시나리오를 작성한다' },
+    { label: 'AI를 통한 테스트 결과를 정리하고 버그 리포트를 작성한다' },
+    { label: 'AI를 통한 사용성 테스트 결과를 분석하고 개선점을 도출한다' },
+    { label: 'AI를 통한 회귀 테스트 항목을 자동으로 생성하고 정리한다' },
+    { label: 'AI를 통한 AI 결과물의 정확성·신뢰성을 검증하는 기준을 만든다' },
+    { label: 'AI를 통한 테스트 커버리지를 높이기 위한 시나리오를 확장한다' },
+
+
+    { label: 'AI를 통한 탐색적 테스트 차터를 빠르게 작성하고 실행 범위를 정의한다' },
+    { label: 'AI를 통한 테스트 환경 설정 가이드를 명확하게 문서화한다' },
+    { label: 'AI를 통한 버그 재현 절차와 우선순위 기준을 표준화한다' },
+    { label: 'AI를 통한 성능·부하 테스트 계획서와 기준치를 정의한다' },
+    { label: 'AI를 통한 접근성(Accessibility) 검증 항목을 체크리스트로 작성한다' },
+    { label: 'AI를 통한 크로스브라우저·크로스디바이스 테스트 매트릭스를 작성한다' },
+    { label: 'AI를 통한 테스트 완료 기준(Exit Criteria)을 명확하게 정의한다' },
+    { label: 'AI를 통한 회귀 테스트 자동화 범위와 우선순위를 결정한다' },
+    { label: 'AI를 통한 사용자 수용 테스트(UAT) 가이드와 시나리오를 작성한다' },
+    { label: 'AI를 통한 테스트 결과를 요약하여 이해관계자에게 보고한다' },
+
+    { group: '🚀 배포 & 완료' },
+    { label: 'AI를 통한 배포 체크리스트와 롤백 계획을 문서화한다' },
+    { label: 'AI를 통한 사용자 매뉴얼과 운영 가이드를 빠르게 작성한다' },
+    { label: 'AI를 통한 릴리즈 노트와 변경 이력을 일관된 형식으로 작성한다' },
+    { label: 'AI를 통한 프로젝트 완료 보고서와 회고 문서를 작성한다' },
+    { label: 'AI를 통한 팀 내 학습 인사이트를 정리하고 다음 프로젝트에 연결한다' },
+    { label: 'AI를 통한 배포 후 모니터링 지표와 대응 기준을 정의한다' },
+
+    { label: 'AI를 통한 배포 전 최종 검토 항목과 승인 프로세스를 문서화한다' },
+    { label: 'AI를 통한 서비스 오픈 공지문과 안내 메시지를 작성한다' },
+    { label: 'AI를 통한 배포 후 모니터링 항목과 이상 감지 기준을 정의한다' },
+    { label: 'AI를 통한 핫픽스·긴급 대응 절차를 사전에 정의하고 공유한다' },
+    { label: 'AI를 통한 프로젝트 완료 후 KPI 달성 여부를 분석하고 보고한다' },
+    { label: 'AI를 통한 서비스 운영 단계의 지속 개선 백로그를 정리한다' },
+    { label: 'AI를 통한 고객 지원팀을 위한 FAQ와 대응 가이드를 빠르게 작성한다' },
+    { label: 'AI를 통한 프로젝트에서 얻은 교훈(Lessons Learned)을 체계적으로 기록한다' },
+    { label: 'AI를 통한 다음 프로젝트를 위한 재사용 가능한 템플릿을 정리한다' },
+    { label: 'AI를 통한 팀 기여도와 성과를 정리하여 공식 문서로 남긴다' },
+
+  ];
+
+    const PROBLEM_OPTIONS = [
+    { group: '📋 계획' },
+    { label: '프로젝트 목표와 범위가 모호해서 방향을 잡기 어렵다' },
+    { label: '이해관계자별 요구사항이 달라 합의점을 찾기 어렵다' },
+    { label: '일정 산정 근거가 부족해 현실적인 계획을 세우기 어렵다' },
+    { label: '리스크 항목을 사전에 식별하는 체계가 없다' },
+    { label: '착수 단계에서 팀원 간 역할과 책임이 불명확하다' },
+    { label: '유사 프로젝트의 선례가 없어 기준을 잡기 어렵다' },
+    { label: '초기 요구사항이 계속 바뀌어 계획 수정이 반복된다' },
+
+
+    { label: '프로젝트 목적과 기대 효과를 이해관계자에게 설득하기 어렵다' },
+    { label: '일정 내 달성 가능한 범위와 불가능한 범위를 구분하기 어렵다' },
+    { label: '예산 산정 근거가 부족해 현실적인 계획을 세우기 어렵다' },
+    { label: '팀 구성이 확정되기 전 역할 분배를 미리 설계하기 어렵다' },
+    { label: '비슷한 선례가 없어 공수 추정이 주먹구구식이 된다' },
+    { label: '초기 기획 단계에서 기술적 실현 가능성을 판단하기 어렵다' },
+    { label: '다수의 이해관계자 의견을 취합해 하나의 방향으로 정리하기 어렵다' },
+    { label: '계획 수립 후 승인 과정에서 불필요한 반복 수정이 발생한다' },
+    { label: '프로젝트 우선순위가 조직 내에서 자주 바뀌어 방향 잡기 어렵다' },
+    { label: '외부 의존성(타팀·벤더)이 많아 일정을 확정하기 어렵다' },
+
+    { group: '🗂 관리' },
+    { label: '이슈와 변경사항이 많아 추적·관리가 어렵다' },
+    { label: '회의 내용이 문서화되지 않아 나중에 혼선이 생긴다' },
+    { label: '팀원마다 문서 형식과 수준이 달라 통일이 어렵다' },
+    { label: '피드백을 반영하는 과정에서 버전 관리가 혼란스럽다' },
+    { label: '진행 상황을 이해관계자에게 명확하게 전달하기 어렵다' },
+    { label: '작업 우선순위를 정하는 기준이 불명확하다' },
+    { label: '작업 범위가 자주 바뀌어 산출물을 처음부터 다시 작성한다' },
+
+
+    { label: '산출물 관리 체계가 없어 최신 버전을 찾는 데 시간이 걸린다' },
+    { label: '팀원 간 업무 진행 상황을 실시간으로 파악하기 어렵다' },
+    { label: '의사결정 후 근거가 기록되지 않아 나중에 혼선이 생긴다' },
+    { label: '갑작스러운 요구사항 변경에 유연하게 대응하기 어렵다' },
+    { label: '여러 프로젝트를 동시에 관리하며 우선순위 조율이 어렵다' },
+    { label: '보고 형식이 매번 달라 보고서 작성에 시간이 낭비된다' },
+    { label: '이슈가 발생했을 때 책임 소재와 대응 주체가 불명확하다' },
+    { label: '팀원 온보딩이 느려 프로젝트 초반 속도가 나지 않는다' },
+    { label: '협업 도구가 너무 많아 정보가 분산되고 관리가 어렵다' },
+    { label: '프로젝트 완료 기준이 불명확해 언제 끝내야 할지 모른다' },
+
+    { group: '🔍 분석' },
+    { label: '리서치 데이터가 많지만 인사이트 도출이 느리다' },
+    { label: '정보가 너무 많아 핵심을 추려내는 데 시간이 오래 걸린다' },
+    { label: '인터뷰·설문 결과를 정리하는 데 너무 많은 시간이 걸린다' },
+    { label: '데이터 분석 결과를 설득력 있게 전달하기 어렵다' },
+    { label: '사용자 니즈와 비즈니스 요구사항 사이의 균형을 잡기 어렵다' },
+    { label: '요구사항이 모호해서 기능과 비기능을 구분하기 어렵다' },
+    { label: '다양한 관점의 아이디어를 혼자 발산하는 데 한계가 있다' },
+    { label: '현행 시스템의 문제를 객관적으로 파악하기 어렵다' },
+
+
+    { label: '인터뷰 참여자 모집과 일정 조율에 많은 시간이 소비된다' },
+    { label: '수집한 데이터의 신뢰성과 대표성을 확신하기 어렵다' },
+    { label: '정성 데이터를 정량화하여 설득력 있게 제시하기 어렵다' },
+    { label: '분석 결과가 너무 많아 핵심 인사이트 3가지를 고르기 어렵다' },
+    { label: '팀마다 데이터를 해석하는 관점이 달라 합의가 어렵다' },
+    { label: '리서치 결과가 실제 설계에 반영되지 않고 묻히는 경우가 많다' },
+    { label: '도메인 지식이 부족해 전문 용어와 업무 맥락을 이해하기 어렵다' },
+    { label: '분석 기간이 촉박해 충분한 검토 없이 인사이트를 도출한다' },
+    { label: '이전 리서치 자료가 정리되지 않아 중복 작업이 발생한다' },
+    { label: '사용자 맥락(Context)을 충분히 반영하지 못한 분석이 나온다' },
+
+    { group: '✏️ 설계' },
+    { label: '초안 작성 시 어떻게 시작해야 할지 막막하다' },
+    { label: '복잡한 사용자 여정을 빠르게 시각화하기 어렵다' },
+    { label: '작성한 문서의 논리 구조가 탄탄한지 확신이 없다' },
+    { label: '아이디어는 있지만 구체화하는 과정이 막힌다' },
+    { label: '디자인 시스템·가이드라인 일관성을 유지하기 어렵다' },
+    { label: '설계 결정의 근거를 문서로 남기지 못하고 있다' },
+    { label: '프로토타입 피드백을 빠르게 반영하고 재검증하기 어렵다' },
+
+
+    { label: '설계 방향에 대한 팀 내 합의가 이루어지지 않아 작업이 지연된다' },
+    { label: '화면 수가 많아 엣지 케이스와 예외 처리를 빠뜨리기 쉽다' },
+    { label: 'UX 설계와 개발 구현 간의 간극이 커서 싱크가 자주 어긋난다' },
+    { label: '같은 컴포넌트가 화면마다 다르게 설계되어 일관성이 없다' },
+    { label: '설계 변경이 자주 일어나 개발팀과의 소통 비용이 크다' },
+    { label: '이해관계자가 설계 의도를 이해하지 못해 반복 설명이 필요하다' },
+    { label: '접근성·다국어 요구사항이 설계 후반에 추가되어 재작업이 발생한다' },
+    { label: '콘텐츠 확정 전에 설계가 진행되어 나중에 레이아웃을 다시 조정한다' },
+    { label: '설계 산출물 형식이 팀마다 달라 핸드오프 시 혼선이 생긴다' },
+    { label: '여러 대안 중 어떤 것을 선택해야 할지 판단 기준이 없다' },
+
+    { group: '⚙️ 구현' },
+    { label: '반복되는 단순 작업에 너무 많은 시간이 소비된다' },
+    { label: '구현 중 발생한 이슈의 원인을 파악하는 데 시간이 걸린다' },
+    { label: '기술 문서가 부족해 도구·API 활용에 시간이 많이 든다' },
+    { label: '산출물의 오류를 마지막에 발견해 수정 비용이 크다' },
+    { label: '여러 도구를 오가며 작업하느라 흐름이 자주 끊긴다' },
+    { label: 'AI 결과물의 정확성·신뢰성을 검증하는 기준이 없다' },
+    { label: '프롬프트 품질이 낮아 원하는 결과물이 잘 나오지 않는다' },
+
+
+    { label: '요구사항 해석의 차이로 구현 결과가 설계와 달라진다' },
+    { label: '기존 코드 구조를 파악하는 데 시간이 너무 많이 걸린다' },
+    { label: '기술 부채가 쌓여 새로운 기능 추가가 점점 어려워진다' },
+    { label: '개발 환경 차이로 인해 로컬에서는 되는데 서버에서 안 된다' },
+    { label: '외부 API 변경이나 장애로 인해 개발 일정이 틀어진다' },
+    { label: '코드 리뷰 기준이 없어 품질이 사람마다 다르게 나온다' },
+    { label: '비기능 요구사항(성능·보안)이 후반에 제시되어 재작업이 발생한다' },
+    { label: '테스트 없이 배포해야 하는 상황이 반복된다' },
+    { label: '팀원 간 구현 방식이 달라 통합 시 충돌이 발생한다' },
+    { label: '구현 중 요구사항이 바뀌어 이미 완성한 코드를 다시 짜야 한다' },
+
+    { group: '🧪 테스트' },
+    { label: '테스트 시나리오 작성에 시간이 너무 많이 걸린다' },
+    { label: '버그 재현 조건을 명확하게 문서화하기 어렵다' },
+    { label: '사용성 테스트 결과를 빠르게 분류하고 정리하기 어렵다' },
+    { label: '마감 압박으로 충분한 테스트 없이 산출물을 제출하게 된다' },
+    { label: '테스트 커버리지가 부족해 예상치 못한 오류가 발생한다' },
+    { label: '비개발 이해관계자에게 테스트 결과를 전달하기 어렵다' },
+
+
+    { label: '테스트 환경이 실제 운영과 달라 신뢰성 있는 결과를 얻기 어렵다' },
+    { label: '버그 수정 후 다른 곳이 깨지는 사이드 이펙트가 반복된다' },
+    { label: '테스트 결과를 개발팀에 전달하는 형식이 표준화되어 있지 않다' },
+    { label: '시간 부족으로 중요 기능 외의 엣지 케이스를 테스트하지 못한다' },
+    { label: '비개발 직군이 UAT를 수행할 때 진행 방법을 몰라 지연된다' },
+    { label: '이전 테스트 결과가 문서화되지 않아 같은 버그가 반복된다' },
+    { label: '성능 테스트 기준치가 없어 통과·실패 판단이 주관적이 된다' },
+    { label: '테스트 범위가 명확하지 않아 무엇을 어디까지 해야 할지 모른다' },
+    { label: '접근성 검증 항목을 테스트 단계에서 뒤늦게 확인하게 된다' },
+    { label: '버그 우선순위 판단 기준이 없어 수정 순서를 정하기 어렵다' },
+
+    { group: '🚀 배포 & 완료' },
+    { label: '배포 전 체크리스트가 없어 누락 항목이 발생한다' },
+    { label: '운영 가이드·매뉴얼 작성에 불필요하게 많은 시간이 든다' },
+    { label: '프로젝트 완료 후 회고와 학습 정리가 잘 이루어지지 않는다' },
+    { label: '이전 프로젝트 인사이트가 다음 작업에 연결되지 않는다' },
+    { label: '팀 내 지식이 개인에게 집중되어 공유가 안 된다' },
+    { label: '배포 후 모니터링 기준과 대응 방안이 정의되어 있지 않다' },
+
+    { label: '배포 직전 예상치 못한 이슈가 발생해 일정이 지연된다' },
+    { label: '롤백 기준과 절차가 명확하지 않아 장애 대응이 느리다' },
+    { label: '배포 후 사용자 피드백을 체계적으로 수집하는 체계가 없다' },
+    { label: '운영 이관 후 담당자가 바뀌면 히스토리를 파악하기 어렵다' },
+    { label: '배포 완료 후 실제 성과 측정이 이루어지지 않는다' },
+    { label: '프로젝트 종료 후 팀이 해산되면서 노하우가 사라진다' },
+    { label: '다음 프로젝트를 위한 인수인계 문서가 부실하게 작성된다' },
+    { label: '서비스 오픈 후 예상보다 많은 문의와 오류 신고가 몰린다' },
+    { label: '배포 이후 지속적인 개선을 위한 우선순위 정리가 안 된다' },
+    { label: '완료 보고 이후 이해관계자의 추가 요청이 계속 이어진다' },
+
+  ];
+
+  function initCombo(inputId, dropdownId, options) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    if (!input || !dropdown) return;
+    dropdown.innerHTML = ''; // 중복 방지: 기존 내용 초기화
+
+    const directMap = { 'goal-input-text': 'goal-direct', 'problem-input': 'problem-direct' };
+    const directId = directMap[inputId];
+    const directEl = directId ? document.getElementById(directId) : null;
+
+    // 직접 작성하기
+    const directOpt = document.createElement('div');
+    directOpt.className = 'combo-option combo-direct-item';
+    directOpt.style.paddingLeft = '14px';
+    directOpt.style.fontWeight = '600';
+    directOpt.style.color = '#3a78d4';
+    directOpt.style.borderBottom = '1px solid #eee';
+    directOpt.textContent = '✏️ 직접 작성하기';
+    directOpt.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      input.value = '';
+      input.placeholder = '항목을 선택했습니다 (아래에 직접 작성)';
+      input.dataset.direct = 'true';
+      dropdown.classList.remove('open');
+      if (directEl) { directEl.style.display = 'block'; directEl.focus(); }
+    });
+    dropdown.appendChild(directOpt);
+
+    // 그룹별 아코디언 렌더링
+    let currentItemsContainer = null;
+
+    options.forEach((item) => {
+      if (item.group) {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'combo-group';
+
+        const hd = document.createElement('div');
+        hd.className = 'combo-group-header';
+        hd.textContent = item.group;
+
+        const itemsEl = document.createElement('div');
+        itemsEl.className = 'combo-group-items';
+
+        hd.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          hd.classList.toggle('open');
+          itemsEl.classList.toggle('open');
+        });
+
+        groupEl.append(hd, itemsEl);
+        dropdown.appendChild(groupEl);
+        currentItemsContainer = itemsEl;
+      } else if (currentItemsContainer) {
+        const div = document.createElement('div');
+        div.className = 'combo-option';
+        div.textContent = item.label;
+        div.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          input.value = item.label;
+          input.dataset.direct = '';
+          input.placeholder = inputId === 'goal-input-text' ? '🎯 목표 선택 또는 직접 입력' : '⚡ 문제 선택 또는 직접 입력';
+          dropdown.classList.remove('open');
+          if (directEl) directEl.style.display = 'none';
+        });
+        currentItemsContainer.appendChild(div);
+      }
+    });
+
+    // 포커스 시 드롭다운 열기
+    input.addEventListener('focus', () => {
+      const guide = document.getElementById('gp-guide');
+      if (guide) guide.style.display = 'block';
+      filterCombo(input, dropdown);
+      dropdown.classList.add('open');
+    });
+
+    // 드롭다운 내부 클릭 시 포커스 유지 (blur 방지)
+    dropdown.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+    });
+
+    // 타이핑 시 필터링
+    input.addEventListener('input', () => {
+      if (input.dataset.direct === 'true') return;
+      filterCombo(input, dropdown);
+      dropdown.classList.add('open');
+    });
+
+    // 포커스 아웃 시 닫기
+    input.addEventListener('blur', () => {
+      setTimeout(() => dropdown.classList.remove('open'), 200);
+    });
+  }
+
+  function filterCombo(input, dropdown) {
+    const q = input.value.trim().toLowerCase();
+    // 검색어 없으면 모든 옵션 표시, 그룹 접힌 상태 유지
+    if (!q) {
+      dropdown.querySelectorAll('.combo-option').forEach(opt => opt.classList.remove('hidden'));
+      dropdown.querySelectorAll('.combo-group').forEach(g => g.style.display = '');
+      return;
+    }
+    // 검색어 있으면 필터링 + 매칭 그룹 자동 펼침
+    dropdown.querySelectorAll('.combo-group').forEach(group => {
+      const header = group.querySelector('.combo-group-header');
+      const items = group.querySelector('.combo-group-items');
+      let hasVisible = false;
+      group.querySelectorAll('.combo-option').forEach(opt => {
+        const match = opt.textContent.toLowerCase().includes(q);
+        opt.classList.toggle('hidden', !match);
+        if (match) hasVisible = true;
+      });
+      group.style.display = hasVisible ? '' : 'none';
+      if (hasVisible && items) { items.classList.add('open'); header?.classList.add('open'); }
+    });
+  }
+
+  initCombo('goal-input-text', 'goal-dropdown', GOAL_OPTIONS);
+  initCombo('problem-input', 'problem-dropdown', PROBLEM_OPTIONS);
+
+  // 전역 노출 — AI 자동 채우기에서 접근 가능하도록
+  window._GOAL_OPTIONS    = GOAL_OPTIONS;
+  window._PROBLEM_OPTIONS = PROBLEM_OPTIONS;
+
     const CATS = [
-      ['🎯','🚀','💡','🔥','⚡','🌟','🏆','🎪','🧩','🔬','🎨','🛠','📐','🌱','💎','🦋','🎭','🧭','🔑','🌊','🏔','🎶','📡','🤖','🧲','🔭','⚗️','🧬','⚙️','🔮','🧱','🏗'],
-      ['😊','😎','🤩','🥳','😤','🤔','🧠','👊','✊','🙌','👏','💪','🫶','👁','🫀','🫁','👀','🤝','🙏','👆','☝️','🫵','🎉','🎊','💯','✨','🌈','❤️','🔴','🟠','🟡','🟢'],
-      ['🐉','🦁','🦊','🐺','🦅','🐬','🐯','🦋','🦎','🦑','🦈','🦏','🐘','🦒','🦓','🦬','🐂','🐎','🦌','🦫','🦦','🦥','🐻','🦔','🐧','🦆','🦉','🦚','🦜','🐠','🐙','🦀'],
-      ['🌿','🌲','🌳','🌴','🌵','🌾','🍀','🌺','🌸','🌼','🌻','🌹','🍁','🍂','🍃','☘️','🌱','🌿','🎋','🎍','🍄','🌾','🌊','🏔','🌋','🏜','🏕','⛰️','🗻','🌄','🌅','🌇'],
-      ['⚡','🔥','💧','🌪','❄️','🌊','☄️','🌙','☀️','🌤','⛅','🌦','🌧','⛈','🌩','🌨','🌬','🌫','🌈','🌂','☂️','⛱','⚡','💥','🌟','✨','💫','⭐','🌠','🎇','🎆','🌌'],
-      ['💡','📌','📍','🗺','🧭','📊','📈','📉','🗒','📋','📁','🗂','📂','📅','📆','🗓','📇','📒','📓','📔','📕','📗','📘','📙','📚','📖','🔖','🏷','💰','💳','🔐','🔒'],
+      // 🎯 활동·목표·도구 (65개)
+      ['🎯','🚀','💡','🔥','⚡','🌟','🏆','🎪','🧩','🔬','🎨','🛠','📐','🌱','💎','🦋','🎭','🧭','🔑','🌊','🏔','🎶','📡','🤖','🧲','🔭','⚗️','🧬','⚙️','🔮','🧱','🏗','🎓','🏅','🥇','🥈','🥉','🏁','🎖','📦','🧰','🪛','🔧','🔩','⛏','🪚','🗜','🧪','🔎','🔍','💻','🖥','⌨️','🖱','🖨','📱','📲','🔋','💾','💿','📀','🧮','🪄','🎲','♟️'],
+      // 😊 감정·사람·제스처 (65개)
+      ['😊','😎','🤩','🥳','😤','🤔','🧠','👊','✊','🙌','👏','💪','🫶','👁','🫀','🫁','👀','🤝','🙏','👆','☝️','🫵','🎉','🎊','💯','✨','🌈','❤️','🔴','🟠','🟡','🟢','😃','😁','😆','😅','🤣','🥰','😍','🤗','🤭','🤫','🤥','😶','😑','😬','🙄','😏','😌','😴','🤯','🥵','🥶','😱','😨','😰','😥','🫡','🫠','🤓','🥸','🤠','👋','🖐','✋','🤚','🤙'],
+      // 🐱 동물 (65개)
+      ['🐉','🦁','🦊','🐺','🦅','🐬','🐯','🦋','🦎','🦑','🦈','🦏','🐘','🦒','🦓','🦬','🐂','🐎','🦌','🦫','🦦','🦥','🐻','🦔','🐧','🦆','🦉','🦚','🦜','🐠','🐙','🦀','🐱','🐶','🐭','🐹','🐰','🐸','🐵','🐔','🐧','🐦','🐤','🦇','🐺','🐗','🐴','🦄','🐝','🪲','🐛','🦗','🕷','🦂','🐢','🐍','🦖','🦕','🐊','🐋','🐳','🐟','🐡','🦐','🦞'],
+      // 🌿 자연·식물·장소 (65개)
+      ['🌿','🌲','🌳','🌴','🌵','🌾','🍀','🌺','🌸','🌼','🌻','🌹','🍁','🍂','🍃','☘️','🌱','🎋','🎍','🍄','🌊','🏔','🌋','🏜','🏕','⛰️','🗻','🌄','🌅','🌇','🏠','🏢','🏗','🏭','🏫','🏛','⛪','🕌','🗽','🗼','🌉','🎢','🎡','🎠','⛲','🏖','🏝','🌎','🌍','🌏','🗺','🧭','🏞','🌐','🛣','🛤','✈️','🚀','🛸','🚁','🛳','🚂','🚌','🚗','🚲'],
+      // ⚡ 날씨·자연현상·기호 (65개)
+      ['⚡','🔥','💧','🌪','❄️','🌊','☄️','🌙','☀️','🌤','⛅','🌦','🌧','⛈','🌩','🌨','🌬','🌫','🌈','🌂','☂️','⛱','💥','🌟','✨','💫','⭐','🌠','🎇','🎆','🌌','♻️','⚠️','🚫','⭕','❌','❓','❗','✅','☑️','➕','➖','➗','✖️','💲','💱','©️','®️','™️','🔰','♾️','🔄','🔃','🔀','🔁','🔂','▶️','⏸','⏹','⏺','⏩','⏪','⏫','⏬','🔼'],
+      // 💡 사무·문서·비즈니스 (65개)
+      ['💡','📌','📍','🗺','🧭','📊','📈','📉','🗒','📋','📁','🗂','📂','📅','📆','🗓','📇','📒','📓','📔','📕','📗','📘','📙','📚','📖','🔖','🏷','💰','💳','🔐','🔒','✏️','📝','🖊','🖋','✒️','📎','🖇','📏','📐','✂️','🗃','🗄','🗑','📤','📥','📧','📨','📩','📬','📮','🏧','💹','🪪','🎫','🎟','🧾','💼','📰','🗞','📑','🔏','🔓','📣'],
     ];
+
+    // 검색 키워드 매핑
+    const EMOJI_KEYWORDS = {
+      '🎯':'목표 타겟 target', '🚀':'로켓 시작 launch', '💡':'아이디어 전구 idea', '🔥':'불 열정 fire hot', '⚡':'번개 빠른 전기 fast',
+      '🌟':'별 스타 star', '🏆':'트로피 우승 trophy', '🧩':'퍼즐 puzzle', '🔬':'현미경 연구 research', '🎨':'팔레트 디자인 art design',
+      '🛠':'도구 공구 tool', '📐':'설계 자 ruler', '🌱':'새싹 성장 growth', '💎':'다이아 보석 diamond', '🧭':'나침반 방향 compass',
+      '🔑':'열쇠 key', '🤖':'로봇 AI robot', '⚙️':'톱니 설정 gear setting', '🏗':'건설 build', '🧬':'DNA 유전자',
+      '🎓':'졸업 교육 education', '🏅':'메달 medal', '🏁':'체크 깃발 flag finish', '📦':'상자 패키지 package box', '🧰':'공구함 toolkit',
+      '💻':'노트북 컴퓨터 laptop computer', '🖥':'모니터 desktop', '📱':'스마트폰 mobile phone', '🔋':'배터리 battery', '💾':'저장 save floppy',
+      '🧮':'주판 계산 calculate', '🪄':'마법 magic wand', '🎲':'주사위 랜덤 dice random', '🔎':'돋보기 검색 search magnify',
+      '😊':'웃음 행복 smile happy', '😎':'멋진 cool', '🤩':'감동 amazing', '🤔':'생각 고민 think', '🧠':'뇌 두뇌 brain',
+      '💪':'힘 강한 strong', '🤝':'협력 악수 handshake', '🙏':'감사 기도 pray thanks', '🎉':'축하 party', '✨':'반짝 sparkle',
+      '❤️':'하트 사랑 heart love', '💯':'백점 완벽 perfect', '🌈':'무지개 rainbow',
+      '😃':'기쁨 joy', '🥰':'사랑스러움 lovely', '🤗':'포옹 hug', '🤫':'비밀 secret', '🤯':'충격 mind blown',
+      '😱':'놀람 shocked', '🫡':'경례 salute', '🤓':'공부 nerd', '🤠':'카우보이 cowboy', '👋':'인사 wave hello',
+      '🦁':'사자 lion', '🦊':'여우 fox', '🐺':'늑대 wolf', '🦅':'독수리 eagle', '🐬':'돌고래 dolphin',
+      '🐱':'고양이 cat', '🐶':'강아지 dog', '🐰':'토끼 rabbit', '🐸':'개구리 frog', '🦄':'유니콘 unicorn',
+      '🐝':'벌 꿀벌 bee', '🐢':'거북이 turtle', '🐍':'뱀 snake', '🦖':'공룡 dinosaur', '🐋':'고래 whale',
+      '🌿':'잎 자연 leaf nature', '🌸':'벚꽃 cherry', '🌹':'장미 rose', '🍀':'클로버 행운 luck clover',
+      '🏠':'집 house home', '🏢':'빌딩 건물 office building', '🏫':'학교 school', '🏛':'국회 정부 government',
+      '🌎':'지구 세계 earth world', '✈️':'비행기 airplane travel', '🚗':'자동차 car', '🚲':'자전거 bicycle',
+      '☀️':'해 태양 sun', '🌙':'달 moon', '❄️':'눈 snow', '💧':'물 water',
+      '♻️':'재활용 recycle', '⚠️':'경고 warning', '✅':'확인 완료 check done', '❌':'취소 삭제 cancel delete',
+      '❓':'질문 물음표 question', '❗':'느낌표 중요 important', '🔄':'반복 새로고침 refresh repeat',
+      '📊':'차트 그래프 chart', '📈':'상승 증가 up', '📉':'하락 감소 down', '📋':'클립보드 목록 clipboard list',
+      '📁':'폴더 folder', '📅':'달력 calendar', '📚':'책 book', '💰':'돈 money', '🔒':'잠금 보안 lock security',
+      '✏️':'연필 pencil write', '📝':'메모 노트 memo note', '📎':'클립 clip attach', '✂️':'가위 scissors cut',
+      '📧':'이메일 email', '💼':'서류가방 briefcase business', '📰':'뉴스 신문 news', '📣':'확성기 megaphone announce',
+      '🧾':'영수증 receipt', '🎫':'티켓 ticket', '🪪':'신분증 ID card',
+    };
+
     let currentCat = 0;
     const btn     = document.getElementById('emoji-btn');
     const picker  = document.getElementById('emoji-picker');
     const grid    = document.getElementById('ep-grid');
     const tabs    = document.querySelectorAll('.ep-tab');
+    const searchInput = document.getElementById('ep-search');
     if (!btn || !picker || !grid) return;
 
-    function renderGrid(cat) {
+    function renderGrid(emojis) {
       grid.innerHTML = '';
-      CATS[cat].forEach(e => {
+      emojis.forEach(e => {
         const b = document.createElement('button');
         b.type = 'button'; b.textContent = e;
         b.addEventListener('click', ev => {
@@ -1328,12 +2599,29 @@
           btn.textContent = e;
           btn.classList.remove('placeholder');
           picker.classList.remove('open');
+          if (searchInput) searchInput.value = '';
         });
         grid.appendChild(b);
       });
     }
 
-    renderGrid(0);
+    function renderCat(cat) {
+      renderGrid(CATS[cat]);
+    }
+
+    function searchEmojis(query) {
+      if (!query) { renderCat(currentCat); return; }
+      const q = query.toLowerCase();
+      const all = CATS.flat();
+      const filtered = all.filter(e => {
+        if (e.includes(q)) return true;
+        const kw = EMOJI_KEYWORDS[e];
+        return kw && kw.toLowerCase().includes(q);
+      });
+      renderGrid(filtered.length ? filtered : all);
+    }
+
+    renderCat(0);
     btn.classList.add('placeholder');
 
     tabs.forEach(tab => {
@@ -1342,13 +2630,23 @@
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         currentCat = +tab.dataset.cat;
-        renderGrid(currentCat);
+        if (searchInput) searchInput.value = '';
+        renderCat(currentCat);
       });
     });
+
+    // 검색 입력
+    if (searchInput) {
+      searchInput.addEventListener('input', () => searchEmojis(searchInput.value.trim()));
+      searchInput.addEventListener('click', e => e.stopPropagation());
+    }
 
     btn.addEventListener('click', e => {
       e.stopPropagation();
       picker.classList.toggle('open');
+      if (picker.classList.contains('open') && searchInput) {
+        setTimeout(() => searchInput.focus(), 50);
+      }
     });
 
     document.addEventListener('click', () => picker.classList.remove('open'));
@@ -1361,8 +2659,7 @@
   QA_KEYS.forEach(k => { qaStepsMap[k] = []; });
 
   function getToolOptions(selected) {
-    const active = toolList.filter(t => toolActive.has(t));
-    const opts = ['선택', ...active];
+    const opts = ['선택', ...toolList];
     return opts.map(t =>
       `<option value="${t === '선택' ? '' : t}" ${selected === t ? 'selected' : ''}>${t}</option>`
     ).join('');
@@ -1372,52 +2669,136 @@
     const list = document.getElementById('wf-list');
     const drawBtn = document.getElementById('wf-draw-btn');
     const imgBtn = document.getElementById('wf-img-btn');
+    const totalWrap = document.getElementById('wf-total');
     if (!list) return;
     list.innerHTML = '';
 
     if (wfRows.length === 0) {
-      list.innerHTML = `<div class="wf-empty">선정 도구에서 사용한 AI 도구를 선택하면 자동으로 워크플로우가 생성됩니다.</div>`;
-      if (drawBtn) drawBtn.style.display = 'none';
-      if (imgBtn) imgBtn.style.display = 'none';
+      if (_isViewerMode) {
+        list.innerHTML = `<div class="wf-empty" style="color:#e53935;font-weight:600;">사용자가 AI WORK FLOW를 작성하지 않았습니다.</div>`;
+        if (drawBtn) drawBtn.style.display = 'none';
+        if (imgBtn)  { imgBtn.style.display = 'none'; imgBtn.classList.add('wf-empty-viewer'); }
+      } else {
+        list.innerHTML = `<div class="wf-empty">선정 도구에서 사용한 AI 도구를 선택하면 자동으로 워크플로우가 생성됩니다.</div>`;
+        if (drawBtn) drawBtn.style.display = 'none';
+        if (imgBtn)  { imgBtn.style.display = 'none'; imgBtn.classList.remove('wf-empty-viewer'); }
+      }
+      if (totalWrap) totalWrap.style.display = 'none';
+      syncToolsWithWf();
       syncQaStepSelect();
       return;
     }
 
     if (drawBtn) drawBtn.style.display = '';
-    wfRows.forEach((row, i) => {      const div = document.createElement('div');
+    wfRows.forEach((row, i) => {
+      const div = document.createElement('div');
       div.className = 'wf-row';
+
+      // 버튼 라벨 생성
+      const hasData = row.intent || row.action || row.prompt;
+      const EMPTY_LABEL = _isViewerMode ? '<span style="color:#e53935;font-size:12px;font-style:italic;">사용자가 입력하지 않음</span>' : '클릭하여 입력';
+      const btnLabel = hasData
+        ? (row.intent || '').substring(0, 30) + (row.intent && row.intent.length > 30 ? '…' : '') || (row.action || '').substring(0, 30)
+        : EMPTY_LABEL;
+      const timePlaceholder = _isViewerMode && !row.time ? '미입력' : '분';
+      const timeStyle = _isViewerMode && !row.time ? 'color:#e53935;font-size:11px;font-style:italic;' : '';
+
       div.innerHTML = `
         <div class="wf-step">STEP.${i + 1}</div>
         <select class="wf-tool" data-idx="${i}">${getToolOptions(row.tool)}</select>
-        <input class="wf-input" type="text" data-idx="${i}" data-field="intent" placeholder="의도 입력" value="${row.intent || ''}" readonly onfocus="this.removeAttribute('readonly')">
-        <input class="wf-input" type="text" data-idx="${i}" data-field="action" placeholder="활동 입력" value="${row.action || ''}" readonly onfocus="this.removeAttribute('readonly')">
-        ${i === 0 ? '<span class="wf-col-del"></span>' : '<span class="wf-col-del"></span>'}      `;
-      // 확장 모달 연결
-      div.querySelectorAll('.wf-input').forEach(inp => {
-        inp.addEventListener('click', () => {
-          const field = inp.dataset.field;
-          const label = field === 'intent' ? `STEP.${i+1} 의도` : `STEP.${i+1} 활동`;
-          openTextModal(inp, label);
-        });
+        <button type="button" class="wf-detail-btn ${hasData ? 'has-data' : ''}" data-idx="${i}">${btnLabel}</button>
+        <input class="wf-time${_isViewerMode && !row.time ? ' viewer-empty-time' : ''}" type="number" data-idx="${i}" placeholder="${timePlaceholder}" value="${row.time || ''}" min="0" max="999" style="${timeStyle}">
+        <div class="wf-row-actions">
+          <button type="button" class="wf-row-add" data-idx="${i}" title="하위에 스텝 추가">+</button>
+          <button type="button" class="wf-row-del" data-idx="${i}" title="이 스텝 삭제">✕</button>
+        </div>
+      `;
+
+      // 내용 입력 버튼 → 모달 열기
+      div.querySelector('.wf-detail-btn').addEventListener('click', e => {
+        openWfModal(+e.target.dataset.idx);
       });
-      // 도구 변경
+      // 도구 변경 — syncToolsWithWf가 자동 동기화
       div.querySelector('.wf-tool').addEventListener('change', e => {
         wfRows[+e.target.dataset.idx].tool = e.target.value;
-        syncQaStepSelect();
+        renderWorkflow();
       });
-      // 인풋 변경
-      div.querySelectorAll('.wf-input').forEach(inp => {
-        inp.addEventListener('input', e => {
-          wfRows[+e.target.dataset.idx][e.target.dataset.field] = e.target.value;
-        });
+      // 시간 변경
+      div.querySelector('.wf-time').addEventListener('input', e => {
+        wfRows[+e.target.dataset.idx].time = e.target.value;
+        updateWfTotal();
+      });
+      // 추가 버튼 — 현재 행 하위에 새 행 삽입
+      div.querySelector('.wf-row-add').addEventListener('click', e => {
+        const idx = +e.currentTarget.dataset.idx;
+        wfRows.splice(idx + 1, 0, { tool: '', intent: '', action: '', time: '', prompt: '' });
+        renderWorkflow();
+      });
+      // 삭제 버튼 — syncToolsWithWf가 자동 동기화
+      div.querySelector('.wf-row-del').addEventListener('click', e => {
+        const idx = +e.currentTarget.dataset.idx;
+        wfRows.splice(idx, 1);
+        renderWorkflow();
       });
       list.appendChild(div);
     });
+    updateWfTotal();
+    syncToolsWithWf();
     syncQaStepSelect();
   }
 
+  /* ── WF 상세 입력 모달 ── */
+  let _wfModalIdx = null;
+
+  function openWfModal(idx) {
+    _wfModalIdx = idx;
+    const row = wfRows[idx];
+    document.getElementById('wf-modal-title').textContent = `STEP.${idx + 1} 상세 입력`;
+    document.getElementById('wf-modal-intent').value = row.intent || '';
+    document.getElementById('wf-modal-action').value = row.action || '';
+    document.getElementById('wf-modal-prompt').value = row.prompt || '';
+    document.getElementById('wf-modal-overlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('wf-modal-intent').focus(), 50);
+  }
+
+  function closeWfModal() {
+    document.getElementById('wf-modal-overlay').style.display = 'none';
+    _wfModalIdx = null;
+  }
+
+  function saveWfModal() {
+    if (_wfModalIdx === null) return;
+    wfRows[_wfModalIdx].intent = document.getElementById('wf-modal-intent').value.trim();
+    wfRows[_wfModalIdx].action = document.getElementById('wf-modal-action').value.trim();
+    wfRows[_wfModalIdx].prompt = document.getElementById('wf-modal-prompt').value.trim();
+    renderWorkflow();
+    closeWfModal();
+  }
+
+  // 모달 배경 클릭으로 닫기
+  document.getElementById('wf-modal-overlay')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('wf-modal-overlay')) closeWfModal();
+  });
+  // ESC 키로 닫기
+  document.getElementById('wf-modal-overlay')?.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeWfModal();
+  });
+
+  function updateWfTotal() {
+    const totalWrap = document.getElementById('wf-total');
+    const totalVal  = document.getElementById('wf-total-value');
+    if (!totalWrap || !totalVal) return;
+    const sum = wfRows.reduce((acc, r) => acc + (parseInt(r.time) || 0), 0);
+    if (sum > 0 || wfRows.length > 0) {
+      totalWrap.style.display = '';
+      totalVal.textContent = sum + '분';
+    } else {
+      totalWrap.style.display = 'none';
+    }
+  }
+
   document.getElementById('wf-add-btn')?.addEventListener('click', () => {
-    wfRows.push({ tool: '', intent: '', action: '' });
+    wfRows.push({ tool: '', intent: '', action: '', time: '', prompt: '' });
     renderWorkflow();
   });
 
@@ -1638,6 +3019,8 @@
   /* ── TOOL SYSTEM ── */
   const DEFAULT_TOOLS = ['Perplexity','Claude','Gemini','Figma','Make','Stitch','Claude Cowork','Claude Code','VS Code'];
   let toolList = [...DEFAULT_TOOLS];
+  window._getToolList = () => toolList;
+  window._addToToolList = (t) => { if (!toolList.includes(t)) toolList.push(t); };
   let toolActive = new Set();
   let _isViewerMode = false;
 
@@ -1653,9 +3036,17 @@
     badgeGrid.innerHTML = '';
     toolList.forEach(name => {
       const badge = document.createElement('span');
+      const count = wfRows.filter(r => r.tool === name).length;
       badge.className = 'tool-badge' + (toolActive.has(name) ? ' active' : '');
 
       const label = document.createTextNode(name);
+
+      // 사용 횟수 표시 (1 이상일 때)
+      const countEl = document.createElement('span');
+      countEl.className = 'badge-count';
+      countEl.textContent = count;
+      if (count === 0) countEl.style.display = 'none';
+
       const del = document.createElement('span');
       del.className = 'badge-del';
       del.textContent = '✕';
@@ -1664,33 +3055,34 @@
       del.addEventListener('click', e => {
         e.stopPropagation();
         toolList = toolList.filter(t => t !== name);
-        toolActive.delete(name);
         wfRows = wfRows.filter(r => r.tool !== name);
-        renderTools();
         renderWorkflow();
-        syncQaStepSelect();
       });
 
       badge.addEventListener('click', () => {
         if (toolActive.has(name)) {
-          toolActive.delete(name);
-          // 해당 도구 wfRow 제거
+          // 비활성화 → 해당 도구 wfRow 전부 제거
           wfRows = wfRows.filter(r => r.tool !== name);
         } else {
-          toolActive.add(name);
-          // 해당 도구 wfRow 자동 추가
-          wfRows.push({ tool: name, intent: '', action: '' });
+          // 활성화 → wfRow 자동 추가
+          wfRows.push({ tool: name, intent: '', action: '', time: '', prompt: '' });
         }
-        renderTools();
         renderWorkflow();
-        syncQaStepSelect();
       });
 
-      badge.append(label, del);
+      badge.append(label, countEl, del);
       badgeGrid.appendChild(badge);
     });
     // + 추가 버튼 항상 마지막에
     badgeGrid.appendChild(addBtn);
+  }
+
+  /* ── 선정도구 ↔ WF 강제 동기화 ── */
+  function syncToolsWithWf() {
+    // toolActive = wfRows에 존재하는 도구 집합으로 강제 동기화
+    const wfToolSet = new Set(wfRows.map(r => r.tool).filter(Boolean));
+    toolActive = wfToolSet;
+    renderTools();
   }
 
 
@@ -1723,8 +3115,116 @@
     }
   });
 
+
+  /* -- 드라이브 링크 미리보기 -- */
+  const DRIVE_ROOT = 'https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA';
+
+  function getDriveUrl(val) {
+    if (!val) return '';
+    return val.startsWith('http') ? val : '';
+  }
+
+  /* ── 드라이브 링크 등록 모달 ── */
+  let _driveModalTarget = null; // 현재 편집 중인 key (material/mid/final/prompt)
+  const DRIVE_LABELS = { material: '소스', mid: '중간 결과', final: '최종 결과', prompt: '프롬프트' };
+
+  function openDriveModal(key) {
+    _driveModalTarget = key;
+    document.getElementById('drive-modal-title').textContent = DRIVE_LABELS[key] + ' 링크 등록';
+    // 기존 값 불러오기
+    document.getElementById('drive-modal-url-input').value     = document.getElementById('drive-' + key)?.value || '';
+    document.getElementById('drive-modal-name-input').value    = document.getElementById('drive-' + key + '-name')?.value || '';
+    document.getElementById('drive-modal-process-input').value = document.getElementById('drive-' + key + '-process')?.value || '';
+    document.getElementById('drive-modal-overlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('drive-modal-name-input').focus(), 50);
+  }
+
+  function closeDriveModal(e) {
+    if (e && e.target !== document.getElementById('drive-modal-overlay')) return;
+    document.getElementById('drive-modal-overlay').style.display = 'none';
+    _driveModalTarget = null;
+  }
+
+  function saveDriveModal() {
+    const key     = _driveModalTarget;
+    const url     = document.getElementById('drive-modal-url-input').value.trim();
+    const name    = document.getElementById('drive-modal-name-input').value.trim();
+    const process = document.getElementById('drive-modal-process-input').value;
+    if (!url) { document.getElementById('drive-modal-url-input').focus(); return; }
+
+    // hidden 필드에 저장
+    document.getElementById('drive-' + key).value             = url;
+    document.getElementById('drive-' + key + '-name').value   = name;
+    document.getElementById('drive-' + key + '-process').value = process;
+
+    // 등록 완료 UI 업데이트
+    updateDriveRow(key);
+    document.getElementById('drive-modal-overlay').style.display = 'none';
+    _driveModalTarget = null;
+  }
+
+  function updateDriveRow(key) {
+    const url     = document.getElementById('drive-' + key)?.value || '';
+    const name    = document.getElementById('drive-' + key + '-name')?.value || '';
+    const process = document.getElementById('drive-' + key + '-process')?.value || '';
+
+    const linkEl    = document.getElementById('drive-reg-link-' + key);
+    const emptyEl   = document.getElementById('dt-empty-' + key);
+    const processEl = document.getElementById('drive-reg-process-' + key);
+    const regBtn    = document.getElementById('drive-reg-btn-' + key);
+    const editBtn   = document.getElementById('drive-reg-edit-' + key);
+
+    if (!url) {
+      if (_isViewerMode) {
+        // 뷰어 모드: 등록 버튼 숨기고 빈 값 표시
+        if (linkEl)    { linkEl.style.display = 'none'; }
+        if (emptyEl)   { emptyEl.style.color = '#e53935'; emptyEl.style.fontStyle = 'italic'; emptyEl.style.fontSize = '12px'; emptyEl.textContent = '사용자가 입력하지 않음'; emptyEl.style.display = ''; }
+        if (processEl) { processEl.textContent = '사용자 미선택'; processEl.style.color = '#e53935'; processEl.style.fontStyle = 'italic'; processEl.style.fontSize = '12px'; processEl.style.display = ''; }
+        if (regBtn)    regBtn.style.display = 'none';
+        if (editBtn)   editBtn.style.display = 'none';
+      } else {
+        if (linkEl)    { linkEl.style.display = 'none'; linkEl.href = '#'; linkEl.textContent = ''; }
+        if (emptyEl)   { emptyEl.style.color = ''; emptyEl.style.fontStyle = ''; emptyEl.textContent = '—'; emptyEl.style.display = ''; }
+        if (processEl) processEl.textContent = '';
+        if (regBtn)    regBtn.style.display = '';
+        if (editBtn)   editBtn.style.display = 'none';
+      }
+      return;
+    }
+    // url 있을 때
+    if (linkEl)    { linkEl.href = url; linkEl.textContent = name || url; linkEl.style.display = ''; }
+    if (emptyEl)   emptyEl.style.display = 'none';
+    if (processEl) {
+      processEl.textContent = process || (_isViewerMode ? '사용자 미선택' : '');
+      processEl.style.color = (!process && _isViewerMode) ? '#e53935' : '';
+      processEl.style.fontStyle = (!process && _isViewerMode) ? 'italic' : '';
+      processEl.style.fontSize = (!process && _isViewerMode) ? '12px' : '';
+      processEl.style.display = '';
+    }
+    if (regBtn)    regBtn.style.display = 'none';
+    if (editBtn)   editBtn.style.display = _isViewerMode ? 'none' : '';
+  }
+
+  // 엔터키로 저장
+  document.getElementById('drive-modal-overlay')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveDriveModal();
+    if (e.key === 'Escape') { document.getElementById('drive-modal-overlay').style.display = 'none'; _driveModalTarget = null; }
+  });
+
   renderTools();
   renderWorkflow();
+
+  /* ── 활동일 오늘 날짜 자동 입력 ── */
+  (function() {
+    const dateEl = document.getElementById('date-input');
+    if (dateEl && !dateEl.value) {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, '0');
+      const d = String(today.getDate()).padStart(2, '0');
+      dateEl.value = `${y}-${m}-${d}`;
+    }
+  })();
 
   /* ── TEXT EXPAND MODAL ── */
   const textModal      = document.getElementById('text-modal');
@@ -1825,6 +3325,10 @@
       const wrap = document.createElement('div');
       wrap.className = 'img-thumb';
 
+      // 이미지 래퍼
+      const imgWrap = document.createElement('div');
+      imgWrap.className = 'img-thumb-img-wrap';
+
       const im = document.createElement('img');
       im.src = img.src;
       im.alt = img.name;
@@ -1849,7 +3353,19 @@
         syncImageUI();
       });
 
-      wrap.append(im, del);
+      imgWrap.append(im, del);
+
+      // 캡션 입력
+      const caption = document.createElement('textarea');
+      caption.className = 'img-caption';
+      caption.placeholder = '캡션 입력 (예: WBS 1차 결과 / 만족도 70%)';
+      caption.rows = 2;
+      caption.value = img.caption || '';
+      caption.addEventListener('input', () => {
+        images[i].caption = caption.value;
+      });
+
+      wrap.append(imgWrap, caption);
       imgGridEl.appendChild(wrap);
     });
   }
@@ -1879,7 +3395,7 @@
       const r = new FileReader();
       r.onload = async ev => {
         const compressed = await compressImage(ev.target.result);
-        images.push({ src: compressed, name: file.name });
+        images.push({ src: compressed, name: file.name, caption: '' });
         syncImageUI();
       };
       r.readAsDataURL(file);
@@ -1917,6 +3433,411 @@
       this.style.height = 'auto';
       this.style.height = this.scrollHeight + 'px';
     });
+  });
+
+  /* ── GOOD / BAD POINT 드롭다운 셀렉터 ── */
+  const GOOD_GROUPS = [
+    { title: '생산성 향상', items: [
+      '반복 작업 시간이 대폭 단축되었다',
+      '초안 작성 생산성이 크게 향상되었다',
+      '프로토타입 제작 속도가 빨라졌다',
+      '회의록/보고서 정리가 자동화되었다',
+      '새로운 도구의 학습 곡선이 줄었다',
+      '수작업 대비 처리량이 크게 늘어났다',
+      '템플릿 기반 문서 생성이 빨라졌다',
+      '반복 업무를 자동화하여 핵심 업무에 집중할 수 있었다',
+      '병렬 작업이 가능해져 일정이 단축되었다',
+      '검색·수집에 소요되는 시간이 줄었다',
+    ]},
+    { title: '품질 개선', items: [
+      '프롬프트 개선으로 결과 품질이 높아졌다',
+      '문서 표준화와 일관성을 확보했다',
+      '기존 방식 대비 완성도가 향상되었다',
+      '커뮤니케이션 자료 품질이 개선되었다',
+      '반복 검증으로 오류를 줄일 수 있었다',
+      '맞춤법·문법 오류가 자동 교정되었다',
+      '논리적 구조의 글을 빠르게 작성할 수 있었다',
+      '다국어 번역 품질이 향상되었다',
+      '산출물의 전문성이 높아졌다',
+      '이전 결과물 대비 피드백이 긍정적이었다',
+    ]},
+    { title: '분석·리서치', items: [
+      '다양한 관점/대안을 빠르게 확보했다',
+      '데이터 분석 속도가 향상되었다',
+      '리서치 범위를 넓힐 수 있었다',
+      '벤치마크 자료 수집이 효율적이었다',
+      '데이터 시각화 작업 효율이 증가했다',
+      '대량 데이터에서 패턴을 빠르게 발견했다',
+      '경쟁사·트렌드 분석이 체계적으로 정리되었다',
+      '정성 데이터를 정량적으로 분류할 수 있었다',
+      '사용자 피드백을 효율적으로 코딩·분류했다',
+      'VOC 데이터에서 핵심 인사이트를 도출했다',
+    ]},
+    { title: '기획·설계', items: [
+      '복잡한 정보를 체계적으로 구조화할 수 있었다',
+      '아이디어 발산 단계에서 효과적이었다',
+      '사용자 시나리오를 다양하게 도출했다',
+      '복잡한 요구사항 정리에 유용했다',
+      '팀 내 지식 공유에 도움이 되었다',
+      'IA/플로우차트 초안을 빠르게 작성했다',
+      '기능 명세서 작성 시간이 단축되었다',
+      '페르소나 설정이 구체화되었다',
+      '디자인 시스템 정리에 활용할 수 있었다',
+      'PRD/기획서 초안 작성이 수월해졌다',
+    ]},
+  ];
+  const BAD_GROUPS = [
+    { title: '품질 문제', items: [
+      'AI 결과물에서 사실 오류가 발견되었다',
+      '기대 대비 결과물 품질이 미달이었다',
+      '편향된 관점의 결과물이 생성되었다',
+      '출력 형식이 요청과 맞지 않았다',
+      '기존 작업물과 톤앤매너가 일치하지 않았다',
+      '같은 프롬프트인데 매번 다른 결과가 나왔다',
+      '출처·근거가 불분명한 내용이 포함되었다',
+      '핵심 요점이 누락되거나 엉뚱한 방향으로 생성되었다',
+      '한국어 표현이 부자연스러운 부분이 있었다',
+      '숫자·통계 데이터의 정확성이 떨어졌다',
+    ]},
+    { title: '효율 저하', items: [
+      '맥락 이해 부족으로 재작업이 발생했다',
+      '프롬프트 작성 자체에 시간이 많이 소요되었다',
+      '반복 수정에도 원하는 결과에 도달하지 못했다',
+      '최신/실시간 데이터 반영이 불가했다',
+      '학습에 투입한 시간 대비 효과가 불확실했다',
+      '결과물 검증에 오히려 더 많은 시간이 들었다',
+      '도구 전환 과정에서 작업 흐름이 끊겼다',
+      'AI 없이 직접 했으면 더 빨랐을 것 같다',
+      '입력 데이터 정리에 예상보다 시간이 소요되었다',
+      '여러 도구를 병행하면서 혼란이 생겼다',
+    ]},
+    { title: '기술적 한계', items: [
+      '도메인 전문 용어 처리가 미흡했다',
+      '창의적/감성적 결과물에 한계가 있었다',
+      '긴 문서 처리 시 내용 누락이 발생했다',
+      '복잡한 로직이나 조건 처리에 한계가 있었다',
+      'UX 맥락이나 뉘앙스를 이해하지 못했다',
+      '이미지·시각 자료 생성 품질이 부족했다',
+      '컨텍스트 길이 제한으로 작업이 분할되었다',
+      '표·차트 등 정형 데이터 처리가 미흡했다',
+      '멀티모달 작업 간 연계가 매끄럽지 않았다',
+      '코드 생성 시 디버깅에 추가 시간이 필요했다',
+    ]},
+    { title: '운영·리스크', items: [
+      '데이터 보안/민감정보 처리가 우려되었다',
+      'AI 의존도가 높아지는 것이 걱정된다',
+      '검증 없이 사용할 경우 오류가 전파될 수 있다',
+      '팀원 간 AI 활용 수준 편차가 있다',
+      '도구 간 결과물 호환성에 문제가 있었다',
+      'AI 사용 기준·가이드라인이 불명확하다',
+      '저작권·라이선스 관련 리스크가 우려된다',
+      '비용 대비 효과를 측정하기 어렵다',
+      '장애·서비스 중단 시 대체 수단이 없었다',
+      '팀 내 AI 윤리 기준이 정립되지 않았다',
+    ]},
+  ];
+
+  // 전체 flat 배열 (인덱스 기반 저장용)
+  const GOOD_ITEMS = GOOD_GROUPS.flatMap(g => g.items);
+  const BAD_ITEMS  = BAD_GROUPS.flatMap(g => g.items);
+  window._GOOD_ITEMS = GOOD_ITEMS;
+  window._BAD_ITEMS  = BAD_ITEMS;
+
+  let goodSelected = new Set();
+  let badSelected = new Set();
+
+  function buildInsDropdown(panelId, triggerId, tagsId, directId, groups, allItems, selectedSet) {
+    const panel = document.getElementById(panelId);
+    const trigger = document.getElementById(triggerId);
+    const tagsWrap = document.getElementById(tagsId);
+    const directTa = document.getElementById(directId);
+    if (!panel || !trigger) return;
+
+    // 임시 체크 상태 (패널 열릴 때 selectedSet 복사)
+    let tempChecked = new Set(selectedSet);
+
+    // 패널 렌더링
+    function renderPanel() {
+      panel.innerHTML = '';
+      tempChecked = new Set(selectedSet);
+
+      // 직접 작성하기
+      const direct = document.createElement('div');
+      direct.className = 'ins-dd-direct';
+      direct.textContent = '✏️ 직접 작성하기';
+      direct.addEventListener('click', () => {
+        const boxId = directId.replace('direct', 'direct-box');
+        const box = document.getElementById(boxId);
+        if (box) box.style.display = '';
+        panel.classList.remove('open');
+        if (directTa) setTimeout(() => directTa.focus(), 50);
+      });
+      panel.appendChild(direct);
+
+      // 그룹별 아코디언
+      groups.forEach(group => {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'ins-dd-group';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'ins-dd-group-title';
+        titleEl.textContent = group.title;
+        titleEl.addEventListener('click', () => {
+          titleEl.classList.toggle('open');
+          itemsEl.classList.toggle('open');
+        });
+
+        const itemsEl = document.createElement('div');
+        itemsEl.className = 'ins-dd-group-items';
+
+        group.items.forEach(text => {
+          const idx = allItems.indexOf(text);
+          const item = document.createElement('div');
+          item.className = 'ins-dd-item';
+
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.checked = tempChecked.has(idx);
+          cb.addEventListener('change', () => {
+            if (cb.checked) tempChecked.add(idx);
+            else tempChecked.delete(idx);
+          });
+
+          const lbl = document.createElement('label');
+          lbl.textContent = text;
+          lbl.addEventListener('click', () => {
+            cb.checked = !cb.checked;
+            if (cb.checked) tempChecked.add(idx);
+            else tempChecked.delete(idx);
+          });
+
+          item.append(cb, lbl);
+          itemsEl.appendChild(item);
+        });
+
+        groupEl.append(titleEl, itemsEl);
+        panel.appendChild(groupEl);
+      });
+
+      // 하단 확인 버튼
+      const footer = document.createElement('div');
+      footer.className = 'ins-dd-footer';
+      const confirmBtn = document.createElement('button');
+      confirmBtn.type = 'button';
+      confirmBtn.className = 'ins-dd-confirm';
+      confirmBtn.textContent = '확인';
+      confirmBtn.addEventListener('click', () => {
+        // tempChecked → selectedSet 반영
+        selectedSet.clear();
+        tempChecked.forEach(i => selectedSet.add(i));
+        renderTags();
+        panel.classList.remove('open');
+      });
+      footer.appendChild(confirmBtn);
+      panel.appendChild(footer);
+    }
+
+    // 인덱스 → 그룹 타이틀 매핑
+    function getGroupTitle(idx) {
+      let offset = 0;
+      for (const g of groups) {
+        if (idx < offset + g.items.length) return g.title;
+        offset += g.items.length;
+      }
+      return '';
+    }
+
+    // 태그 렌더링 — 직접작성 박스는 HTML에 고정, 선택 항목만 동적 렌더
+    function renderTags() {
+      if (!tagsWrap) return;
+      // 직접작성 박스 보존, 나머지 동적 박스 제거
+      tagsWrap.querySelectorAll('.ins-tag-box:not(.ins-direct-box)').forEach(el => el.remove());
+
+      if (selectedSet.size === 0) return;
+
+      const grouped = {};
+      selectedSet.forEach(i => {
+        const title = getGroupTitle(i);
+        if (!grouped[title]) grouped[title] = [];
+        grouped[title].push(i);
+      });
+
+      Object.entries(grouped).forEach(([title, indices]) => {
+        const box = document.createElement('div');
+        box.className = 'ins-tag-box';
+
+        const titleEl = document.createElement('div');
+        titleEl.className = 'ins-tag-box-title';
+        titleEl.textContent = title;
+        box.appendChild(titleEl);
+
+        const list = document.createElement('div');
+        list.className = 'ins-tag-box-list';
+        indices.forEach(i => {
+          const item = document.createElement('div');
+          item.className = 'ins-tag-box-item';
+          item.innerHTML = `<span>${allItems[i]}</span><span class="ins-tag-del" data-idx="${i}">✕</span>`;
+          item.querySelector('.ins-tag-del').addEventListener('click', () => {
+            selectedSet.delete(i);
+            renderTags();
+          });
+          list.appendChild(item);
+        });
+
+        box.appendChild(list);
+        tagsWrap.appendChild(box);
+      });
+    }
+
+    // 트리거 클릭
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      document.querySelectorAll('.ins-dd-panel.open').forEach(p => { if (p !== panel) p.classList.remove('open'); });
+      renderPanel();
+      panel.classList.toggle('open');
+    });
+
+    renderTags();
+    return { renderPanel, renderTags };
+  }
+
+  // 외부 클릭 시 패널 닫기
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.ins-dd-panel.open').forEach(p => p.classList.remove('open'));
+  });
+  document.querySelectorAll('.ins-dd-panel').forEach(p => p.addEventListener('click', e => e.stopPropagation()));
+
+  const _goodDD = buildInsDropdown('good-dd-panel', 'good-dd-trigger', 'good-tags', 'good-direct', GOOD_GROUPS, GOOD_ITEMS, goodSelected);
+  const _badDD  = buildInsDropdown('bad-dd-panel', 'bad-dd-trigger', 'bad-tags', 'bad-direct', BAD_GROUPS, BAD_ITEMS, badSelected);
+
+  // ── AI X / AI O 항목 데이터 ──
+  const AIX_GROUPS = [
+    { title: '시간 낭비', items: [
+      '수작업으로 3시간 이상 소요됐을 것이다',
+      '반복 작업에 많은 시간을 소비했을 것이다',
+      '자료 검색·수집에 하루 이상 걸렸을 것이다',
+      '초안 작성부터 완성까지 오래 걸렸을 것이다',
+      '회의록/문서 정리에 별도 시간이 필요했을 것이다',
+      '여러 문서를 일일이 비교·대조해야 했을 것이다',
+      '데이터 입력·정리에 반나절 이상 걸렸을 것이다',
+      '같은 작업을 여러 번 반복했을 것이다',
+      '포맷 통일 작업에만 상당한 시간이 들었을 것이다',
+      '마감 일정을 맞추기 어려웠을 것이다',
+    ]},
+    { title: '품질 저하', items: [
+      '수동 작업으로 오류가 발생했을 것이다',
+      '문서 일관성이 떨어졌을 것이다',
+      '다양한 관점을 확보하기 어려웠을 것이다',
+      '분석 깊이가 얕았을 것이다',
+      '산출물 완성도가 낮았을 것이다',
+      '오탈자나 문법 오류가 많았을 것이다',
+      '논리적 허점을 발견하지 못했을 것이다',
+      '번역·다국어 처리 품질이 낮았을 것이다',
+      '데이터 해석에 주관적 편향이 생겼을 것이다',
+      '최종 결과물 수정 횟수가 많았을 것이다',
+    ]},
+    { title: '업무 비효율', items: [
+      '단순 반복 업무에 리소스가 집중됐을 것이다',
+      '팀원 간 업무 분배가 비효율적이었을 것이다',
+      '커뮤니케이션 자료 준비에 시간이 걸렸을 것이다',
+      '데이터 가공·정제에 수동 작업이 필요했을 것이다',
+      '프로토타입 제작이 지연됐을 것이다',
+      '같은 질문에 반복적으로 답변해야 했을 것이다',
+      '산출물 표준화가 이루어지지 않았을 것이다',
+      '수동 보고서 작성으로 핵심 분석에 집중 못 했을 것이다',
+      '이해관계자별 맞춤 자료 제작이 부담이었을 것이다',
+      '부서 간 문서 형식이 제각각이었을 것이다',
+    ]},
+    { title: '기회 손실', items: [
+      '새로운 접근법을 시도하지 못했을 것이다',
+      '리서치 범위가 제한적이었을 것이다',
+      '빠른 의사결정을 위한 데이터가 부족했을 것이다',
+      '벤치마크 분석이 충분하지 않았을 것이다',
+      '핵심 업무에 집중할 시간이 부족했을 것이다',
+      '경쟁사 동향 파악이 느렸을 것이다',
+      '사용자 니즈를 깊이 분석하지 못했을 것이다',
+      '혁신적 아이디어를 탐색할 여유가 없었을 것이다',
+      '팀원 역량 개발에 투자할 시간이 없었을 것이다',
+      '전략적 사고보다 실무 처리에 매몰됐을 것이다',
+    ]},
+  ];
+  const AIO_GROUPS = [
+    { title: '시간 단축', items: [
+      '작업 시간이 50% 이상 단축되었다',
+      '초안을 몇 분 만에 완성할 수 있었다',
+      '자료 검색·수집 시간이 크게 줄었다',
+      '반복 작업을 자동화하여 시간을 절약했다',
+      '문서 정리·요약이 빠르게 처리되었다',
+      '여러 문서를 동시에 비교·분석할 수 있었다',
+      '데이터 정리·변환이 즉시 완료되었다',
+      '보고서 포맷팅 시간이 대폭 줄었다',
+      '다국어 번역이 실시간으로 처리되었다',
+      '일정 내 작업 완료가 수월해졌다',
+    ]},
+    { title: '품질 향상', items: [
+      '다양한 관점과 대안을 확보했다',
+      '문서 일관성과 표준화가 개선되었다',
+      '데이터 기반 의사결정이 가능해졌다',
+      '산출물 완성도가 높아졌다',
+      '오류 검증이 체계적으로 이루어졌다',
+      '논리적 구조의 문서를 작성할 수 있었다',
+      '맞춤법·문법이 자동 교정되었다',
+      '전문적인 톤앤매너로 작성할 수 있었다',
+      '피드백 반영 속도가 빨라졌다',
+      '최종 산출물의 수정 횟수가 줄었다',
+    ]},
+    { title: '생산성 증가', items: [
+      '핵심 업무에 집중할 수 있었다',
+      '병렬 작업으로 처리량이 늘었다',
+      '커뮤니케이션 자료를 빠르게 준비했다',
+      '프로토타입을 신속하게 제작했다',
+      '팀 전체 생산성이 향상되었다',
+      '이해관계자별 맞춤 자료를 빠르게 제작했다',
+      '반복 질문 응대를 자동화할 수 있었다',
+      '산출물 표준 템플릿을 빠르게 생성했다',
+      '팀원 간 업무 인수인계가 수월해졌다',
+      '동시 다발적 요청에 유연하게 대응했다',
+    ]},
+    { title: '역량 확장', items: [
+      '새로운 분석 방법을 시도할 수 있었다',
+      '도메인 지식을 빠르게 습득했다',
+      '리서치 범위를 넓힐 수 있었다',
+      '창의적 아이디어를 다양하게 발산했다',
+      '전문 영역 외 작업도 수행할 수 있었다',
+      '경쟁사·트렌드 분석 역량이 강화되었다',
+      '사용자 관점에서 깊이 있는 분석이 가능해졌다',
+      '데이터 시각화 역량이 향상되었다',
+      'AI 도구 활용 노하우가 축적되었다',
+      '팀 전체의 AI 리터러시가 성장했다',
+    ]},
+  ];
+
+  const AIX_ITEMS = AIX_GROUPS.flatMap(g => g.items);
+  const AIO_ITEMS = AIO_GROUPS.flatMap(g => g.items);
+  window._AIX_ITEMS = AIX_ITEMS;
+  window._AIO_ITEMS = AIO_ITEMS;
+  let aixSelected = new Set();
+  let aioSelected = new Set();
+
+  const _aixDD = buildInsDropdown('aix-dd-panel', 'aix-dd-trigger', 'aix-tags', 'aix-direct', AIX_GROUPS, AIX_ITEMS, aixSelected);
+  const _aioDD = buildInsDropdown('aio-dd-panel', 'aio-dd-trigger', 'aio-tags', 'aio-direct', AIO_GROUPS, AIO_ITEMS, aioSelected);
+
+  // 직접작성 닫기 버튼
+  document.getElementById('good-direct-close')?.addEventListener('click', () => {
+    document.getElementById('good-direct').value = '';
+    document.getElementById('good-direct-box').style.display = 'none';
+  });
+  document.getElementById('bad-direct-close')?.addEventListener('click', () => {
+    document.getElementById('bad-direct').value = '';
+    document.getElementById('bad-direct-box').style.display = 'none';
+  });
+  document.getElementById('aix-direct-close')?.addEventListener('click', () => {
+    document.getElementById('aix-direct').value = '';
+    document.getElementById('aix-direct-box').style.display = 'none';
+  });
+  document.getElementById('aio-direct-close')?.addEventListener('click', () => {
+    document.getElementById('aio-direct').value = '';
+    document.getElementById('aio-direct-box').style.display = 'none';
   });
 
   /* ── TOAST ── */
@@ -1970,8 +3891,8 @@
     const email   = document.getElementById('edited-email').value.trim();
     const tool    = document.getElementById('edited-tool').value.trim();
     const stage   = document.getElementById('stage-select').value;
-    const task    = document.querySelector('.sub-field:nth-child(2) input') ?
-                    document.querySelector('.card-sub .sub-field:last-child input').value.trim() : '';
+    const task    = document.getElementById('task-input') ?
+                    document.getElementById('task-input').value.trim() : '';
     const date    = document.querySelector('input[type="date"]').value;
     const goal    = document.querySelectorAll('input[type="text"]')[0]?.value.trim() || '';
 
@@ -1984,24 +3905,31 @@
       output:   flowInputs[4]?.value.trim() || '',
     };
 
-    const driveInputs = document.querySelectorAll('input[type="url"]');
     const drives = {
-      material: driveInputs[0]?.value.trim() || '',
-      mid:      driveInputs[1]?.value.trim() || '',
-      final:    driveInputs[2]?.value.trim() || '',
-      promptLink: driveInputs[3]?.value.trim() || '',
+      material:   document.getElementById('drive-material')?.value.trim() || '',
+      mid:        document.getElementById('drive-mid')?.value.trim() || '',
+      final:      document.getElementById('drive-final')?.value.trim() || '',
+      promptLink: document.getElementById('drive-prompt')?.value.trim() || '',
+      materialName: document.getElementById('drive-material-name')?.value.trim() || '',
+      midName:      document.getElementById('drive-mid-name')?.value.trim() || '',
+      finalName:    document.getElementById('drive-final-name')?.value.trim() || '',
+      promptName:   document.getElementById('drive-prompt-name')?.value.trim() || '',
     };
 
     const taPrompt  = document.getElementById('ta-prompt')?.value.trim() || '';
     const taQuality = document.getElementById('ta-quality')?.value.trim() || '';
 
-    const effBoxes = document.querySelectorAll('.eff-box textarea');
-    const effBad   = effBoxes[0]?.value.trim() || '';
-    const effGood  = effBoxes[1]?.value.trim() || '';
+    const aixDirect = document.getElementById('aix-direct')?.value.trim() || '';
+    const aioDirect = document.getElementById('aio-direct')?.value.trim() || '';
+    const aixChipTexts = Array.from(aixSelected).map(i => AIX_ITEMS[i]).join(', ');
+    const aioChipTexts = Array.from(aioSelected).map(i => AIO_ITEMS[i]).join(', ');
+    const effBad  = [aixChipTexts, aixDirect].filter(Boolean).join(' / ');
+    const effGood = [aioChipTexts, aioDirect].filter(Boolean).join(' / ');
 
-    const insBoxes = document.querySelectorAll('.ins-box textarea');
-    const goodPt   = insBoxes[0]?.value.trim() || '';
-    const badPt    = insBoxes[1]?.value.trim() || '';
+    const goodPt   = document.getElementById('good-direct')?.value.trim() || '';
+    const badPt    = document.getElementById('bad-direct')?.value.trim() || '';
+    const goodChipTexts = Array.from(goodSelected).map(i => GOOD_ITEMS[i]).join(', ');
+    const badChipTexts  = Array.from(badSelected).map(i => BAD_ITEMS[i]).join(', ');
 
     const refLink  = document.querySelectorAll('input[type="text"]');
     // 도움링크, 한마디는 인사이트 섹션 text input
@@ -2012,7 +3940,9 @@
     const activeTools = Array.from(toolActive).join(', ');
 
     return { name, email, tool, stage, task, date, goal, flow, drives,
-             taPrompt, taQuality, effBad, effGood, goodPt, badPt,
+             taPrompt, taQuality, effBad, effGood,
+             goodPt: [goodChipTexts, goodPt].filter(Boolean).join(' / '),
+             badPt: [badChipTexts, badPt].filter(Boolean).join(' / '),
              refUrl, oneliner, activeTools };
   }
 
@@ -2166,15 +4096,41 @@
     ['edited-email','edited-tool','goal-input'].forEach(id => {
       const el = document.getElementById(id); if (el) el.innerText = '';
     });
-    // 특수 필드 명시적 초기화
+    // 드라이브 링크 초기화
+    ['material','mid','final','prompt'].forEach(k => {
+      ['drive-'+k, 'drive-'+k+'-name', 'drive-'+k+'-process'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      updateDriveRow(k);
+    });
+    const goalDirect = document.getElementById('goal-direct'); if (goalDirect) goalDirect.value = '';
+    const goalTxt = document.getElementById('goal-input-text'); if (goalTxt) { goalTxt.removeAttribute('readonly'); goalTxt.value = ''; }
+    const problemDirect = document.getElementById('problem-direct'); if (problemDirect) problemDirect.value = '';
     const prob = document.getElementById('problem-input'); if (prob) { prob.removeAttribute('readonly'); prob.value = ''; }
     const nameSelEl = document.getElementById('edited-name'); if (nameSelEl) nameSelEl.value = '';
-    const dateEl = document.getElementById('date-input'); if (dateEl) dateEl.value = '';
+    const dateEl = document.getElementById('date-input');
+    if (dateEl) {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, '0');
+      const d = String(today.getDate()).padStart(2, '0');
+      dateEl.value = `${y}-${m}-${d}`;
+    }
     // 이모지 초기화
     const emojiBtn = document.getElementById('emoji-btn'); if (emojiBtn) { emojiBtn.textContent = '선택'; emojiBtn.classList.add('placeholder'); }
     images = []; syncImageUI();
     toolList = [...DEFAULT_TOOLS]; toolActive = new Set(); toolMemos = {};
     wfRows = [];
+    goodSelected = new Set(); badSelected = new Set();
+    aixSelected = new Set(); aioSelected = new Set();
+    if (_goodDD) { _goodDD.renderTags(); }
+    if (_badDD)  { _badDD.renderTags(); }
+    if (_aixDD)  { _aixDD.renderTags(); }
+    if (_aioDD)  { _aioDD.renderTags(); }
+    document.getElementById('good-direct-box').style.display = 'none';
+    document.getElementById('bad-direct-box').style.display = 'none';
+    document.getElementById('aix-direct-box').style.display = 'none';
+    document.getElementById('aio-direct-box').style.display = 'none';
     renderTools(); renderWorkflow();
     localStorage.removeItem(SAVE_KEY);
     sessionStorage.removeItem(AUTO_SAVE_KEY);
@@ -2213,275 +4169,250 @@
   function collectSnapData() {
     const snap = {
       stage:      document.getElementById('stage-select')?.value || '',
-      task:       document.querySelector('.card-sub .sub-field:last-child input')?.value || '',
+      task:       document.getElementById('task-input')?.value || '',
       date:       document.getElementById('date-input')?.value || '',
+      goalDirect: document.getElementById('goal-direct')?.value || '',
+      goal:       document.getElementById('goal-input-text')?.value || '',
       problem:    document.getElementById('problem-input')?.value || '',
+      problemDirect: document.getElementById('problem-direct')?.value || '',
       goalEmoji:  document.getElementById('emoji-btn')?.classList.contains('placeholder') ? '' : (document.getElementById('emoji-btn')?.textContent || ''),
       editName:   document.getElementById('edited-name')?.value || '',
       editEmail:  document.getElementById('edited-email')?.innerText.trim() || '',
       editTool:   document.getElementById('edited-tool')?.innerText.trim() || '',
-      driveUrls:  Array.from(document.querySelectorAll('input[type="url"]')).map(el => el.value),
-      flowInputs: Array.from(document.querySelectorAll('.flow-input')).map(el => el.value),
-      taPrompt:   document.getElementById('ta-prompt')?.value || '',
-      taQuality:  document.getElementById('ta-quality')?.value || '',
-      qaChecked:  Array.from(document.querySelectorAll('.qa-check:checked')).map(el => el.dataset.key),
-      qaRecommend: document.getElementById('qa-recommend')?.value || '',
-      qaData: (function() {
-        const d = {};
-        document.querySelectorAll('.qa-row[data-key]').forEach(row => {
-          const key = row.dataset.key;
-          const val = row.classList.contains('is-y') ? 'y' : row.classList.contains('is-n') ? 'n' : '';
-          const step = QA_KEYS.includes(key)
-            ? JSON.stringify(qaStepsMap[key] || [])
-            : (row.querySelector('.qa-step-input')?.value || '');
-          const content = QA_KEYS.includes(key) ? '' : (row.querySelector('.qa-content-input')?.value || '');
-          d[key] = { val, step, content };
-        });
-        return d;
-      })(),
-      effBad:     document.querySelectorAll('.eff-box textarea')[0]?.value || '',
-      effGood:    document.querySelectorAll('.eff-box textarea')[1]?.value || '',
-      goodPt:     document.querySelectorAll('.ins-box textarea')[0]?.value || '',
-      badPt:      document.querySelectorAll('.ins-box textarea')[1]?.value || '',
-      refUrl:     document.querySelectorAll('.sec:last-of-type input[type="text"]')[0]?.value || '',
-      oneliner:   document.querySelectorAll('.sec:last-of-type input[type="text"]')[1]?.value || '',
-      // images를 snap에 포함 (압축된 상태로 저장)
-      images:     images.map(img => ({ src: img.src, name: img.name || '' })),
+      driveUrls: [
+        document.getElementById('drive-material')?.value || '',
+        document.getElementById('drive-mid')?.value || '',
+        document.getElementById('drive-final')?.value || '',
+        document.getElementById('drive-prompt')?.value || '',
+      ],
+      driveNames: [
+        document.getElementById('drive-material-name')?.value || '',
+        document.getElementById('drive-mid-name')?.value || '',
+        document.getElementById('drive-final-name')?.value || '',
+        document.getElementById('drive-prompt-name')?.value || '',
+      ],
+      driveProcesses: [
+        document.getElementById('drive-material-process')?.value || '',
+        document.getElementById('drive-mid-process')?.value || '',
+        document.getElementById('drive-final-process')?.value || '',
+        document.getElementById('drive-prompt-process')?.value || '',
+      ],
+      // 도구 / WF
       toolList:   toolList,
       toolActive: Array.from(toolActive),
       wfRows:     wfRows,
+      // 이미지
+      images: images,
+      // QA
+      qaData: (() => {
+        const d = {};
+        QA_KEYS.forEach(k => {
+          const row = document.querySelector(`.qa-row[data-key="${k}"]`);
+          const yActive = row?.querySelector('.qa-y')?.classList.contains('active');
+          const nActive = row?.querySelector('.qa-n')?.classList.contains('active');
+          d[k] = { val: yActive ? 'y' : nActive ? 'n' : '', steps: qaStepsMap[k] || [] };
+        });
+        return d;
+      })(),
+      qaRecommend: document.getElementById('qa-recommend')?.value || '',
+      // 인사이트
+      effBad:  document.getElementById('aix-direct')?.value || '',
+      effGood: document.getElementById('aio-direct')?.value || '',
+      aixChips: Array.from(aixSelected),
+      aioChips: Array.from(aioSelected),
+      qaRecommendFill: document.getElementById('qa-recommend')?.value || '',
+      refInput:    document.getElementById('ref-input')?.value || '',
+      discoveryInput: document.getElementById('discovery-input')?.value || '',
+      goodPt:  document.getElementById('good-direct')?.value || '',
+      badPt:   document.getElementById('bad-direct')?.value || '',
+      goodChips: Array.from(goodSelected),
+      badChips:  Array.from(badSelected),
     };
-    console.log('[UXD2] collectSnapData →', {stage: snap.stage, editName: snap.editName, task: snap.task, goal: snap.goal});
     return snap;
   }
 
-  // ── 스냅 복원 (ID·클래스 기반) ──
-  function applySnapData(snap) {
-    if (!snap) return;
-    console.log('[UXD2] applySnapData →', {stage: snap.stage, editName: snap.editName, task: snap.task, goal: snap.goal});
-    const v = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
-    const q = (sel, val) => { const el = document.querySelector(sel); if (el) el.value = val || ''; };
 
-    if (snap.stage) { const s = document.getElementById('stage-select'); if (s) s.value = snap.stage; }
-    q('.card-sub .sub-field:last-child input', snap.task);
-    const dateEl = document.getElementById('date-input');
-    if (dateEl) dateEl.value = snap.date || '';
-    const problemEl = document.getElementById('problem-input');
-    if (problemEl) problemEl.value = snap.problem || '';
-    if (snap.goalEmoji) {
-      const b = document.getElementById('emoji-btn');
-      if (b) { b.textContent = snap.goalEmoji; b.classList.remove('placeholder'); }
-    }
-    const setDiv = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val || ''; };
-    // 뷰어에서 edited-name select를 읽기전용 텍스트로 전환
-    if (_isViewerMode) {
-      const ns = document.getElementById('edited-name');
-      if (ns && snap.editName) {
-        const sp = document.createElement('div');
-        sp.className = 'edited-input'; sp.style.flex = '0 0 130px';
-        sp.textContent = snap.editName;
-        ns.replaceWith(sp);
-      }
-    }
-    const nameEl = document.getElementById('edited-name'); if (nameEl) nameEl.value = snap.editName || '';
-    setDiv('edited-tool',  snap.editTool);
-
-    // 이메일: 뷰어 모드에서는 mailto 링크로 표시
-    const emailEl = document.getElementById('edited-email');
-    if (emailEl) {
-      if (_isViewerMode && snap.editEmail) {
-        emailEl.innerHTML = `<a href="mailto:${snap.editEmail}" style="color:#1a6fc4;text-decoration:underline;">${snap.editEmail}</a>`;
-        emailEl.style.pointerEvents = 'auto';
-      } else {
-        emailEl.innerText = snap.editEmail || '';
-      }
-    }
-
-    if (snap.driveUrls) {
-      const urlInputs = document.querySelectorAll('input[type="url"]');
-      urlInputs.forEach((el, i) => {
-        if (snap.driveUrls[i] !== undefined) {
-          el.value = snap.driveUrls[i];
-          if (_isViewerMode && snap.driveUrls[i]) {
-            const link = document.createElement('a');
-            link.href = snap.driveUrls[i];
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            link.textContent = snap.driveUrls[i];
-            link.style.cssText = 'color:#1a6fc4;text-decoration:underline;font-size:15px;word-break:break-all;display:block;padding:10px 12px;';
-            el.replaceWith(link);
-          }
-        }
-      });
-    }
-    if (snap.flowInputs) {
-      document.querySelectorAll('.flow-input').forEach((el, i) => {
-        if (snap.flowInputs[i] !== undefined) el.value = snap.flowInputs[i];
-      });
-    }
-
-    if (snap.toolList)   toolList   = snap.toolList;
-    if (snap.toolActive) toolActive = new Set(snap.toolActive);
-    if (snap.wfRows)     { wfRows = snap.wfRows; renderWorkflow();
-      // 뷰어 모드에서 인포그래픽 자동 생성
-      if (_isViewerMode && wfRows.length > 0) {
-        const imgBtn = document.getElementById('wf-img-btn');
-        if (imgBtn) {
-          const svgStr = generateFlowSVG(wfRows);
-          imgBtn._svgStr = svgStr;
-          imgBtn.style.display = 'block';
-        }
-      }
-    }
-    renderTools();
-
-    v('ta-prompt',  snap.taPrompt);
-    v('ta-quality', snap.taQuality);
-    if (snap.qaData) {
-      document.querySelectorAll('.qa-row[data-key]').forEach(row => {
-        const key = row.dataset.key;
-        const d = snap.qaData[key];
-        if (!d) return;
-        row.classList.remove('is-y','is-n');
-        row.querySelector('.qa-y')?.classList.remove('active');
-        row.querySelector('.qa-n')?.classList.remove('active');
-        const detail = document.getElementById('qa-detail-' + key);
-        if (d.val === 'y') {
-          row.classList.add('is-y'); row.querySelector('.qa-y')?.classList.add('active');
-          if (detail) detail.classList.add('hidden');
-        } else if (d.val === 'n') {
-          row.classList.add('is-n'); row.querySelector('.qa-n')?.classList.add('active');
-          if (detail) {
-            detail.classList.remove('hidden');
-            if (QA_KEYS.includes(key) && d.step) {
-              try { qaStepsMap[key] = JSON.parse(d.step); } catch(e) { qaStepsMap[key] = []; }
-              syncQaStepSelect(); renderQaStepRows(key);
-            } else {
-              const stepInp = detail.querySelector('.qa-step-input');
-              if (stepInp) stepInp.value = d.step || '';
-            }
-            const ci = detail.querySelector('.qa-content-input'); if (ci) ci.value = d.content || '';
-          }
-        }
-      });
-    }
-  
-    document.querySelectorAll('textarea').forEach(ta => {
-      ta.style.height = 'auto';
-      ta.style.height = ta.scrollHeight + 'px';
-    });
-
-    // 이미지 복원 (snap에 포함된 경우 우선, 아니면 DOM에서 복원)
-    if (snap.images && snap.images.length > 0) {
-      images = snap.images;
-    } else {
-      const existingImgs = document.querySelectorAll('#img-grid .img-thumb img');
-      if (existingImgs.length > 0) {
-        images = Array.from(existingImgs).map(img => ({ src: img.src, name: img.alt || 'image' }));
-      }
-    }
-    syncImageUI();
-  }
-
-  /* ── SUPABASE CONFIG ── */
-  function getSbConfig() {
-    return {
-      url: _SB_URL || localStorage.getItem('sb_url') || '',
-      key: _SB_KEY || localStorage.getItem('sb_key') || '',
-    };
-  }
-
+  /* ── Supabase upload / fetch ── */
   async function sbUpload(snap) {
-    const { url, key } = getSbConfig();
-    if (!url || !key) throw new Error('Supabase 설정이 필요합니다. ⚙ 버튼을 눌러 설정하세요.');
-    const id = Math.random().toString(36).slice(2, 10);
+    const url = localStorage.getItem('sb_url') || _SB_URL;
+    const key = localStorage.getItem('sb_key') || _SB_KEY;
+    if (!url || !key) throw new Error('Supabase 설정이 필요합니다');
+    const id = 'card_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
     const res = await fetch(`${url}/rest/v1/cards`, {
       method: 'POST',
       headers: {
         'apikey': key, 'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json', 'Prefer': 'return=minimal',
+        'Content-Type': 'application/json', 'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({ id, data: JSON.stringify(snap) }),
+      body: JSON.stringify({ id, data: JSON.stringify(snap) })
     });
-    if (!res.ok) {
-      const err = await res.text().catch(() => String(res.status));
-      throw new Error(`저장 실패 (${res.status}): ${err}`);
-    }
+    if (!res.ok) { const e = await res.text(); throw new Error(e || res.status); }
     return id;
   }
 
   async function sbFetch(id) {
-    const { url, key } = getSbConfig();
-    if (!url || !key) throw new Error('Supabase 설정이 없습니다');
-    const res = await fetch(`${url}/rest/v1/cards?id=eq.${encodeURIComponent(id)}&select=data`, {
-      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` },
+    const url = localStorage.getItem('sb_url') || _SB_URL;
+    const key = localStorage.getItem('sb_key') || _SB_KEY;
+    if (!url || !key) throw new Error('Supabase 설정이 필요합니다');
+    const res = await fetch(`${url}/rest/v1/cards?id=eq.${id}&select=data`, {
+      headers: { 'apikey': key, 'Authorization': `Bearer ${key}` }
     });
+    if (!res.ok) throw new Error('카드를 불러오지 못했습니다');
     const rows = await res.json();
-    if (!Array.isArray(rows) || !rows.length) throw new Error('카드를 찾을 수 없습니다');
+    if (!rows.length) throw new Error('카드를 찾을 수 없습니다');
     return JSON.parse(rows[0].data);
   }
 
-  /* ── SUPABASE SETTINGS MODAL ── */
-  function openSbModal() {
-    const { url, key } = getSbConfig();
-    document.getElementById('sb-url-input').value = url;
-    document.getElementById('sb-key-input').value = key;
-    const dot = document.getElementById('sb-status-dot');
-    const txt = document.getElementById('sb-status-txt');
-    if (url && key) { dot.className = 'sb-status-dot ok'; txt.textContent = '설정이 저장되어 있습니다.'; }
-    else            { dot.className = 'sb-status-dot err'; txt.textContent = '설정이 필요합니다.'; }
-    document.getElementById('sb-test-result').style.display = 'none';
-    document.getElementById('sb-modal').classList.add('open');
-  }
-  function closeSbModal() { document.getElementById('sb-modal').classList.remove('open'); }
 
-  document.getElementById('cfg-btn').addEventListener('click', openSbModal);
-  document.getElementById('sb-modal-close').addEventListener('click', closeSbModal);
-  document.getElementById('sb-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('sb-modal')) closeSbModal();
-  });
+  /* ── 뷰어 모드: 빈 필드 "사용자가 입력하지 않음" 표시 ── */
+  function applyViewerEmptyState() {
+    const EMPTY_MSG = '사용자가 입력하지 않음';
 
-  document.getElementById('sb-test-btn').addEventListener('click', async () => {
-    const url = document.getElementById('sb-url-input').value.trim();
-    const key = document.getElementById('sb-key-input').value.trim();
-    const btn = document.getElementById('sb-test-btn');
-    const resultEl = document.getElementById('sb-test-result');
-    if (!url || !key) { showToast('URL과 Key를 모두 입력해주세요'); return; }
-    btn.disabled = true; btn.textContent = '테스트 중...';
-    resultEl.style.display = 'none';
-    try {
-      const r = await fetch(`${url}/rest/v1/cards?limit=1`, {
-        headers: { 'apikey': key, 'Authorization': `Bearer ${key}` },
-      });
-      if (r.ok || r.status === 404) {
-        resultEl.className = 'sb-test-result ok';
-        resultEl.textContent = '✓ 연결 성공! 저장 버튼을 눌러 적용하세요.';
-      } else {
-        const t = await r.text().catch(() => '');
-        throw new Error(`HTTP ${r.status}: ${t.slice(0,80)}`);
+    // 일반 input[type=text], input[type=date], textarea
+    document.querySelectorAll(
+      'input[type="text"]:not(#add-tool-input):not(.wf-tool), input[type="date"], textarea:not(.img-caption)'
+    ).forEach(el => {
+      if (!el.value.trim()) {
+        el.placeholder = EMPTY_MSG;
+        el.style.color = '#bbb';
+        el.classList.add('viewer-empty');
       }
-    } catch(e) {
-      resultEl.className = 'sb-test-result err';
-      resultEl.textContent = `✗ 연결 실패: ${e.message}`;
+    });
+
+    // contenteditable div (이메일, 도구 등)
+    document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+      if (!el.innerText.trim()) {
+        el.setAttribute('data-placeholder', EMPTY_MSG);
+        el.classList.add('viewer-empty');
+      }
+    });
+
+    // 이모지 버튼 (선택 안 했을 때)
+    const emojiBtn = document.getElementById('emoji-btn');
+    if (emojiBtn && emojiBtn.classList.contains('placeholder')) {
+      emojiBtn.textContent = EMPTY_MSG;
+      emojiBtn.style.fontSize = '11px';
+      emojiBtn.style.color = '#bbb';
+      emojiBtn.style.width = 'auto';
+      emojiBtn.style.padding = '0 10px';
     }
-    resultEl.style.display = ''; btn.disabled = false; btn.textContent = '🔍 연결 테스트';
-  });
 
-  document.getElementById('sb-save-btn').addEventListener('click', () => {
-    const url = document.getElementById('sb-url-input').value.trim();
-    const key = document.getElementById('sb-key-input').value.trim();
-    if (!url || !key) { showToast('URL과 Key를 모두 입력해주세요'); return; }
-    localStorage.setItem('sb_url', url); localStorage.setItem('sb_key', key);
-    showToast('설정 저장 완료 ✓');
-    closeSbModal();
-  });
+    // 콤보박스 인풋 (목표/문제)
+    ['goal-input-text', 'problem-input'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !el.value.trim()) el.placeholder = EMPTY_MSG;
+    });
 
+    // 인사이트 드롭다운: 선택 항목 없고 직접 작성도 없으면 안내
+    [
+      { tagsId: 'good-tags', directId: 'good-direct', selected: goodSelected },
+      { tagsId: 'bad-tags',  directId: 'bad-direct',  selected: badSelected },
+      { tagsId: 'aix-tags',  directId: 'aix-direct',  selected: aixSelected },
+      { tagsId: 'aio-tags',  directId: 'aio-direct',  selected: aioSelected },
+    ].forEach(({ tagsId, directId, selected }) => {
+      const tagsWrap = document.getElementById(tagsId);
+      const directEl = document.getElementById(directId);
+      const isEmpty = selected.size === 0 && (!directEl || !directEl.value.trim());
+      if (tagsWrap && isEmpty) {
+        const msg = document.createElement('div');
+        msg.className = 'viewer-empty-msg';
+        msg.textContent = EMPTY_MSG;
+        tagsWrap.appendChild(msg);
+      }
+    });
+
+    // QA 항목: Y/N 미선택 시 안내
+    QA_KEYS.forEach(key => {
+      const row = document.querySelector(`.qa-row[data-key="${key}"]`);
+      if (!row) return;
+      const isY = row.classList.contains('is-y');
+      const isN = row.classList.contains('is-n');
+      if (!isY && !isN) {
+        const label = row.querySelector('.qa-check-text');
+        if (label) {
+          const msg = document.createElement('span');
+          msg.className = 'viewer-empty-msg';
+          msg.style.marginLeft = '8px';
+          msg.textContent = `(${EMPTY_MSG})`;
+          label.appendChild(msg);
+        }
+      }
+    });
+  }
+
+  function applySnapData(snap) {
+    if (!snap) return;
+    const se = id => document.getElementById(id);
+    if (snap.stage)        { const el = se('stage-select'); if (el) el.value = snap.stage; }
+    if (snap.task)         { const el = se('task-input');   if (el) el.value = snap.task; }
+    if (snap.date)         { const el = se('date-input');   if (el) el.value = snap.date; }
+    if (snap.goal)         { const el = se('goal-input-text'); if (el) el.value = snap.goal; }
+    if (snap.goalDirect)   { const el = se('goal-direct');     if (el) { el.value = snap.goalDirect; el.style.display = ''; } }
+    if (snap.problem)      { const el = se('problem-input');   if (el) el.value = snap.problem; }
+    if (snap.problemDirect){ const el = se('problem-direct');  if (el) { el.value = snap.problemDirect; el.style.display = ''; } }
+    if (snap.editName)     { const el = se('edited-name');  if (el) el.value = snap.editName; }
+    if (snap.editEmail)    { const el = se('edited-email'); if (el) el.innerText = snap.editEmail; }
+    if (snap.goalEmoji) {
+      const btn = se('emoji-btn');
+      if (btn) { btn.textContent = snap.goalEmoji; btn.classList.remove('placeholder'); }
+    }
+    // 드라이브 링크 복원
+    const driveKeys = ['material', 'mid', 'final', 'prompt'];
+    driveKeys.forEach((k, i) => {
+      const urlVal  = snap.driveUrls?.[i]     || '';
+      const nameVal = snap.driveNames?.[i]    || '';
+      const procVal = snap.driveProcesses?.[i] || '';
+      const hidUrl  = se('drive-' + k);
+      const hidName = se('drive-' + k + '-name');
+      const hidProc = se('drive-' + k + '-process');
+      if (hidUrl)  hidUrl.value  = urlVal;
+      if (hidName) hidName.value = nameVal;
+      if (hidProc) hidProc.value = procVal;
+      if (urlVal) updateDriveRow(k);
+    });
+    // 이미지 복원
+    if (snap.images) { images = snap.images; syncImageUI(); }
+    // 도구 복원
+    if (snap.toolList)   { toolList = snap.toolList; }
+    if (snap.toolActive) { toolActive = new Set(snap.toolActive); }
+    if (snap.wfRows)     { wfRows = snap.wfRows; }
+    renderTools(); renderWorkflow();
+    // QA 복원
+    if (snap.qaData) {
+      Object.entries(snap.qaData).forEach(([key, val]) => {
+        if (!val) return;
+        // Y/N 버튼 복원
+        if (val.val) {
+          const btn = document.querySelector(`.qa-${val.val}[data-key="${key}"]`);
+          if (btn) btn.click();
+        }
+        // steps 복원
+        if (val.steps && val.steps.length > 0) {
+          qaStepsMap[key] = val.steps;
+          renderQaStepRows(key);
+        }
+      });
+    }
+    if (snap.qaRecommend) { const el = se('qa-recommend'); if (el) el.value = snap.qaRecommend; }
+    // 인사이트
+    // 인사이트 chips 복원 — Set 내부 참조 유지 (.clear + .add 방식)
+    if (snap.aixChips)  { aixSelected.clear();  snap.aixChips.forEach(i => aixSelected.add(i));  if (_aixDD)  _aixDD.renderTags(); }
+    if (snap.aioChips)  { aioSelected.clear();  snap.aioChips.forEach(i => aioSelected.add(i));  if (_aioDD)  _aioDD.renderTags(); }
+    if (snap.goodChips) { goodSelected.clear(); snap.goodChips.forEach(i => goodSelected.add(i)); if (_goodDD) _goodDD.renderTags(); }
+    if (snap.badChips)  { badSelected.clear();  snap.badChips.forEach(i => badSelected.add(i));  if (_badDD)  _badDD.renderTags(); }
+    // 직접 작성 복원
+    if (snap.effBad)  { const el = document.getElementById('aix-direct');  if (el) { el.value = snap.effBad;  const box = document.getElementById('aix-direct-box');  if (box) box.style.display = ''; } }
+    if (snap.effGood) { const el = document.getElementById('aio-direct');  if (el) { el.value = snap.effGood; const box = document.getElementById('aio-direct-box');  if (box) box.style.display = ''; } }
+    if (snap.goodPt)  { const el = document.getElementById('good-direct'); if (el) { el.value = snap.goodPt;  const box = document.getElementById('good-direct-box'); if (box) box.style.display = ''; } }
+    if (snap.badPt)   { const el = document.getElementById('bad-direct');  if (el) { el.value = snap.badPt;   const box = document.getElementById('bad-direct-box');  if (box) box.style.display = ''; } }
+  }
+
+  /* ── 팀 배포 파일 생성 ── */
   document.getElementById('sb-deploy-btn').addEventListener('click', () => {
     const url = localStorage.getItem('sb_url') || _SB_URL;
     const key = localStorage.getItem('sb_key') || _SB_KEY;
     if (!url || !key) { showToast('먼저 설정을 저장해주세요'); return; }
 
-    // ★ UI 캡처 전에 모달/토스트 닫기
     document.getElementById('sb-modal').classList.remove('open');
     document.getElementById('sb-test-result').style.display = 'none';
     document.getElementById('link-modal').classList.remove('open');
@@ -2489,13 +4420,9 @@
     document.getElementById('toast').textContent = '';
 
     let src = document.documentElement.outerHTML;
-
-    // JS 상수에 직접 삽입
     src = src.replace(/const _SB_URL = '[^']*'/, `const _SB_URL = '${url}'`);
     src = src.replace(/const _SB_KEY = '[^']*'/, `const _SB_KEY = '${key}'`);
-    // snap 비우기
     src = src.replace(/(<meta id="__card-snap__" data-snap=")[^"]*(")/,  '$1$2');
-    // 팀 배포 파일에서 관리자 버튼 CSS로 숨기기
     src = src.replace(
       '</style>',
       '#cfg-btn, #clear-btn, #save-btn { display:none !important; }\n  </style>'
@@ -2529,6 +4456,393 @@
       if (btn)   { btn.disabled = false; btn.textContent = '🔗 링크 공유'; }
     }
   }
+
+
+  /* ══════════════════════════════════════
+     ✨ AI 자동 채우기
+  ══════════════════════════════════════ */
+  (function() {
+    const overlay   = document.getElementById('ai-fill-overlay');
+    const closeBtn  = document.getElementById('ai-fill-close');
+    const cancelBtn = document.getElementById('ai-fill-cancel');
+    const runBtn    = document.getElementById('ai-fill-run');
+    const ta        = document.getElementById('ai-fill-ta');
+    const progress  = document.getElementById('ai-fill-progress');
+    const progressTxt = document.getElementById('ai-fill-progress-txt');
+    const result    = document.getElementById('ai-fill-result');
+    const openBtn   = document.getElementById('ai-fill-btn');
+
+    function openModal() { overlay.classList.add('open'); ta.focus(); }
+    function closeModal() { overlay.classList.remove('open'); result.classList.remove('show','error'); result.textContent = ''; }
+
+    if (openBtn)   openBtn.addEventListener('click', openModal);
+    if (closeBtn)  closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    overlay?.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+    runBtn?.addEventListener('click', async () => {
+      const text = ta.value.trim();
+      if (!text) { showToast('내용을 입력해주세요'); return; }
+
+      runBtn.disabled = true;
+      result.classList.remove('show', 'error');
+      progress.classList.add('show');
+      progressTxt.textContent = 'AI가 내용을 분석하고 있어요...';
+
+      try {
+        const stages   = ['관리단계','분석단계','설계단계','테스트단계','배포및완료단계'];
+        const _tl = window._getToolList ? window._getToolList() : ['Perplexity','Claude','Gemini','Figma','Make','Stitch','Claude Cowork','Claude Code','VS Code'];
+        const tools = _tl.join(', ');
+        const goalSamples = (window._GOAL_OPTIONS||[]).filter(o=>o.label).slice(0,5).map(o=>o.label).join('\n');
+        const problemSamples = (window._PROBLEM_OPTIONS||[]).filter(o=>o.label).slice(0,5).map(o=>o.label).join('\n');
+        const goodSamples = (window._GOOD_ITEMS||[]).slice(0,5).join('\n');
+        const badSamples  = (window._BAD_ITEMS||[]).slice(0,5).join('\n');
+        const aixSamples  = (window._AIX_ITEMS||[]).slice(0,5).join('\n');
+        const aioSamples  = (window._AIO_ITEMS||[]).slice(0,5).join('\n');
+
+        const prompt = `당신은 UX 팀의 AI 활동기록 카드를 자동으로 채워주는 어시스턴트입니다.
+아래 AI 활동 내용을 분석하여 카드 필드를 JSON으로 반환해주세요.
+
+중요: wfRows의 tool 필드는 반드시 tools 배열에서 선택한 AI 도구명(예: Claude, Gemini, Supabase)만 사용하세요. 절대로 기능명이나 작업명(예: 이모지 픽커, 포맷가이드)을 넣지 마세요.
+
+## 활동 내용
+${text}
+
+## 반환 형식 (JSON만 반환, 설명 없음)
+{
+  "stage": "관리단계|분석단계|설계단계|테스트단계|배포및완료단계 중 하나",
+  "task": "소재명 (작업 주제, 20자 이내)",
+  "goal": "목표 한 문장 (아래 샘플 참고, 없으면 직접 작성)",
+  "goalDirect": "goal 샘플에 없으면 여기에 직접 작성, 있으면 빈 문자열",
+  "problem": "문제 한 문장 (아래 샘플 참고, 없으면 직접 작성)",
+  "problemDirect": "problem 샘플에 없으면 여기에 직접 작성, 있으면 빈 문자열",
+  "tools": ["반드시 다음 목록에서만 선택(정확한 이름 그대로): ${tools}"],
+  "wfRows": [
+    {"tool": "반드시 tools 배열에서 선택한 이름 그대로 사용. 절대 기능명/작업명 사용 금지", "intent": "이 도구를 사용한 의도", "action": "실제 한 활동", "time": 10}
+  ],
+  "goodChipTexts": ["잘된 점 (아래 샘플에서 최대 3개 선택)"],
+  "badChipTexts": ["아쉬운 점 (아래 샘플에서 최대 3개 선택)"],
+  "goodDirect": "goodChip 샘플에 없는 추가 내용 (없으면 빈 문자열)",
+  "badDirect": "badChip 샘플에 없는 추가 내용 (없으면 빈 문자열)",
+  "aixDirect": "AI 없이 했다면 어땠을지 (시간, 어려움 등)",
+  "aioDirect": "AI 덕분에 얻은 것 (시간 단축, 품질 향상 등)",
+  "qaResult": "품질검증 결과 요약 (Y/N 판정 근거 한 문장)",
+  "qaRecommend": "보완 권장 사항 (없으면 빈 문자열)",
+  "discovery": "새로 알게 된 사실 한 줄 요약"
+}
+
+## 참고 샘플
+### 목표 샘플
+${goalSamples}
+
+### 문제 샘플
+${problemSamples}
+
+### Good Point 샘플
+${goodSamples}
+
+### Bad Point 샘플
+${badSamples}
+
+### AI X 샘플
+${aixSamples}
+
+### AI O 샘플
+${aioSamples}`;
+
+        progressTxt.textContent = 'AI가 내용을 분석하고 있어요...';
+
+        // Supabase Edge Function 프록시를 통해 Gemini 호출
+        const sbAnonKey = localStorage.getItem('sb_key') || _SB_KEY;
+        const res = await fetch(
+          'https://lcfuclnopswjogidbsix.supabase.co/functions/v1/gemini-proxy',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${sbAnonKey}`,
+              'apikey': sbAnonKey
+            },
+            body: JSON.stringify({ prompt })
+          }
+        );
+
+        if (!res.ok) {
+          const errText = await res.text().catch(() => '');
+          throw new Error('프록시 오류 ' + res.status + (errText ? ': ' + errText.slice(0,120) : ''));
+        }
+        const data = await res.json();
+        if (data.error) throw new Error('Gemini 오류: ' + data.error);
+        const raw = data.text || '';
+
+        // JSON 파싱
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('응답 파싱 실패');
+        const filled = JSON.parse(jsonMatch[0]);
+
+        progressTxt.textContent = '카드에 적용 중...';
+        console.log('[AI Fill] 반환 데이터:', JSON.stringify({tools: filled.tools, wfRows: filled.wfRows}, null, 2));
+
+        // ── 필드 적용 ──
+        const se = id => document.getElementById(id);
+
+        // 단계
+        if (filled.stage) {
+          const el = se('stage-select');
+          if (el) el.value = filled.stage;
+        }
+
+        // 소재명
+        if (filled.task) {
+          const el = se('task-input');
+          if (el) el.value = filled.task;
+        }
+
+        // 목표
+        if (filled.goalDirect) {
+          const el = se('goal-direct');
+          if (el) { el.value = filled.goalDirect; el.style.display = ''; }
+          const input = se('goal-input-text');
+          if (input) { input.value = ''; input.dataset.direct = 'true'; input.placeholder = '항목을 선택했습니다 (아래에 직접 작성)'; }
+        } else if (filled.goal) {
+          const el = se('goal-input-text');
+          if (el) { el.value = filled.goal; el.dataset.direct = ''; }
+        }
+
+        // 문제
+        if (filled.problemDirect) {
+          const el = se('problem-direct');
+          if (el) { el.value = filled.problemDirect; el.style.display = ''; }
+          const input = se('problem-input');
+          if (input) { input.value = ''; input.dataset.direct = 'true'; input.placeholder = '항목을 선택했습니다 (아래에 직접 작성)'; }
+        } else if (filled.problem) {
+          const el = se('problem-input');
+          if (el) { el.value = filled.problem; el.dataset.direct = ''; }
+        }
+
+        // 선정 도구 — toolActive에 추가 후 renderTools
+        // 도구명 fuzzy 매핑 (AI가 반환한 이름 → toolList 정확한 이름으로 변환)
+        function matchTool(name) {
+          if (!name) return '';
+          const list = window._getToolList ? window._getToolList() : ['Perplexity','Claude','Gemini','Figma','Make','Stitch','Claude Cowork','Claude Code','VS Code'];
+          const n = name.toLowerCase().replace(/[ \-_]/g, '');
+          const found = list.find(t => t.toLowerCase().replace(/[ \-_]/g, '') === n);
+          if (found) return found;
+          const partial = list.find(t => n.includes(t.toLowerCase().replace(/[ \-_]/g, '')) || t.toLowerCase().replace(/[ \-_]/g, '').includes(n));
+          if (partial) return partial;
+          // 없으면 toolList에 추가
+          if (window._addToToolList) window._addToToolList(name);
+          return name;
+        }
+
+        if (filled.tools && filled.tools.length > 0) {
+          filled.tools.forEach(t => {
+            const matched = matchTool(t);
+            if (window._addToToolList) window._addToToolList(matched);
+          });
+          if (filled.wfRows && filled.wfRows.length > 0) {
+            wfRows = filled.wfRows.map(r => ({
+              tool: matchTool(r.tool),
+              intent: r.intent || '',
+              action: r.action || '',
+              time: String(r.time || '').replace(/[^0-9]/g, '') || '',
+              prompt: ''
+            }));
+            toolActive = new Set(wfRows.map(r => r.tool).filter(Boolean));
+          } else {
+            toolActive = new Set(filled.tools.map(matchTool));
+          }
+          renderTools(); renderWorkflow();
+          // 드롭다운 동기화 딜레이
+          setTimeout(() => { renderTools(); renderWorkflow(); syncToolsWithWf(); }, 100);
+        } else if (filled.wfRows && filled.wfRows.length > 0) {
+          wfRows = filled.wfRows.map(r => ({
+            tool: matchTool(r.tool),
+            intent: r.intent || '',
+            action: r.action || '',
+            time: String(r.time || '').replace(/[^0-9]/g, '') || '',
+            prompt: ''
+          }));
+          wfRows.forEach(r => { if (r.tool && window._addToToolList) window._addToToolList(r.tool); });
+          toolActive = new Set(wfRows.map(r => r.tool).filter(Boolean));
+          renderTools(); renderWorkflow();
+          setTimeout(() => { renderTools(); renderWorkflow(); syncToolsWithWf(); }, 100);
+        }
+
+        // QA Y/N 자동 선택
+        if (filled.qaResult) {
+          // 전체 Y로 기본 설정
+          QA_KEYS.forEach(key => {
+            const btn = document.querySelector(`.qa-y[data-key="${key}"]`);
+            if (btn) btn.click();
+          });
+        }
+
+        // Good Point
+        if (filled.goodChipTexts && filled.goodChipTexts.length > 0) {
+          goodSelected.clear();
+          filled.goodChipTexts.forEach(txt => {
+            const idx = (window._GOOD_ITEMS||[]).indexOf(txt);
+            if (idx !== -1) goodSelected.add(idx);
+          });
+          if (_goodDD) _goodDD.renderTags();
+        }
+        if (filled.goodDirect) {
+          const el = se('good-direct');
+          if (el) { el.value = filled.goodDirect; }
+          const box = se('good-direct-box');
+          if (box) box.style.display = '';
+        }
+
+        // Bad Point
+        if (filled.badChipTexts && filled.badChipTexts.length > 0) {
+          badSelected.clear();
+          filled.badChipTexts.forEach(txt => {
+            const idx = BAD_ITEMS.indexOf(txt);
+            if (idx !== -1) badSelected.add(idx);
+          });
+          if (_badDD) _badDD.renderTags();
+        }
+        if (filled.badDirect) {
+          const el = se('bad-direct');
+          if (el) { el.value = filled.badDirect; }
+          const box = se('bad-direct-box');
+          if (box) box.style.display = '';
+        }
+
+        // AI X / AI O 직접 작성
+        if (filled.aixDirect) {
+          const el = se('aix-direct');
+          if (el) { el.value = filled.aixDirect; }
+          const box = se('aix-direct-box');
+          if (box) box.style.display = '';
+        }
+        if (filled.aioDirect) {
+          const el = se('aio-direct');
+          if (el) { el.value = filled.aioDirect; }
+          const box = se('aio-direct-box');
+          if (box) box.style.display = '';
+        }
+
+        // 보완 권장
+        if (filled.qaRecommend) {
+          const el = se('qa-recommend');
+          if (el) el.value = filled.qaRecommend;
+        }
+        // 참고링크
+        if (filled.discovery) {
+          const el = se('discovery-input');
+          if (el) el.value = filled.discovery;
+        }
+
+        // 완료
+        progress.classList.remove('show');
+        result.classList.add('show');
+        result.textContent = '✅ 카드 필드가 자동으로 채워졌습니다! 내용을 확인하고 필요한 부분을 수정해주세요.';
+
+        setTimeout(() => {
+          closeModal();
+          showToast('✨ AI 자동 채우기 완료!');
+        }, 1800);
+
+      } catch(e) {
+        progress.classList.remove('show');
+        result.classList.add('show', 'error');
+        result.textContent = '❌ 오류가 발생했습니다: ' + e.message;
+        console.error('[AI Fill]', e);
+      } finally {
+        runBtn.disabled = false;
+      }
+    });
+  })();
+
+  /* ── ⚙ SUPABASE 설정 모달 ── */
+  document.getElementById('cfg-btn')?.addEventListener('click', () => {
+    const modal = document.getElementById('sb-modal');
+    const dot   = document.getElementById('sb-status-dot');
+    const txt   = document.getElementById('sb-status-txt');
+    const urlEl = document.getElementById('sb-url-input');
+    const keyEl = document.getElementById('sb-key-input');
+    const url   = localStorage.getItem('sb_url') || _SB_URL;
+    const key   = localStorage.getItem('sb_key') || _SB_KEY;
+    if (urlEl) urlEl.value = url || '';
+    if (keyEl) keyEl.value = key || '';
+    // Anthropic Key 로드
+    const anthropicKeyEl = document.getElementById('anthropic-key-input');
+    if (anthropicKeyEl) anthropicKeyEl.value = localStorage.getItem('anthropic_key') || '';
+    const hasAnthropicKey = !!localStorage.getItem('anthropic_key');
+    const hasSbConfig = !!(url && key);
+    if (dot) dot.className = 'sb-status-dot' + (hasSbConfig ? ' ok' : '');
+    if (txt) {
+      const parts = [];
+      if (hasSbConfig) parts.push('Supabase ✓');
+      else parts.push('Supabase 미설정');
+      if (hasAnthropicKey) parts.push('Gemini ✓');
+      else parts.push('Gemini Key 미입력');
+      txt.textContent = parts.join('  |  ');
+    }
+    if (modal) modal.classList.add('open');
+  });
+
+  document.getElementById('sb-modal-close')?.addEventListener('click', () => {
+    document.getElementById('sb-modal')?.classList.remove('open');
+  });
+
+  document.getElementById('sb-modal')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('sb-modal'))
+      document.getElementById('sb-modal').classList.remove('open');
+  });
+
+  document.getElementById('sb-test-btn')?.addEventListener('click', async () => {
+    const url = document.getElementById('sb-url-input')?.value.trim();
+    const key = document.getElementById('sb-key-input')?.value.trim();
+    const resultEl = document.getElementById('sb-test-result');
+    const btn = document.getElementById('sb-test-btn');
+    if (!url || !key) { showToast('URL과 Key를 모두 입력해주세요'); return; }
+    btn.disabled = true; btn.textContent = '테스트 중...';
+    if (resultEl) resultEl.style.display = 'none';
+    try {
+      const r = await fetch(`${url}/rest/v1/cards?limit=1`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` }
+      });
+      const ok = r.ok || r.status === 200;
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.color = ok ? '#4caf50' : '#e53935';
+        resultEl.textContent = ok ? '✅ 연결 성공! Supabase와 정상 연결됩니다.' : `❌ 연결 실패 (${r.status})`;
+      }
+      const dot = document.getElementById('sb-status-dot');
+      const txt = document.getElementById('sb-status-txt');
+      if (dot) dot.className = 'sb-status-dot' + (ok ? ' ok' : ' err');
+      if (txt) txt.textContent = ok ? '연결 테스트 성공' : '연결 실패 — URL과 Key를 확인해주세요';
+    } catch(e) {
+      if (resultEl) {
+        resultEl.style.display = 'block';
+        resultEl.style.color = '#e53935';
+        resultEl.textContent = '❌ 연결 오류: ' + e.message;
+      }
+    } finally {
+      btn.disabled = false; btn.textContent = '🔍 연결 테스트';
+    }
+  });
+
+  document.getElementById('sb-save-btn')?.addEventListener('click', () => {
+    const url = document.getElementById('sb-url-input')?.value.trim();
+    const key = document.getElementById('sb-key-input')?.value.trim();
+    if (!url || !key) { showToast('URL과 Key를 모두 입력해주세요'); return; }
+    localStorage.setItem('sb_url', url);
+    localStorage.setItem('sb_key', key);
+    // Anthropic Key 저장
+    const anthropicKey = document.getElementById('anthropic-key-input')?.value.trim();
+    if (anthropicKey) localStorage.setItem('anthropic_key', anthropicKey);
+    else localStorage.removeItem('anthropic_key');
+    const dot = document.getElementById('sb-status-dot');
+    const txt = document.getElementById('sb-status-txt');
+    if (dot) dot.className = 'sb-status-dot ok';
+    if (txt) txt.textContent = '설정 저장 완료 ✓';
+    showToast('설정 저장 완료 ✓');
+    setTimeout(() => document.getElementById('sb-modal')?.classList.remove('open'), 800);
+  });
 
   document.getElementById('share-link-btn').addEventListener('click', () => {
     const name = document.getElementById('edited-name')?.innerText.trim();
@@ -2713,7 +5027,7 @@
       if (autoSaved) {
         // 뷰어 모드이거나 자동저장이 있으면 팝업 없이 그냥 복원
         const snap = JSON.parse(autoSaved);
-        const hasContent = snap.editName || snap.task || snap.problem || (snap.wfRows && snap.wfRows.length);
+        const hasContent = snap.editName || snap.task || snap.goal || snap.problem || (snap.wfRows && snap.wfRows.length);
         if (hasContent && !location.hash) {
           applySnapData(snap);
         } else {
@@ -2741,20 +5055,14 @@
       try {
         const snap = await sbFetch(hash);
         applySnapData(snap);
+        // 뷰어 모드: 빈 필드에 "사용자가 입력하지 않음" 표시
+        setTimeout(() => applyViewerEmptyState(), 100);
       } catch(e) {
         console.error('[UXD2] 뷰어 복원 오류:', e);
         showToast('카드 로딩 실패: ' + e.message);
       }
     })();
   })();
-
-  // 팀 배포 파일: 링크 공유 버튼만 표시
-  if (_SB_URL) {
-    ['cfg-btn', 'clear-btn', 'save-btn'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = 'none';
-    });
-  }
 
   syncImageUI();
 </script>
