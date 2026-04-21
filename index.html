@@ -1158,13 +1158,21 @@
     display: none; position: fixed; inset: 0; z-index: 10010;
     background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
     align-items: flex-start; justify-content: center; padding: 16px;
-    overflow-y: auto;
+    overflow: hidden;
+  }
+  @supports (height: 100dvh) {
+    .ai-fill-overlay { height: 100dvh; }
   }
   .ai-fill-overlay.open { display: flex; animation: lbIn .18s ease; }
   .ai-fill-box {
     background: #fff; border-radius: 16px; width: 100%; max-width: 640px;
-    max-height: calc(100vh - 32px); display: flex; flex-direction: column; overflow: hidden;
+    height: calc(100vh - 32px); max-height: calc(100vh - 32px);
+    display: flex; flex-direction: column; overflow: hidden;
     box-shadow: 0 20px 60px rgba(0,0,0,.3); margin-top: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  @supports (height: 100dvh) {
+    .ai-fill-box { height: calc(100dvh - 32px); max-height: calc(100dvh - 32px); }
   }
   .ai-fill-head {
     background: #1a1a1a; padding: 18px 22px;
@@ -1174,7 +1182,7 @@
   .ai-fill-head-sub { color: #888; font-size: 12px; margin-top: 2px; }
   .ai-fill-close { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; padding: 4px; line-height: 1; }
   .ai-fill-close:hover { color: #fff; }
-  .ai-fill-body { padding: 20px 22px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+  .ai-fill-body { padding: 20px 22px; flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 14px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
   .ai-fill-guide {
     font-size: 13px; color: #555; background: #f8f8f8; border: .5px solid #e8e8e8;
     border-radius: 10px; padding: 12px 14px; line-height: 1.7;
@@ -4472,10 +4480,23 @@
     const result    = document.getElementById('ai-fill-result');
     const openBtn   = document.getElementById('ai-fill-btn');
 
-    function openModal() { overlay.classList.add('open'); ta.focus(); }
+    function openModal() {
+      overlay.classList.add('open');
+      // 모바일에서 키보드 즉시 올라오지 않도록 focus 딜레이
+      setTimeout(() => {
+        overlay.scrollTop = 0;
+      }, 50);
+    }
     function closeModal() { overlay.classList.remove('open'); result.classList.remove('show','error'); result.textContent = ''; }
 
     if (openBtn)   openBtn.addEventListener('click', openModal);
+
+    // 모바일 키보드 올라올 때 팝업 상단 유지
+    if (ta) {
+      ta.addEventListener('focus', () => {
+        setTimeout(() => { overlay.scrollTop = 0; }, 100);
+      });
+    }
     if (closeBtn)  closeBtn.addEventListener('click', closeModal);
     if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
     overlay?.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
