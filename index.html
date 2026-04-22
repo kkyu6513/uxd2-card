@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
+<html lang="ko"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta id="__card-snap__" data-snap="">
 <meta id="__sb-cfg__" data-url="" data-key="">
-<title>AI 리터러시 활동기록카드</title>
+<title>AI 리터러시 활동기록카드 - 260422</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1435,9 +1433,16 @@
     .f-btn, .lightbox, .thumb-actions, .img-add-btn { display: none !important; }
     input, textarea, .flow-input { border: none !important; box-shadow: none !important; }
   }
-</style>
-</head>
-<body>
+#cfg-btn, #clear-btn, #save-btn { display:none !important; }
+  </style>
+<style id="grabbit-visited-styles">
+        .grabbit-visited,
+        .grabbit-visited:link,
+        .grabbit-visited:visited {
+            color: #551A8B !important; /* Standard visited link purple */
+        }
+    </style></head>
+<body style="">
 
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lb-close">✕</button>
@@ -1471,8 +1476,8 @@
     </div>
     <div class="sb-modal-body">
       <div class="sb-status" id="sb-status">
-        <div class="sb-status-dot" id="sb-status-dot"></div>
-        <div class="sb-status-txt" id="sb-status-txt">설정 상태 확인 중...</div>
+        <div class="sb-status-dot ok" id="sb-status-dot"></div>
+        <div class="sb-status-txt" id="sb-status-txt">Supabase ✓  |  Gemini Key 미입력</div>
       </div>
 
       <!-- Gemini API Key -->
@@ -1526,7 +1531,7 @@
           <span class="lm-step-txt">아래 링크를 복사하세요</span>
         </div>
         <div class="link-modal-url-wrap">
-          <div class="link-modal-url" id="link-modal-url"></div>
+          <div class="link-modal-url" id="link-modal-url">https://kkyu6513.github.io/uxd2-card/index.html#card_1776846215674_grd08x</div>
           <button class="link-modal-btn copy" id="link-copy-btn">복사</button>
         </div>
         <div class="link-modal-step" style="margin-top:10px;">
@@ -1560,7 +1565,7 @@
     <div class="sub-field">
       <label>단계</label>
       <select id="stage-select">
-        <option value="" disabled selected>단계 선택</option>
+        <option value="" disabled="" selected="">단계 선택</option>
         <option value="관리단계">관리단계</option>
         <option value="분석단계">분석단계</option>
         <option value="설계단계">설계단계</option>
@@ -1584,7 +1589,7 @@
               <button type="button" class="ep-tab" data-cat="4">⚡</button>
               <button type="button" class="ep-tab" data-cat="5">💡</button>
             </div>
-            <div class="ep-grid" id="ep-grid"></div>
+            <div class="ep-grid" id="ep-grid"><button type="button">🎯</button><button type="button">🚀</button><button type="button">💡</button><button type="button">🔥</button><button type="button">⚡</button><button type="button">🌟</button><button type="button">🏆</button><button type="button">🎪</button><button type="button">🧩</button><button type="button">🔬</button><button type="button">🎨</button><button type="button">🛠</button><button type="button">📐</button><button type="button">🌱</button><button type="button">💎</button><button type="button">🦋</button><button type="button">🎭</button><button type="button">🧭</button><button type="button">🔑</button><button type="button">🌊</button><button type="button">🏔</button><button type="button">🎶</button><button type="button">📡</button><button type="button">🤖</button><button type="button">🧲</button><button type="button">🔭</button><button type="button">⚗️</button><button type="button">🧬</button><button type="button">⚙️</button><button type="button">🔮</button><button type="button">🧱</button><button type="button">🏗</button><button type="button">🎓</button><button type="button">🏅</button><button type="button">🥇</button><button type="button">🥈</button><button type="button">🥉</button><button type="button">🏁</button><button type="button">🎖</button><button type="button">📦</button><button type="button">🧰</button><button type="button">🪛</button><button type="button">🔧</button><button type="button">🔩</button><button type="button">⛏</button><button type="button">🪚</button><button type="button">🗜</button><button type="button">🧪</button><button type="button">🔎</button><button type="button">🔍</button><button type="button">💻</button><button type="button">🖥</button><button type="button">⌨️</button><button type="button">🖱</button><button type="button">🖨</button><button type="button">📱</button><button type="button">📲</button><button type="button">🔋</button><button type="button">💾</button><button type="button">💿</button><button type="button">📀</button><button type="button">🧮</button><button type="button">🪄</button><button type="button">🎲</button><button type="button">♟️</button></div>
           </div>
         </div>
         <input type="text" id="task-input" placeholder="소재명 입력" style="flex:1; font-size:14px; font-family:'Pretendard',sans-serif; font-weight:400; color:#1a1a1a;">
@@ -1609,13 +1614,13 @@
           <div class="combo-wrap">
             <input type="text" id="goal-input-text" placeholder="🎯 목표 선택 또는 직접 입력" autocomplete="off">
             <span class="combo-arrow">▼</span>
-            <div class="combo-dropdown" id="goal-dropdown"></div>
+            <div class="combo-dropdown" id="goal-dropdown"><div class="combo-option combo-direct-item" style="padding-left: 14px; font-weight: 600; color: rgb(58, 120, 212); border-bottom: 1px solid rgb(238, 238, 238);">✏️ 직접 작성하기</div><div class="combo-group"><div class="combo-group-header">📋 계획</div><div class="combo-group-items"><div class="combo-option">AI를 통한 프로젝트 목표와 범위를 명확하게 정의한다</div><div class="combo-option">AI를 통한 이해관계자 요구사항을 빠르게 수집하고 정리한다</div><div class="combo-option">AI를 통한 일정·리소스 계획서를 구조화하여 작성한다</div><div class="combo-option">AI를 통한 리스크 항목을 사전에 식별하고 대응 방안을 마련한다</div><div class="combo-option">AI를 통한 프로젝트 착수 보고서 및 제안서 초안을 완성한다</div><div class="combo-option">AI를 통한 WBS(작업분류체계)를 자동 분해하여 정리한다</div><div class="combo-option">AI를 통한 팀 역할과 책임(RACI)을 명확하게 문서화한다</div><div class="combo-option">AI를 통한 이해관계자 인터뷰 가이드와 질문지를 빠르게 작성한다</div><div class="combo-option">AI를 통한 프로젝트 헌장(Project Charter)을 구조화하여 작성한다</div><div class="combo-option">AI를 통한 예산·비용 계획서 초안을 빠르게 완성한다</div><div class="combo-option">AI를 통한 유사 프로젝트 레퍼런스를 수집하고 벤치마크를 정리한다</div><div class="combo-option">AI를 통한 팀 온보딩 자료와 킥오프 자료를 빠르게 준비한다</div><div class="combo-option">AI를 통한 커뮤니케이션 계획서를 작성하고 보고 주기를 정의한다</div><div class="combo-option">AI를 통한 프로젝트 성공 기준(KPI)을 명확하게 정의하고 문서화한다</div><div class="combo-option">AI를 통한 조달 계획과 외부 리소스 활용 방안을 정리한다</div><div class="combo-option">AI를 통한 범위 기술서(Scope Statement)를 명확하게 작성한다</div><div class="combo-option">AI를 통한 유관 부서·팀과의 협력 방식과 접점을 사전에 정의한다</div></div></div><div class="combo-group"><div class="combo-group-header">🗂 관리</div><div class="combo-group-items"><div class="combo-option">AI를 통한 회의록과 액션아이템을 자동으로 정리한다</div><div class="combo-option">AI를 통한 이슈·변경 이력을 체계적으로 추적하고 기록한다</div><div class="combo-option">AI를 통한 진행 상황 보고서를 빠르게 작성한다</div><div class="combo-option">AI를 통한 팀 내 커뮤니케이션 문서를 일관된 형식으로 작성한다</div><div class="combo-option">AI를 통한 피드백을 수집하고 우선순위를 결정한다</div><div class="combo-option">AI를 통한 프로젝트 산출물의 버전을 일관되게 관리한다</div><div class="combo-option">AI를 통한 팀 규칙·가이드라인 문서를 표준화하고 업데이트한다</div><div class="combo-option">AI를 통한 프로젝트 대시보드 항목과 지표를 정의하고 구성한다</div><div class="combo-option">AI를 통한 변경 요청(CR) 프로세스를 표준화하고 문서화한다</div><div class="combo-option">AI를 통한 품질 관리 계획과 검토 기준을 수립한다</div><div class="combo-option">AI를 통한 팀 내 의사결정 기록을 체계적으로 남긴다</div><div class="combo-option">AI를 통한 반복 회의 아젠다 템플릿을 표준화하여 시간을 절약한다</div><div class="combo-option">AI를 통한 스프린트·이터레이션 회고 결과를 빠르게 정리한다</div><div class="combo-option">AI를 통한 리소스 투입 현황과 잔여 업무량을 시각화한다</div><div class="combo-option">AI를 통한 외부 협력사·벤더 커뮤니케이션 문서를 일관되게 작성한다</div><div class="combo-option">AI를 통한 프로젝트 종료 조건과 인수인계 기준을 명확히 정의한다</div><div class="combo-option">AI를 통한 팀 성과 지표를 정리하고 다음 단계 목표와 연결한다</div></div></div><div class="combo-group"><div class="combo-group-header">🔍 분석</div><div class="combo-group-items"><div class="combo-option">AI를 통한 사용자 인터뷰·설문 결과를 코딩하고 패턴을 파악한다</div><div class="combo-option">AI를 통한 리서치 데이터를 구조화하고 인사이트를 도출한다</div><div class="combo-option">AI를 통한 경쟁사·벤치마크 분석 자료를 신속하게 작성한다</div><div class="combo-option">AI를 통한 고객 VOC 데이터를 분류하고 핵심 문제를 추출한다</div><div class="combo-option">AI를 통한 요구사항을 분석하여 기능·비기능 항목으로 분리한다</div><div class="combo-option">AI를 통한 페르소나와 사용자 시나리오를 구체화한다</div><div class="combo-option">AI를 통한 현행 시스템의 문제점과 개선 방향을 문서화한다</div><div class="combo-option">AI를 통한 데이터 분석 결과를 설득력 있는 스토리로 구성한다</div><div class="combo-option">AI를 통한 사용자 행동 데이터를 분석하고 주요 패턴을 시각화한다</div><div class="combo-option">AI를 통한 친화도 다이어그램(Affinity Diagram)을 빠르게 구성한다</div><div class="combo-option">AI를 통한 핵심 사용자 문제를 HMW 질문 형식으로 재정의한다</div><div class="combo-option">AI를 통한 AS-IS / TO-BE 현황을 비교하고 갭(Gap)을 문서화한다</div><div class="combo-option">AI를 통한 이해관계자 분석 및 관심사·영향도 매트릭스를 작성한다</div><div class="combo-option">AI를 통한 정량·정성 데이터를 통합하여 종합 인사이트를 도출한다</div><div class="combo-option">AI를 통한 서비스 사용 맥락과 환경(Context)을 체계적으로 기술한다</div><div class="combo-option">AI를 통한 사용자 여정 지도(Journey Map) 초안을 빠르게 완성한다</div><div class="combo-option">AI를 통한 분석 결과를 바탕으로 핵심 과제와 기회 영역을 정의한다</div><div class="combo-option">AI를 통한 도메인 지식·전문 용어를 빠르게 정리하고 팀과 공유한다</div></div></div><div class="combo-group"><div class="combo-group-header">✏️ 설계</div><div class="combo-group-items"><div class="combo-option">AI를 통한 서비스 흐름(IA·플로우차트)을 빠르게 시각화한다</div><div class="combo-option">AI를 통한 기능 명세서와 화면 정의서 초안을 완성한다</div><div class="combo-option">AI를 통한 복수의 설계 대안을 비교하고 의사결정 근거를 정리한다</div><div class="combo-option">AI를 통한 UX 라이팅 및 마이크로카피를 다양하게 생성한다</div><div class="combo-option">AI를 통한 디자인 시스템 컴포넌트 명세를 체계적으로 작성한다</div><div class="combo-option">AI를 통한 프로토타입 피드백을 반영하여 설계를 빠르게 개선한다</div><div class="combo-option">AI를 통한 접근성·다국어 요구사항을 설계 단계에 반영한다</div><div class="combo-option">AI를 통한 와이어프레임 설명 문구와 주석을 빠르게 작성한다</div><div class="combo-option">AI를 통한 인터랙션 명세와 전환 조건을 명확하게 문서화한다</div><div class="combo-option">AI를 통한 콘텐츠 전략과 정보 계층 구조를 빠르게 정의한다</div><div class="combo-option">AI를 통한 화면별 엣지 케이스와 예외 상황을 체계적으로 정리한다</div><div class="combo-option">AI를 통한 다양한 레이아웃 대안을 빠르게 탐색하고 비교한다</div><div class="combo-option">AI를 통한 설계 원칙과 의사결정 기준을 팀 문서로 정리한다</div><div class="combo-option">AI를 통한 사용자 오류 메시지와 피드백 문구를 일관되게 작성한다</div><div class="combo-option">AI를 통한 반응형·다해상도 대응 설계 기준을 문서화한다</div><div class="combo-option">AI를 통한 온보딩 플로우와 첫 사용 경험 시나리오를 구체화한다</div><div class="combo-option">AI를 통한 설계 산출물 체크리스트를 작성하고 완성도를 검토한다</div></div></div><div class="combo-group"><div class="combo-group-header">⚙️ 구현</div><div class="combo-group-items"><div class="combo-option">AI를 통한 코드 작성·수정·디버깅을 신속하게 처리한다</div><div class="combo-option">AI를 통한 반복 작업을 자동화하여 개발 시간을 단축한다</div><div class="combo-option">AI를 통한 기술 문서와 API 명세를 빠르게 작성한다</div><div class="combo-option">AI를 통한 코드 리뷰 코멘트를 명확하고 일관되게 작성한다</div><div class="combo-option">AI를 통한 구현 중 발생한 이슈의 원인을 빠르게 분석한다</div><div class="combo-option">AI를 통한 도구·라이브러리 활용법을 빠르게 파악하고 적용한다</div><div class="combo-option">AI를 통한 산출물의 오탈자·논리 오류를 신속하게 교정한다</div><div class="combo-option">AI를 통한 구현 전 기술 스펙과 환경 설정 문서를 빠르게 정리한다</div><div class="combo-option">AI를 통한 코드 컨벤션과 네이밍 규칙을 표준화하여 문서화한다</div><div class="combo-option">AI를 통한 복잡한 로직을 주석과 함께 명확하게 설명한다</div><div class="combo-option">AI를 통한 빌드·배포 스크립트 작성과 자동화 설정을 처리한다</div><div class="combo-option">AI를 통한 외부 라이브러리·API 사용법을 빠르게 파악하고 적용한다</div><div class="combo-option">AI를 통한 성능 병목 지점을 분석하고 개선 방향을 도출한다</div><div class="combo-option">AI를 통한 데이터 모델과 DB 스키마 설계 문서를 작성한다</div><div class="combo-option">AI를 통한 개발 중 발생한 기술 부채를 목록화하고 우선순위를 정한다</div><div class="combo-option">AI를 통한 구현 완료 후 셀프 체크리스트를 작성하고 품질을 검토한다</div><div class="combo-option">AI를 통한 팀 내 재사용 가능한 컴포넌트·모듈을 정리하고 공유한다</div></div></div><div class="combo-group"><div class="combo-group-header">🧪 테스트</div><div class="combo-group-items"><div class="combo-option">AI를 통한 QA 체크리스트와 테스트 시나리오를 작성한다</div><div class="combo-option">AI를 통한 테스트 결과를 정리하고 버그 리포트를 작성한다</div><div class="combo-option">AI를 통한 사용성 테스트 결과를 분석하고 개선점을 도출한다</div><div class="combo-option">AI를 통한 회귀 테스트 항목을 자동으로 생성하고 정리한다</div><div class="combo-option">AI를 통한 AI 결과물의 정확성·신뢰성을 검증하는 기준을 만든다</div><div class="combo-option">AI를 통한 테스트 커버리지를 높이기 위한 시나리오를 확장한다</div><div class="combo-option">AI를 통한 탐색적 테스트 차터를 빠르게 작성하고 실행 범위를 정의한다</div><div class="combo-option">AI를 통한 테스트 환경 설정 가이드를 명확하게 문서화한다</div><div class="combo-option">AI를 통한 버그 재현 절차와 우선순위 기준을 표준화한다</div><div class="combo-option">AI를 통한 성능·부하 테스트 계획서와 기준치를 정의한다</div><div class="combo-option">AI를 통한 접근성(Accessibility) 검증 항목을 체크리스트로 작성한다</div><div class="combo-option">AI를 통한 크로스브라우저·크로스디바이스 테스트 매트릭스를 작성한다</div><div class="combo-option">AI를 통한 테스트 완료 기준(Exit Criteria)을 명확하게 정의한다</div><div class="combo-option">AI를 통한 회귀 테스트 자동화 범위와 우선순위를 결정한다</div><div class="combo-option">AI를 통한 사용자 수용 테스트(UAT) 가이드와 시나리오를 작성한다</div><div class="combo-option">AI를 통한 테스트 결과를 요약하여 이해관계자에게 보고한다</div></div></div><div class="combo-group"><div class="combo-group-header">🚀 배포 &amp; 완료</div><div class="combo-group-items"><div class="combo-option">AI를 통한 배포 체크리스트와 롤백 계획을 문서화한다</div><div class="combo-option">AI를 통한 사용자 매뉴얼과 운영 가이드를 빠르게 작성한다</div><div class="combo-option">AI를 통한 릴리즈 노트와 변경 이력을 일관된 형식으로 작성한다</div><div class="combo-option">AI를 통한 프로젝트 완료 보고서와 회고 문서를 작성한다</div><div class="combo-option">AI를 통한 팀 내 학습 인사이트를 정리하고 다음 프로젝트에 연결한다</div><div class="combo-option">AI를 통한 배포 후 모니터링 지표와 대응 기준을 정의한다</div><div class="combo-option">AI를 통한 배포 전 최종 검토 항목과 승인 프로세스를 문서화한다</div><div class="combo-option">AI를 통한 서비스 오픈 공지문과 안내 메시지를 작성한다</div><div class="combo-option">AI를 통한 배포 후 모니터링 항목과 이상 감지 기준을 정의한다</div><div class="combo-option">AI를 통한 핫픽스·긴급 대응 절차를 사전에 정의하고 공유한다</div><div class="combo-option">AI를 통한 프로젝트 완료 후 KPI 달성 여부를 분석하고 보고한다</div><div class="combo-option">AI를 통한 서비스 운영 단계의 지속 개선 백로그를 정리한다</div><div class="combo-option">AI를 통한 고객 지원팀을 위한 FAQ와 대응 가이드를 빠르게 작성한다</div><div class="combo-option">AI를 통한 프로젝트에서 얻은 교훈(Lessons Learned)을 체계적으로 기록한다</div><div class="combo-option">AI를 통한 다음 프로젝트를 위한 재사용 가능한 템플릿을 정리한다</div><div class="combo-option">AI를 통한 팀 기여도와 성과를 정리하여 공식 문서로 남긴다</div></div></div></div>
           </div>
           <textarea id="goal-direct" class="gp-direct-textarea" placeholder="목표를 자유롭게 직접 작성하세요" rows="2" autocomplete="off" style="display:none;"></textarea>
           <div class="combo-wrap">
             <input type="text" id="problem-input" placeholder="⚡ 문제 선택 또는 직접 입력" autocomplete="off">
             <span class="combo-arrow">▼</span>
-            <div class="combo-dropdown" id="problem-dropdown"></div>
+            <div class="combo-dropdown" id="problem-dropdown"><div class="combo-option combo-direct-item" style="padding-left: 14px; font-weight: 600; color: rgb(58, 120, 212); border-bottom: 1px solid rgb(238, 238, 238);">✏️ 직접 작성하기</div><div class="combo-group"><div class="combo-group-header">📋 계획</div><div class="combo-group-items"><div class="combo-option">프로젝트 목표와 범위가 모호해서 방향을 잡기 어렵다</div><div class="combo-option">이해관계자별 요구사항이 달라 합의점을 찾기 어렵다</div><div class="combo-option">일정 산정 근거가 부족해 현실적인 계획을 세우기 어렵다</div><div class="combo-option">리스크 항목을 사전에 식별하는 체계가 없다</div><div class="combo-option">착수 단계에서 팀원 간 역할과 책임이 불명확하다</div><div class="combo-option">유사 프로젝트의 선례가 없어 기준을 잡기 어렵다</div><div class="combo-option">초기 요구사항이 계속 바뀌어 계획 수정이 반복된다</div><div class="combo-option">프로젝트 목적과 기대 효과를 이해관계자에게 설득하기 어렵다</div><div class="combo-option">일정 내 달성 가능한 범위와 불가능한 범위를 구분하기 어렵다</div><div class="combo-option">예산 산정 근거가 부족해 현실적인 계획을 세우기 어렵다</div><div class="combo-option">팀 구성이 확정되기 전 역할 분배를 미리 설계하기 어렵다</div><div class="combo-option">비슷한 선례가 없어 공수 추정이 주먹구구식이 된다</div><div class="combo-option">초기 기획 단계에서 기술적 실현 가능성을 판단하기 어렵다</div><div class="combo-option">다수의 이해관계자 의견을 취합해 하나의 방향으로 정리하기 어렵다</div><div class="combo-option">계획 수립 후 승인 과정에서 불필요한 반복 수정이 발생한다</div><div class="combo-option">프로젝트 우선순위가 조직 내에서 자주 바뀌어 방향 잡기 어렵다</div><div class="combo-option">외부 의존성(타팀·벤더)이 많아 일정을 확정하기 어렵다</div></div></div><div class="combo-group"><div class="combo-group-header">🗂 관리</div><div class="combo-group-items"><div class="combo-option">이슈와 변경사항이 많아 추적·관리가 어렵다</div><div class="combo-option">회의 내용이 문서화되지 않아 나중에 혼선이 생긴다</div><div class="combo-option">팀원마다 문서 형식과 수준이 달라 통일이 어렵다</div><div class="combo-option">피드백을 반영하는 과정에서 버전 관리가 혼란스럽다</div><div class="combo-option">진행 상황을 이해관계자에게 명확하게 전달하기 어렵다</div><div class="combo-option">작업 우선순위를 정하는 기준이 불명확하다</div><div class="combo-option">작업 범위가 자주 바뀌어 산출물을 처음부터 다시 작성한다</div><div class="combo-option">산출물 관리 체계가 없어 최신 버전을 찾는 데 시간이 걸린다</div><div class="combo-option">팀원 간 업무 진행 상황을 실시간으로 파악하기 어렵다</div><div class="combo-option">의사결정 후 근거가 기록되지 않아 나중에 혼선이 생긴다</div><div class="combo-option">갑작스러운 요구사항 변경에 유연하게 대응하기 어렵다</div><div class="combo-option">여러 프로젝트를 동시에 관리하며 우선순위 조율이 어렵다</div><div class="combo-option">보고 형식이 매번 달라 보고서 작성에 시간이 낭비된다</div><div class="combo-option">이슈가 발생했을 때 책임 소재와 대응 주체가 불명확하다</div><div class="combo-option">팀원 온보딩이 느려 프로젝트 초반 속도가 나지 않는다</div><div class="combo-option">협업 도구가 너무 많아 정보가 분산되고 관리가 어렵다</div><div class="combo-option">프로젝트 완료 기준이 불명확해 언제 끝내야 할지 모른다</div></div></div><div class="combo-group"><div class="combo-group-header">🔍 분석</div><div class="combo-group-items"><div class="combo-option">리서치 데이터가 많지만 인사이트 도출이 느리다</div><div class="combo-option">정보가 너무 많아 핵심을 추려내는 데 시간이 오래 걸린다</div><div class="combo-option">인터뷰·설문 결과를 정리하는 데 너무 많은 시간이 걸린다</div><div class="combo-option">데이터 분석 결과를 설득력 있게 전달하기 어렵다</div><div class="combo-option">사용자 니즈와 비즈니스 요구사항 사이의 균형을 잡기 어렵다</div><div class="combo-option">요구사항이 모호해서 기능과 비기능을 구분하기 어렵다</div><div class="combo-option">다양한 관점의 아이디어를 혼자 발산하는 데 한계가 있다</div><div class="combo-option">현행 시스템의 문제를 객관적으로 파악하기 어렵다</div><div class="combo-option">인터뷰 참여자 모집과 일정 조율에 많은 시간이 소비된다</div><div class="combo-option">수집한 데이터의 신뢰성과 대표성을 확신하기 어렵다</div><div class="combo-option">정성 데이터를 정량화하여 설득력 있게 제시하기 어렵다</div><div class="combo-option">분석 결과가 너무 많아 핵심 인사이트 3가지를 고르기 어렵다</div><div class="combo-option">팀마다 데이터를 해석하는 관점이 달라 합의가 어렵다</div><div class="combo-option">리서치 결과가 실제 설계에 반영되지 않고 묻히는 경우가 많다</div><div class="combo-option">도메인 지식이 부족해 전문 용어와 업무 맥락을 이해하기 어렵다</div><div class="combo-option">분석 기간이 촉박해 충분한 검토 없이 인사이트를 도출한다</div><div class="combo-option">이전 리서치 자료가 정리되지 않아 중복 작업이 발생한다</div><div class="combo-option">사용자 맥락(Context)을 충분히 반영하지 못한 분석이 나온다</div></div></div><div class="combo-group"><div class="combo-group-header">✏️ 설계</div><div class="combo-group-items"><div class="combo-option">초안 작성 시 어떻게 시작해야 할지 막막하다</div><div class="combo-option">복잡한 사용자 여정을 빠르게 시각화하기 어렵다</div><div class="combo-option">작성한 문서의 논리 구조가 탄탄한지 확신이 없다</div><div class="combo-option">아이디어는 있지만 구체화하는 과정이 막힌다</div><div class="combo-option">디자인 시스템·가이드라인 일관성을 유지하기 어렵다</div><div class="combo-option">설계 결정의 근거를 문서로 남기지 못하고 있다</div><div class="combo-option">프로토타입 피드백을 빠르게 반영하고 재검증하기 어렵다</div><div class="combo-option">설계 방향에 대한 팀 내 합의가 이루어지지 않아 작업이 지연된다</div><div class="combo-option">화면 수가 많아 엣지 케이스와 예외 처리를 빠뜨리기 쉽다</div><div class="combo-option">UX 설계와 개발 구현 간의 간극이 커서 싱크가 자주 어긋난다</div><div class="combo-option">같은 컴포넌트가 화면마다 다르게 설계되어 일관성이 없다</div><div class="combo-option">설계 변경이 자주 일어나 개발팀과의 소통 비용이 크다</div><div class="combo-option">이해관계자가 설계 의도를 이해하지 못해 반복 설명이 필요하다</div><div class="combo-option">접근성·다국어 요구사항이 설계 후반에 추가되어 재작업이 발생한다</div><div class="combo-option">콘텐츠 확정 전에 설계가 진행되어 나중에 레이아웃을 다시 조정한다</div><div class="combo-option">설계 산출물 형식이 팀마다 달라 핸드오프 시 혼선이 생긴다</div><div class="combo-option">여러 대안 중 어떤 것을 선택해야 할지 판단 기준이 없다</div></div></div><div class="combo-group"><div class="combo-group-header">⚙️ 구현</div><div class="combo-group-items"><div class="combo-option">반복되는 단순 작업에 너무 많은 시간이 소비된다</div><div class="combo-option">구현 중 발생한 이슈의 원인을 파악하는 데 시간이 걸린다</div><div class="combo-option">기술 문서가 부족해 도구·API 활용에 시간이 많이 든다</div><div class="combo-option">산출물의 오류를 마지막에 발견해 수정 비용이 크다</div><div class="combo-option">여러 도구를 오가며 작업하느라 흐름이 자주 끊긴다</div><div class="combo-option">AI 결과물의 정확성·신뢰성을 검증하는 기준이 없다</div><div class="combo-option">프롬프트 품질이 낮아 원하는 결과물이 잘 나오지 않는다</div><div class="combo-option">요구사항 해석의 차이로 구현 결과가 설계와 달라진다</div><div class="combo-option">기존 코드 구조를 파악하는 데 시간이 너무 많이 걸린다</div><div class="combo-option">기술 부채가 쌓여 새로운 기능 추가가 점점 어려워진다</div><div class="combo-option">개발 환경 차이로 인해 로컬에서는 되는데 서버에서 안 된다</div><div class="combo-option">외부 API 변경이나 장애로 인해 개발 일정이 틀어진다</div><div class="combo-option">코드 리뷰 기준이 없어 품질이 사람마다 다르게 나온다</div><div class="combo-option">비기능 요구사항(성능·보안)이 후반에 제시되어 재작업이 발생한다</div><div class="combo-option">테스트 없이 배포해야 하는 상황이 반복된다</div><div class="combo-option">팀원 간 구현 방식이 달라 통합 시 충돌이 발생한다</div><div class="combo-option">구현 중 요구사항이 바뀌어 이미 완성한 코드를 다시 짜야 한다</div></div></div><div class="combo-group"><div class="combo-group-header">🧪 테스트</div><div class="combo-group-items"><div class="combo-option">테스트 시나리오 작성에 시간이 너무 많이 걸린다</div><div class="combo-option">버그 재현 조건을 명확하게 문서화하기 어렵다</div><div class="combo-option">사용성 테스트 결과를 빠르게 분류하고 정리하기 어렵다</div><div class="combo-option">마감 압박으로 충분한 테스트 없이 산출물을 제출하게 된다</div><div class="combo-option">테스트 커버리지가 부족해 예상치 못한 오류가 발생한다</div><div class="combo-option">비개발 이해관계자에게 테스트 결과를 전달하기 어렵다</div><div class="combo-option">테스트 환경이 실제 운영과 달라 신뢰성 있는 결과를 얻기 어렵다</div><div class="combo-option">버그 수정 후 다른 곳이 깨지는 사이드 이펙트가 반복된다</div><div class="combo-option">테스트 결과를 개발팀에 전달하는 형식이 표준화되어 있지 않다</div><div class="combo-option">시간 부족으로 중요 기능 외의 엣지 케이스를 테스트하지 못한다</div><div class="combo-option">비개발 직군이 UAT를 수행할 때 진행 방법을 몰라 지연된다</div><div class="combo-option">이전 테스트 결과가 문서화되지 않아 같은 버그가 반복된다</div><div class="combo-option">성능 테스트 기준치가 없어 통과·실패 판단이 주관적이 된다</div><div class="combo-option">테스트 범위가 명확하지 않아 무엇을 어디까지 해야 할지 모른다</div><div class="combo-option">접근성 검증 항목을 테스트 단계에서 뒤늦게 확인하게 된다</div><div class="combo-option">버그 우선순위 판단 기준이 없어 수정 순서를 정하기 어렵다</div></div></div><div class="combo-group"><div class="combo-group-header">🚀 배포 &amp; 완료</div><div class="combo-group-items"><div class="combo-option">배포 전 체크리스트가 없어 누락 항목이 발생한다</div><div class="combo-option">운영 가이드·매뉴얼 작성에 불필요하게 많은 시간이 든다</div><div class="combo-option">프로젝트 완료 후 회고와 학습 정리가 잘 이루어지지 않는다</div><div class="combo-option">이전 프로젝트 인사이트가 다음 작업에 연결되지 않는다</div><div class="combo-option">팀 내 지식이 개인에게 집중되어 공유가 안 된다</div><div class="combo-option">배포 후 모니터링 기준과 대응 방안이 정의되어 있지 않다</div><div class="combo-option">배포 직전 예상치 못한 이슈가 발생해 일정이 지연된다</div><div class="combo-option">롤백 기준과 절차가 명확하지 않아 장애 대응이 느리다</div><div class="combo-option">배포 후 사용자 피드백을 체계적으로 수집하는 체계가 없다</div><div class="combo-option">운영 이관 후 담당자가 바뀌면 히스토리를 파악하기 어렵다</div><div class="combo-option">배포 완료 후 실제 성과 측정이 이루어지지 않는다</div><div class="combo-option">프로젝트 종료 후 팀이 해산되면서 노하우가 사라진다</div><div class="combo-option">다음 프로젝트를 위한 인수인계 문서가 부실하게 작성된다</div><div class="combo-option">서비스 오픈 후 예상보다 많은 문의와 오류 신고가 몰린다</div><div class="combo-option">배포 이후 지속적인 개선을 위한 우선순위 정리가 안 된다</div><div class="combo-option">완료 보고 이후 이해관계자의 추가 요청이 계속 이어진다</div></div></div></div>
           </div>
           <textarea id="problem-direct" class="gp-direct-textarea" placeholder="문제를 자유롭게 직접 작성하세요" rows="2" autocomplete="off" style="display:none;"></textarea>
         </div>
@@ -1651,8 +1656,7 @@
         <label>AI와 협업하여 완성된 최종 산출물의 화면 캡처이미지 첨부 <span id="img-count" style="font-size:11px;color:#999;font-weight:400;"></span></label>
 
         <!-- 숨긴 file input -->
-        <input type="file" id="img-input" accept="image/*" multiple
-               style="position:fixed;top:-999px;left:-999px;opacity:0;">
+        <input type="file" id="img-input" accept="image/*" multiple="" style="position:fixed;top:-999px;left:-999px;opacity:0;">
 
         <!-- 드롭존: 이미지 없을 때 -->
         <div id="img-zone" class="img-zone">
@@ -1671,15 +1675,10 @@
       <!-- 기본 경로 -->
       <div class="field">
         <label>기본 경로</label>
-        <a
-          href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="base-path-link"
-        >
+        <a href="https://drive.google.com/drive/folders/0AHMKavhEL0eeUk9PVA" target="_blank" rel="noopener noreferrer" class="base-path-link">
           <span class="base-path-icon">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
           </span>
           <span class="base-path-title">AI 리터러시 활동_UXD2_Google Drive</span>
@@ -1781,9 +1780,7 @@
               <label>URL</label>
               <div style="display:flex;gap:6px;align-items:center;">
                 <input type="text" id="drive-modal-url-input" placeholder="https://drive.google.com/..." autocomplete="off" style="flex:1;">
-                <button type="button" id="drive-modal-url-open" title="링크 열기"
-                  style="flex-shrink:0;padding:8px 12px;font-size:13px;border-radius:6px;border:.5px solid #d0d0d0;background:#f5f5f5;cursor:pointer;white-space:nowrap;font-family:'Pretendard',sans-serif;"
-                  onclick="(function(){const u=document.getElementById('drive-modal-url-input').value.trim();if(u)window.open(u,'_blank');else alert('URL을 먼저 입력해주세요.');})()">
+                <button type="button" id="drive-modal-url-open" title="링크 열기" style="flex-shrink:0;padding:8px 12px;font-size:13px;border-radius:6px;border:.5px solid #d0d0d0;background:#f5f5f5;cursor:pointer;white-space:nowrap;font-family:'Pretendard',sans-serif;" onclick="(function(){const u=document.getElementById('drive-modal-url-input').value.trim();if(u)window.open(u,'_blank');else alert('URL을 먼저 입력해주세요.');})()">
                   🔗 열기
                 </button>
               </div>
@@ -1791,7 +1788,7 @@
             <div class="drive-modal-field">
               <label>가공 여부</label>
               <select id="drive-modal-process-input">
-                <option value="" disabled selected>선택</option>
+                <option value="" disabled="" selected="">선택</option>
                 <option value="원본">원본 그대로 사용</option>
                 <option value="가공">가공·정제 후 사용</option>
                 <option value="혼합">원본 + 가공 혼합</option>
@@ -1816,9 +1813,7 @@
       <div class="sec-title">선정 도구</div>
       <div class="field">
         <label>사용한 AI도구를 선택하고, 의도와, 활동 기록은 아래의 AI WORK FLOW에서 입력하세요.</label>
-        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;">
-          <button class="add-tool-btn" id="add-tool-btn">+ 추가</button>
-        </div>
+        <div class="badge-grid" id="tool-badge-grid" style="margin-top:14px;"><span class="tool-badge">Perplexity<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Gemini<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Figma<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Make<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Stitch<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Cowork<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">Claude Code<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><span class="tool-badge">VS Code<span class="badge-count" style="display: none;">0</span><span class="badge-del" title="도구 삭제">✕</span></span><button class="add-tool-btn" id="add-tool-btn">+ 추가</button></div>
 
         <!-- 도구 추가 팝업 -->
         <div class="add-tool-popup hidden" id="add-tool-popup">
@@ -1841,7 +1836,7 @@
         <span class="wf-col-time">시간(분)</span>
         <span class="wf-col-actions"></span>
       </div>
-      <div class="wf-list" id="wf-list"></div>
+      <div class="wf-list" id="wf-list"><div class="wf-empty">선정 도구에서 사용한 AI 도구를 선택하면 자동으로 워크플로우가 생성됩니다.</div></div>
       <div class="wf-total" id="wf-total" style="display:none;">
         <span class="wf-total-label">총 소요시간</span>
         <span class="wf-total-value" id="wf-total-value">0분</span>
@@ -1968,9 +1963,7 @@
             <div class="qa-n-detail hidden" id="qa-detail-format">
               <div class="qa-step-rows" id="qa-format-rows"></div>
               <div class="qa-step-add-wrap">
-                <select class="qa-step-add-sel" id="qa-format-step-sel">
-                  <option value="">+ 스텝 추가</option>
-                </select>
+                <select class="qa-step-add-sel" id="qa-format-step-sel"><option value="">+ 스텝 추가</option></select>
               </div>
             </div>
           </div>
@@ -1985,9 +1978,7 @@
             <div class="qa-n-detail hidden" id="qa-detail-bias">
               <div class="qa-step-rows" id="qa-bias-rows"></div>
               <div class="qa-step-add-wrap">
-                <select class="qa-step-add-sel" id="qa-bias-step-sel">
-                  <option value="">+ 스텝 추가</option>
-                </select>
+                <select class="qa-step-add-sel" id="qa-bias-step-sel"><option value="">+ 스텝 추가</option></select>
               </div>
             </div>
           </div>
@@ -2012,7 +2003,7 @@
       <!-- 보완 권장 -->
       <div class="field">
         <label>✦ 보완 권장</label>
-        <input type="text" id="qa-recommend" placeholder="검토 후 보완이 필요한 사항을 기록하세요" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+        <input type="text" id="qa-recommend" placeholder="검토 후 보완이 필요한 사항을 기록하세요" autocomplete="new-password" readonly="" onfocus="this.removeAttribute('readonly')">
       </div>
     </div>
 
@@ -2153,11 +2144,83 @@
         <div class="ai-fill-prompt-guide">
           <div class="ai-fill-prompt-guide-title">💡 사용한 AI 툴에게 아래 내용을 그대로 요청하고, 받은 답변을 붙여넣어 주세요</div>
           <div class="ai-fill-prompt-guide-copy" id="ai-fill-prompt-copy">
-            <div class="ai-fill-prompt-guide-text" id="ai-fill-prompt-text">(프롬프트 로딩 중… 상단의 '단계'를 선택하면 단계별 목표/문제 선택지가 자동으로 주입됩니다)</div>
-            <button type="button" class="ai-fill-prompt-copy-btn" onclick="(function(){const t=document.getElementById('ai-fill-prompt-text');const txt=t.innerText;navigator.clipboard.writeText(txt).then(()=>{const b=document.querySelector('.ai-fill-prompt-copy-btn');b.textContent='✓ 복사됨';setTimeout(()=>{b.textContent='복사';},2000);});})();">복사</button>
+            <div class="ai-fill-prompt-guide-text" id="ai-fill-prompt-text">지금까지 이 대화창에서 너와 대화한 모든 내용을 "AI 활동기록 카드"에 자동으로 채울 수 있게 요약해줘.
+반드시 아래 형식·규칙을 그대로 지키고, 모든 항목을 채워. 값이 없으면 "(없음)", 추정이면 끝에 "[추정]" 태그.
+
+⚠ 길이 제약 (카드 백엔드가 Groq llama 6000 토큰 한도 사용):
+• 전체 응답은 반드시 한글 2,000자 이내로 압축.
+• 각 항목은 한 줄 원칙. 여러 문장이 필요해도 핵심만 짧게.
+• Work Flow는 스텝당 INTENT/활동/Good 프롬프트/시간 각 1줄 이내. 활동은 쉼표로 병렬 나열 가능.
+• 인사이트·잘된점·아쉬운점도 각 1~2문장 이내. 장황한 서술 금지.
+• Good 프롬프트만은 원문 그대로 복사(길이 제약 예외).
+
+━━ 1. 기본정보 ━━
+이모지(1글자):
+Task / 소재명:
+단계: (계획/관리/분석/설계/구현/테스트/배포 중 택1)
+활동일(YYYY-MM-DD):
+작성자:
+이메일:
+
+━━ 2. 목표 · 문제정의 ━━
+※ 단계를 먼저 선택하면 해당 단계의 목표/문제 선택지가 자동으로 주입됩니다.
+
+
+목표:
+문제정의:
+
+━━ 3. 사용한 AI 도구 ━━
+도구(쉼표 구분):
+
+━━ 4. AI WORK FLOW ━━
+반드시 아래처럼 [도구이름] 로 시작하는 블록으로, 사용한 도구 수만큼 반복:
+
+[도구이름]
+- INTENT(의도):
+- 활동:
+- Good 프롬프트(실제 사용한 문장 그대로 복사, 요약 금지):
+- 소요시간(분):
+
+총 소요시간(분):
+
+━━ 5. QA 체크리스트 (각 항목 Y/N + N이면 사유 한 줄) ━━
+- 정확성 (내용이 사실에 부합):
+- 완성도 (누락 없이 완성):
+- 활용 가능성 (실무에 바로 적용 가능):
+- 형식 적합성 (요청 형식·구조와 일치):
+- 편향·오류 검토 (편향/오류 없음):
+- 프롬프트 최적화 (개선 시도 진행):
+
+━━ 6. 보완 권장 (한 줄) ━━
+
+━━ 7. 인사이트 ━━
+- AI 미사용 시 예상 비효율:
+- AI 활용으로 얻은 효율 (정량·정성):
+- 잘 된 점:
+- 아쉬운 점:
+- 새로 알게 된 한마디:
+
+━━ 8. 레퍼런스 · 저장 ━━
+- 도움받은 글/영상 (제목 · URL):
+- 결과물 저장 기본 경로:
+- 구글 드라이브 링크 (타이틀 / URL / 원본·가공):
+
+━━ 9. 산출물 이미지 힌트 (있을 때만) ━━
+- 파일명 힌트:
+- 이미지 캡션:
+
+━━ 규칙 ━━
+• 모든 항목을 반드시 채운다. 비울 경우 "(없음)" 또는 "[추정]".
+• 시간은 분 단위 숫자만 (예: 45).
+• Good 프롬프트는 실제 사용한 원문 그대로. 요약/재작성 금지.
+• AI WORK FLOW는 반드시 [대괄호] 블록으로 도구를 구분 (카드 파서 규칙).
+• 목표/문제는 위 사전 선택지에 있으면 "그대로" 복사. 없을 때만 "직접: …".</div>
+            <button type="button" class="ai-fill-prompt-copy-btn" onclick="(function(){const t=document.getElementById('ai-fill-prompt-text');const txt=t.innerText;navigator.clipboard.writeText(txt).then(()=&gt;{const b=document.querySelector('.ai-fill-prompt-copy-btn');b.textContent='✓ 복사됨';setTimeout(()=&gt;{b.textContent='복사';},2000);});})();">복사</button>
           </div>
         </div>
-        <textarea class="ai-fill-ta" id="ai-fill-ta" placeholder="AI 활동 내용을 여기에 붙여넣어 주세요.&#10;&#10;예시) Claude에게 WBS 작성을 요청했고, 결과물을 Figma에서 시각화했습니다. 처음에는 요구사항 정의가 불명확해서 3번 수정..."></textarea>
+        <textarea class="ai-fill-ta" id="ai-fill-ta" placeholder="AI 활동 내용을 여기에 붙여넣어 주세요.
+
+예시) Claude에게 WBS 작성을 요청했고, 결과물을 Figma에서 시각화했습니다. 처음에는 요구사항 정의가 불명확해서 3번 수정..."></textarea>
         <div class="ai-fill-progress" id="ai-fill-progress">
           <div class="ai-fill-spinner"></div>
           <span id="ai-fill-progress-txt">AI가 내용을 분석하고 있어요...</span>
@@ -2181,7 +2244,7 @@
       <button class="f-btn cfg" id="cfg-btn" title="Supabase 설정">⚙</button>
       <button class="f-btn clear" id="clear-btn">초기화</button>
       <button class="f-btn share-link" id="share-link-btn">🔗 링크 공유</button>
-      <button class="f-btn save"  id="save-btn">저장 &amp; Notion 제출</button>
+      <button class="f-btn save" id="save-btn">저장 &amp; Notion 제출</button>
       <span class="page-num">01</span>
     </div>
   </div>
@@ -5836,5 +5899,6 @@ ${text}
   setTimeout(updatePageTitle, 200);
 
 </script>
-</body>
-</html>
+
+
+</body></html>
