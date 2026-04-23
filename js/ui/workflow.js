@@ -199,15 +199,11 @@
     }
     const overlay = document.getElementById('wf-modal-overlay');
     overlay.style.display = 'flex';
-    // 팝업 포커싱 — 페이지 최상단으로 스크롤 + body 스크롤 잠금 + 첫 필드/확인 버튼 포커스
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     document.body.style.overflow = 'hidden';
     setTimeout(() => {
       if (_isViewerMode) {
-        // 뷰어: 확인 버튼에 포커스
         document.getElementById('wf-modal-confirm-btn')?.focus();
       } else {
-        // 편집: INTENT 필드에 포커스
         intentEl?.focus();
       }
     }, 80);
