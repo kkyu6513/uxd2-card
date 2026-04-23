@@ -1,0 +1,87 @@
+  /* ── LOAD ON START ── */
+  try {
+    const saved = localStorage.getItem(SAVE_KEY);
+    if (saved) applyData(JSON.parse(saved));
+  } catch(e) {}
+
+  // 자동저장 복원 (SAVE_KEY 없을 때만)
+  if (!localStorage.getItem(SAVE_KEY)) {
+    try {
+      const autoSaved = sessionStorage.getItem(AUTO_SAVE_KEY);
+      if (autoSaved) {
+        // 뷰어 모드이거나 자동저장이 있으면 팝업 없이 그냥 복원
+        const snap = JSON.parse(autoSaved);
+        const hasContent = snap.editName || snap.task || snap.goal || snap.problem || (snap.wfRows && snap.wfRows.length);
+        if (hasContent && !location.hash) {
+          applySnapData(snap);
+        } else {
+          sessionStorage.removeItem(AUTO_SAVE_KEY);
+        }
+      }
+    } catch(e) { sessionStorage.removeItem(AUTO_SAVE_KEY); }
+  }
+
+  // 자동저장 리스너 연결
+  setTimeout(attachAutoSaveListeners, 500);
+
+  // URL 해시 ID로 Supabase에서 카드 복원 (뷰어 모드)
+  (function() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+
+    _isViewerMode = true;
+    document.body.classList.add('viewer');
+    // 뷰어 모드에서도 '링크 공유' 버튼은 유지 (작성/설정/초기화/자동채우기만 숨김)
+    ['save-btn','clear-btn','cfg-btn','ai-fill-btn'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.style.display = 'none';
+    });
+    const shareBtnKeep = document.getElementById('share-link-btn');
+    if (shareBtnKeep) shareBtnKeep.style.display = '';
+
+    (async () => {
+      try {
+        const snap = await sbFetch(hash);
+        applySnapData(snap);
+        // 뷰어 모드: 빈 필드에 "사용자가 입력하지 않음" 표시
+        setTimeout(() => {
+          applyViewerEmptyState();
+          if (window._registerInsViewClick) window._registerInsViewClick();
+          if (window._registerViewerFieldClicks) window._registerViewerFieldClicks();
+        }, 150);
+      } catch(e) {
+        console.error('[UXD2] 뷰어 복원 오류:', e);
+        showToast('카드 로딩 실패: ' + e.message);
+      }
+    })();
+  })();
+
+  syncImageUI();
+
+  /* ── 동적 타이틀 업데이트 ── */
+  function updatePageTitle() {
+    const name = document.getElementById('edited-name')?.value?.trim() || '';
+    const date = document.getElementById('date-input')?.value || '';
+    const base = 'AI 리터러시 활동기록카드';
+    let title = base;
+    if (name || date) {
+      const parts = [];
+      if (name) parts.push(name);
+      if (date) {
+        // yyyy-mm-dd → yy.mm.dd 형식으로
+        const d = date.replace(/^20(\d{2})-(\d{2})-(\d{2})$/, '$1$2$3');
+        parts.push(d);
+      }
+      title = base + ' - ' + parts.join(' - ');
+    }
+    document.title = title;
+  }
+
+  // 작성자 변경 시
+  document.getElementById('edited-name')?.addEventListener('change', updatePageTitle);
+
+  // 날짜 변경 시
+  document.getElementById('date-input')?.addEventListener('change', updatePageTitle);
+  document.getElementById('date-input')?.addEventListener('input', updatePageTitle);
+
+  // 초기 실행 (날짜 자동입력 후)
+  setTimeout(updatePageTitle, 200);
