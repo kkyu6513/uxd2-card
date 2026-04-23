@@ -4,13 +4,27 @@
     padding: 0 4px 8px; border-bottom: .5px solid var(--border); margin-bottom: 6px;
   }
   .wf-header span { font-size: 11px; font-weight: 600; color: #aaa; letter-spacing: .05em; }
-  .wf-col-step  { flex: 0 0 56px; text-align: center; }
-  .wf-col-tool  { flex: 0 0 118px; }
-  .wf-col-detail{ flex: 1; }
-  .wf-col-time  { flex: 0 0 72px; text-align: center; }
+  .wf-col-drag   { flex: 0 0 20px; }
+  .wf-col-step   { flex: 0 0 56px; text-align: center; }
+  .wf-col-tool   { flex: 0 0 118px; }
+  .wf-col-detail { flex: 1; }
+  .wf-col-time   { flex: 0 0 72px; text-align: center; }
   .wf-col-actions { flex: 0 0 56px; display: flex; justify-content: center; }
   .wf-list { display: flex; flex-direction: column; gap: 6px; }
   .wf-row { display: flex; align-items: center; gap: 6px; }
+
+  /* 드래그 핸들 */
+  .wf-drag-handle {
+    flex: 0 0 20px; color: #ccc; cursor: grab; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; letter-spacing: -3px; line-height: 1;
+  }
+  .wf-drag-handle:active { cursor: grabbing; }
+  .wf-row-dragging { opacity: 0.3; }
+  .wf-row-over {
+    outline: 2px dashed #3a78d4; border-radius: 8px;
+    background: rgba(58,120,212,.04);
+  }
   .wf-step {
     flex: 0 0 56px; font-size: 11px; font-weight: 700; color: #fff;
     background: #222; border-radius: 6px; height: 38px;
@@ -846,3 +860,116 @@
   html.dark .gp-guide strong { color: #999; }
   html.dark .gp-direct-textarea { color: var(--text-p); }
   html.dark .viewer-combo-text { color: var(--text-p); background: var(--bg-sec); border-color: var(--border-i); }
+  html.dark .wf-drag-handle { color: #444; }
+  html.dark .wf-row-over { outline-color: #5a9af0; background: rgba(90,154,240,.06); }
+  html.dark .wf-modal-box { background: #2a2a2a; }
+  html.dark .wf-modal-head { border-color: #383838; }
+  html.dark .wf-modal-head span { color: #e0e0e0; }
+  html.dark .wf-modal-body textarea, html.dark .wf-modal-body input { background: #222; border-color: #444; color: #ddd; }
+  html.dark .wf-modal-footer { border-color: #383838; }
+
+  /* ── VIEWER MODE: REPORT STYLE ── */
+  body.viewer .card-body {
+    background: #fff !important;
+    padding: 28px 32px;
+  }
+  body.viewer .card-sub {
+    background: #f9f9f9 !important;
+    border-bottom: 1px solid #ebebeb;
+    padding: 14px 30px;
+  }
+  body.viewer .sec {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 22px 0 6px !important;
+    gap: 14px;
+    border-top: 1px solid #f0f0f0 !important;
+  }
+  body.viewer .card-body > .sec:first-child {
+    border-top: none !important;
+    padding-top: 0 !important;
+  }
+  body.viewer .sec-title {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #bbb !important;
+    letter-spacing: .18em !important;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 4px;
+  }
+  body.viewer .sec-title::before { display: none !important; }
+  body.viewer .field > label {
+    font-size: 10px; color: #bbb; text-transform: uppercase;
+    letter-spacing: .08em; font-weight: 700;
+  }
+  /* 모든 입력 필드 → 투명 플레인 텍스트 */
+  body.viewer input[type="text"]:not(.wf-time),
+  body.viewer input[type="date"],
+  body.viewer input[type="url"],
+  body.viewer textarea:not(.img-caption),
+  body.viewer .gp-direct-textarea {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: .5px solid #f5f5f5 !important;
+    border-radius: 0 !important;
+    padding: 4px 0 !important;
+    font-size: 15px !important;
+    color: #1a1a1a !important;
+    line-height: 1.7 !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+    resize: none !important;
+  }
+  body.viewer .viewer-combo-text {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: .5px solid #f5f5f5 !important;
+    border-radius: 0 !important;
+    padding: 4px 0 !important;
+    font-size: 15px !important;
+    color: #1a1a1a !important;
+  }
+  body.viewer .sub-field input,
+  body.viewer .sub-field select,
+  body.viewer .edited-input {
+    font-size: 15px !important; color: #1a1a1a !important;
+  }
+  /* Workflow 리포트 레이아웃 */
+  body.viewer .wf-header { display: none; }
+  body.viewer .wf-drag-handle { display: none; }
+  body.viewer .wf-list { gap: 0; }
+  body.viewer .wf-row {
+    padding: 12px 0;
+    border-bottom: 1px solid #f5f5f5;
+    border-radius: 0 !important;
+    gap: 8px;
+  }
+  body.viewer .wf-row:last-child { border-bottom: none; }
+  body.viewer .wf-step {
+    background: #1a1a1a; color: #fff; font-size: 10px;
+    height: 22px; border-radius: 4px; flex: 0 0 52px; letter-spacing: .04em;
+  }
+  body.viewer .wf-tool {
+    background: transparent !important; border: none !important;
+    background-image: none !important; padding: 0 6px; height: auto;
+    font-size: 12px; font-weight: 700; color: #666;
+    appearance: none; -webkit-appearance: none; line-height: 22px;
+  }
+  body.viewer .wf-detail-btn {
+    background: transparent !important; border: none !important;
+    padding: 0 4px; height: auto; min-height: 22px;
+    color: #1a1a1a; font-size: 13px; font-weight: 400;
+    white-space: normal; overflow: visible; text-overflow: unset;
+    line-height: 1.5;
+  }
+  body.viewer .wf-detail-btn.has-data { color: #111; font-weight: 500; }
+  body.viewer .wf-time {
+    background: transparent !important; border: none !important;
+    font-size: 12px; color: #aaa; text-align: right; padding: 0; height: auto;
+  }
+  body.viewer .wf-total { border-top: 1px solid #f0f0f0; padding-top: 10px; }
+  body.viewer .wf-total-label { color: #bbb; }
+  body.viewer .wf-empty { border-style: none; background: transparent; padding: 8px 0; }

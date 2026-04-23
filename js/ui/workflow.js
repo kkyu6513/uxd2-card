@@ -1,5 +1,6 @@
   /* ── AI WORK FLOW ── */
   let wfRows = [];
+  let _wfDragIdx = null;
   const QA_KEYS = ['accuracy','completeness','usability','format','bias','prompt'];
   let qaStepsMap = {}; // { key: [{idx, content}] }
   QA_KEYS.forEach(k => { qaStepsMap[k] = []; });
@@ -53,6 +54,7 @@
       const escLabel = String(btnLabel).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
       div.innerHTML = `
+        <div class="wf-drag-handle" title="드래그하여 순서 변경">⋮⋮</div>
         <div class="wf-step">STEP.${i + 1}</div>
         <select class="wf-tool" data-idx="${i}">${getToolOptions(row.tool)}</select>
         <button type="button" class="wf-detail-btn${hasData ? ' has-data' : ''}${btnExtraClass}" data-idx="${i}">${escLabel}</button>
@@ -86,11 +88,12 @@
         wfRows[+e.target.dataset.idx].time = e.target.value;
         updateWfTotal();
       });
-      // 추가 버튼 — 현재 행 하위에 새 행 삽입
+      // 추가 버튼 — 현재 행 하위에 새 행 삽입 후 바로 모달 열기
       div.querySelector('.wf-row-add').addEventListener('click', e => {
         const idx = +e.currentTarget.dataset.idx;
         wfRows.splice(idx + 1, 0, { tool: '', intent: '', action: '', time: '', prompt: '' });
         renderWorkflow();
+        openWfModal(idx + 1);
       });
       // 삭제 버튼 — syncToolsWithWf가 자동 동기화
       div.querySelector('.wf-row-del').addEventListener('click', e => {
@@ -98,6 +101,39 @@
         wfRows.splice(idx, 1);
         renderWorkflow();
       });
+      // 드래그앤드롭 — 편집 모드에서만 활성화
+      if (!_isViewerMode) {
+        div.draggable = true;
+        div.addEventListener('dragstart', e => {
+          _wfDragIdx = i;
+          e.dataTransfer.effectAllowed = 'move';
+          setTimeout(() => div.classList.add('wf-row-dragging'), 0);
+        });
+        div.addEventListener('dragend', () => {
+          div.classList.remove('wf-row-dragging');
+          _wfDragIdx = null;
+          document.querySelectorAll('.wf-row-over').forEach(r => r.classList.remove('wf-row-over'));
+        });
+        div.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (_wfDragIdx !== null && _wfDragIdx !== i) {
+            document.querySelectorAll('.wf-row-over').forEach(r => r.classList.remove('wf-row-over'));
+            div.classList.add('wf-row-over');
+          }
+        });
+        div.addEventListener('dragleave', e => {
+          if (!div.contains(e.relatedTarget)) div.classList.remove('wf-row-over');
+        });
+        div.addEventListener('drop', e => {
+          e.preventDefault();
+          div.classList.remove('wf-row-over');
+          if (_wfDragIdx === null || _wfDragIdx === i) return;
+          const [moved] = wfRows.splice(_wfDragIdx, 1);
+          wfRows.splice(i, 0, moved);
+          renderWorkflow();
+        });
+      }
+
       list.appendChild(div);
     });
     updateWfTotal();
@@ -217,6 +253,7 @@
   document.getElementById('wf-add-btn')?.addEventListener('click', () => {
     wfRows.push({ tool: '', intent: '', action: '', time: '', prompt: '' });
     renderWorkflow();
+    openWfModal(wfRows.length - 1);
   });
 
   /* ── FLOW DRAW ── */
