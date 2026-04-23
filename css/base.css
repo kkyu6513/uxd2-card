@@ -369,3 +369,54 @@
     padding: 8px 12px; outline: none; transition: border-color .15s, box-shadow .15s;
   }
   .tool-memo-input:focus { border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
+
+  /* ── DARK MODE TOGGLE BUTTON ── */
+  .dark-toggle-btn {
+    background: none; border: 1.5px solid rgba(255,255,255,.18);
+    color: #ccc; font-size: 16px; cursor: pointer;
+    padding: 5px 10px; border-radius: 8px; flex-shrink: 0;
+    transition: background .15s, border-color .15s;
+    line-height: 1;
+  }
+  .dark-toggle-btn:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.35); }
+
+  /* ── DARK MODE ── */
+  html.dark body { background: #111; }
+  html.dark {
+    --bg-card: #181818;
+    --bg-sec:  #232323;
+    --text-p:  #e8e8e8;
+    --text-s:  #aaaaaa;
+    --text-m:  #666666;
+    --border:  #383838;
+    --border-i:#424242;
+  }
+  html.dark .card-sub { background: #1d1d1d; }
+  html.dark .sub-field label { color: #555; }
+  html.dark .sec-title { color: #c8c8c8; }
+  html.dark .sec-title::before { background: #c8c8c8; }
+  html.dark .img-zone { border-color: #444; background: #1e1e1e; }
+  html.dark .img-zone:hover { border-color: #666; background: #242424; }
+  html.dark .img-zone-main { color: #888; }
+  html.dark .img-zone-sub  { color: #555; }
+  html.dark .img-thumb { border-color: #383838; background: #2a2a2a; }
+  html.dark .img-caption { background: var(--bg-sec); border-top-color: #383838; color: var(--text-s); }
+  html.dark body.viewer .img-caption { background: #1e1e1e; }
+  html.dark .img-more { border-color: #444; background: #222; color: #666; }
+  html.dark .img-more:hover { border-color: #666; background: #2a2a2a; }
+  html.dark .drive-guide { color: #555; }
+  html.dark .base-path-link { background: #222; border-color: #383838; }
+  html.dark .base-path-link:hover { background: #2a2a2a; border-color: #555; }
+  html.dark .base-path-title { color: #c8c8c8; }
+  html.dark .base-path-arrow { color: #555; }
+  html.dark .drive-table { border-color: #383838; }
+  html.dark .drive-table thead tr { background: #282828; }
+  html.dark .drive-table th { color: #555; border-color: #383838; }
+  html.dark .drive-table tbody tr { border-color: #2e2e2e; }
+  html.dark .drive-table tbody tr:hover { background: #252525; }
+  html.dark .dt-empty { color: #555; }
+  html.dark .drive-reg-btn { color: #666; border-color: #444; }
+  html.dark .drive-reg-btn:hover { color: #6a9fe0; border-color: #6a9fe0; }
+  html.dark .drive-reg-edit { color: #666; border-color: #444; }
+  html.dark .drive-reg-process { color: #888; background: #2e2e2e; }
+  html.dark .tool-memo-input { background: var(--bg-sec); }

@@ -44,6 +44,7 @@
         applySnapData(snap);
         // 뷰어 모드: 빈 필드에 "사용자가 입력하지 않음" 표시
         setTimeout(() => {
+          expandViewerComboFields();
           applyViewerEmptyState();
           if (window._registerInsViewClick) window._registerInsViewClick();
           if (window._registerViewerFieldClicks) window._registerViewerFieldClicks();
@@ -85,3 +86,18 @@
 
   // 초기 실행 (날짜 자동입력 후)
   setTimeout(updatePageTitle, 200);
+
+  /* ── DARK MODE TOGGLE ── */
+  (function() {
+    const btn = document.getElementById('dark-toggle');
+    if (!btn) return;
+    function syncIcon() {
+      btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+    }
+    syncIcon();
+    btn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      localStorage.setItem('dark_mode', document.documentElement.classList.contains('dark') ? '1' : '0');
+      syncIcon();
+    });
+  })();

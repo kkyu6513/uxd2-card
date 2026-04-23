@@ -826,3 +826,23 @@
   body.viewer .sub-field select { background-image: none; padding-right: 12px; color: #1a1a1a; }
   body.viewer .combo-arrow { display: none; }
   body.viewer #edited-name { background-image: none; padding-right: 12px; }
+
+  /* ── VIEWER MODE: 목표/문제정의 확장 표시 ── */
+  .viewer-combo-text {
+    width: 100%; font-family: 'Pretendard', sans-serif; font-size: 16px;
+    color: var(--text-p); background: var(--bg-sec); border: .5px solid var(--border-i);
+    border-radius: 8px; padding: 10px 12px; line-height: 1.6;
+    min-height: 44px; word-break: break-word; white-space: pre-wrap;
+  }
+
+  /* ── DARK MODE: 컴포넌트 오버라이드 ── */
+  html.dark .combo-dropdown { background: #2a2a2a; border-color: #444; }
+  html.dark .combo-option { color: #ccc; border-color: #333; }
+  html.dark .combo-option:hover, html.dark .combo-option.active { background: #353535; color: #f0f0f0; }
+  html.dark .combo-group { border-color: #333; }
+  html.dark .combo-group-header { background: #232323; color: #666; }
+  html.dark .combo-group-header:hover { background: #2d2d2d; }
+  html.dark .gp-guide { background: #222; border-color: #333; color: #777; }
+  html.dark .gp-guide strong { color: #999; }
+  html.dark .gp-direct-textarea { color: var(--text-p); }
+  html.dark .viewer-combo-text { color: var(--text-p); background: var(--bg-sec); border-color: var(--border-i); }
