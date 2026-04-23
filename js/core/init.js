@@ -92,7 +92,7 @@
     const btn = document.getElementById('dark-toggle');
     if (!btn) return;
     function syncIcon() {
-      btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+      btn.textContent = document.documentElement.classList.contains('dark') ? '☀ LIGHT' : '☽ DARK';
     }
     syncIcon();
     btn.addEventListener('click', () => {
