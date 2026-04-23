@@ -2,6 +2,39 @@
   if (!location.hash) {
     localStorage.removeItem(SAVE_KEY);
     sessionStorage.removeItem(AUTO_SAVE_KEY);
+
+    // 브라우저 네이티브 폼 복원을 덮어쓰기 위해 tick 이후 강제 초기화
+    setTimeout(() => {
+      document.querySelectorAll(
+        'input[type="text"], input[type="date"], input[type="url"], input[type="number"], textarea'
+      ).forEach(el => { el.value = ''; });
+
+      document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+
+      document.querySelectorAll('[contenteditable="true"]').forEach(el => { el.innerText = ''; });
+
+      // 날짜는 오늘 날짜로
+      const dateEl = document.getElementById('date-input');
+      if (dateEl) {
+        const t = new Date();
+        dateEl.value = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+      }
+
+      // 내부 상태 초기화
+      images = []; syncImageUI();
+      toolList = [...DEFAULT_TOOLS]; toolActive = new Set(); toolMemos = {};
+      wfRows = [];
+      goodSelected = new Set(); badSelected = new Set();
+      aixSelected = new Set(); aioSelected = new Set();
+      if (_goodDD) _goodDD.renderTags();
+      if (_badDD)  _badDD.renderTags();
+      if (_aixDD)  _aixDD.renderTags();
+      if (_aioDD)  _aioDD.renderTags();
+      ['good-direct-box','bad-direct-box','aix-direct-box','aio-direct-box'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.style.display = 'none';
+      });
+      renderTools(); renderWorkflow();
+    }, 0);
   }
 
   // 자동저장 리스너 연결
