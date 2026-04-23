@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 활동기록카드 — 데이터 흐름 구성도</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Pretendard:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --bg3: #1a1e28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8eaf0;
+    --text2: #8890a4;
+    --text3: #505670;
+    --purple: #7c6ef7;
+    --purple-dim: rgba(124,110,247,0.12);
+    --purple-border: rgba(124,110,247,0.3);
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.10);
+    --teal-border: rgba(45,212,191,0.28);
+    --coral: #f97066;
+    --coral-dim: rgba(249,112,102,0.10);
+    --coral-border: rgba(249,112,102,0.28);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.10);
+    --amber-border: rgba(245,158,11,0.28);
+    --gray-dim: rgba(255,255,255,0.04);
+    --gray-border: rgba(255,255,255,0.1);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+  }
+
+  /* ── 헤더 ── */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .header p {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ── 다이어그램 래퍼 ── */
+  .diagram {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 280px 1fr;
+    gap: 0;
+    align-items: start;
+  }
+
+  /* ── 반응형 ── */
+  @media (max-width: 900px) {
+    body { padding: 28px 16px; }
+    .diagram { grid-template-columns: 1fr; }
+    .supabase-panel { margin: 0; }
+    .col { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 4px; }
+    .col:last-child { border-bottom: none; }
+    .header h1 { font-size: 17px; }
+    .header p  { font-size: 12px; }
+  }
+  @media (max-width: 480px) {
+    body { padding: 20px 12px; }
+    .node { padding: 11px 13px; }
+    .node-title { font-size: 12px; }
+    .node-sub   { font-size: 10px; }
+    .supabase-panel { padding: 14px 12px; gap: 10px; }
+    .db-schema  { font-size: 10px; padding: 10px; }
+    .col-label  { font-size: 14px; padding: 8px 14px; }
+    .legend     { gap: 10px; }
+    .legend-item { font-size: 10px; }
+  }
+  @media (max-width: 900px) {
+    .api-grid  { grid-template-columns: 1fr !important; }
+    .role-grid { grid-template-columns: 1fr !important; }
+  }
+
+  /* ── 컬럼 ── */
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .col-label {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 7px 16px;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    align-self: center;
+    background: rgba(255,255,255,0.06);
+    text-shadow: 0 0 24px rgba(255,255,255,0.2);
+  }
+
+  /* ── 노드 ── */
+  .node {
+    border-radius: 10px;
+    padding: 14px 18px;
+    border: 1px solid;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .node:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+
+  .node-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+  .node-sub {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    opacity: 0.65;
+    line-height: 1.5;
+  }
+
+  /* 색상 변형 */
+  .node-purple { background: var(--purple-dim); border-color: var(--purple-border); }
+  .node-purple .node-title { color: #a89ff9; }
+  .node-teal   { background: var(--teal-dim);   border-color: var(--teal-border); }
+  .node-teal   .node-title { color: #5eead4; }
+  .node-coral  { background: var(--coral-dim);  border-color: var(--coral-border); }
+  .node-coral  .node-title { color: #fca5a1; }
+  .node-amber  { background: var(--amber-dim);  border-color: var(--amber-border); }
+  .node-amber  .node-title { color: #fcd34d; }
+  .node-gray   { background: var(--gray-dim);   border-color: var(--gray-border); }
+  .node-gray   .node-title { color: var(--text); }
+
+  /* ── 화살표 수직 연결 ── */
+  .arrow-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 0;
+    position: relative;
+  }
+  .arrow-line {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, var(--border2), var(--border2));
+    position: relative;
+  }
+  .arrow-line::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid var(--border2);
+  }
+  .arrow-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+  .arrow-line.solid { background: rgba(255,255,255,0.2); }
+  .arrow-line.solid::after { border-top-color: rgba(255,255,255,0.2); }
+  .arrow-line.teal  { background: var(--teal-border); }
+  .arrow-line.teal::after  { border-top-color: var(--teal-border); }
+  .arrow-line.coral { background: var(--coral-border); }
+  .arrow-line.coral::after { border-top-color: var(--coral-border); }
+
+  /* ── 중앙 Supabase 패널 ── */
+  .supabase-panel {
+    margin: 0 16px;
+    border: 1px solid var(--teal-border);
+    border-radius: 14px;
+    background: var(--teal-dim);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .supabase-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .db-schema {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    line-height: 1.8;
+    color: var(--text2);
+  }
+  .db-schema .table-name {
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .db-schema .field { color: var(--text3); }
+  .db-schema .field span { color: #7dd3fc; }
+  .db-schema .field-important span { color: #86efac; }
+
+  /* ── 가로 연결선 (수평 화살표) ── */
+  .h-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    position: relative;
+  }
+  .h-connector svg {
+    width: 100%;
+    height: 40px;
+    overflow: visible;
+  }
+
+  /* ── 흐름 번호 배지 ── */
+  .flow-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    position: absolute;
+    top: -8px; left: -8px;
+  }
+  .badge-purple { background: var(--purple); color: #fff; }
+  .badge-coral  { background: var(--coral);  color: #fff; }
+  .badge-teal   { background: var(--teal);   color: #0d0f14; }
+
+  /* ── 수평 화살표 래퍼 ── */
+  .row-connectors {
+    display: grid;
+    grid-template-columns: 1fr 280px 1fr;
+    align-items: center;
+    margin: 0;
+    min-height: 56px;
+  }
+  .h-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+  }
+  .h-arrow-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    white-space: nowrap;
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .h-line {
+    flex: 1;
+    height: 1px;
+    position: relative;
+  }
+  .h-line.to-right { background: linear-gradient(to right, transparent, rgba(255,255,255,0.25)); }
+  .h-line.from-right { background: linear-gradient(to left, transparent, rgba(255,255,255,0.25)); }
+  .h-line.teal-r { background: linear-gradient(to right, transparent, var(--teal-border)); }
+  .h-line.teal-l { background: linear-gradient(to left, transparent, var(--teal-border)); }
+  .h-line.coral-r { background: linear-gradient(to right, transparent, var(--coral-border)); }
+  .h-line.coral-l { background: linear-gradient(to left, transparent, var(--coral-border)); }
+  .arrow-tip { font-size: 10px; opacity: 0.5; }
+  .arrow-tip.teal  { color: var(--teal); opacity: 1; }
+  .arrow-tip.coral { color: var(--coral); opacity: 1; }
+
+  /* ── 빈 중앙 ── */
+  .center-spacer { display: flex; align-items: center; justify-content: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-teal  { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
+  .dot-coral { background: var(--coral); box-shadow: 0 0 8px var(--coral); }
+
+  /* ── 범례 ── */
+  .legend {
+    margin-top: 48px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  .legend-line { width: 24px; height: 1px; }
+  .legend-dot  { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* ── 하단 메모 ── */
+  .footnote {
+    margin-top: 32px;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    text-align: center;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">System Architecture</div>
+  <h1>AI 활동기록카드 — 데이터 흐름 구성도</h1>
+  <p>작성자가 입력한 데이터가 어디에 저장되고, 열람 시 어디서 불러오는지의 흐름</p>
+</div>
+
+<div class="diagram">
+
+  <!-- ══ 왼쪽: 작성·저장 흐름 ══ -->
+  <div class="col">
+    <div class="col-label">① 작성 · 저장 흐름</div>
+
+    <!-- 1. 작성자 -->
+    <div class="node node-purple" style="position:relative;">
+      <span class="flow-badge badge-purple">1</span>
+      <div class="node-title">작성자 (팀원)</div>
+      <div class="node-sub">카드 내용 직접 입력<br>AI 자동 채우기 요청</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line solid"></div>
+      <div class="arrow-label">입력 완료 · 저장 클릭</div>
+    </div>
+
+    <!-- 2. 카드 앱 -->
+    <div class="node node-gray" style="position:relative;">
+      <span class="flow-badge badge-purple" style="background:var(--text3);">2</span>
+      <div class="node-title">카드 앱 (브라우저)</div>
+      <div class="node-sub">GitHub Pages 호스팅<br>index.html 정적 파일</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line teal"></div>
+      <div class="arrow-label">POST /rest/v1/cards</div>
+    </div>
+
+    <!-- 3. 저장 완료 -->
+    <div class="node node-teal" style="position:relative;">
+      <span class="flow-badge badge-teal">3</span>
+      <div class="node-title">Supabase DB 저장</div>
+      <div class="node-sub">cards 테이블 INSERT<br>고유 ID(UUID) 생성</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line solid"></div>
+      <div class="arrow-label">ID 반환 → 링크 생성</div>
+    </div>
+
+    <!-- 4. 공유 링크 -->
+    <div class="node node-amber" style="position:relative;">
+      <span class="flow-badge badge-teal" style="background:var(--amber);">4</span>
+      <div class="node-title">공유 링크 생성</div>
+      <div class="node-sub">URL#UUID 형식<br>팀 채널에 링크 공유</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line" style="background:var(--amber-border);"></div>
+      <div class="arrow-line" style="background:var(--amber-border);height:0;border-top:0;"></div>
+    </div>
+
+    <!-- AI 자동 채우기 (별도) -->
+    <div class="node node-amber" style="position:relative; margin-top:0;">
+      <div class="node-title">AI 자동 채우기</div>
+      <div class="node-sub">Edge Function 경유<br>Groq llama-3.1-8b</div>
+    </div>
+  </div>
+
+  <!-- ══ 중앙: Supabase ══ -->
+  <div class="col" style="padding-top: 42px;">
+    <div class="supabase-panel">
+      <div class="supabase-title">Supabase</div>
+
+      <!-- cards 테이블 -->
+      <div class="db-schema">
+        <div class="table-name">▸ cards</div>
+        <div class="field"><span>id</span>          UUID (PK)</div>
+        <div class="field field-important"><span>snap</span>        JSONB</div>
+        <div class="field"><span>created_at</span>  TIMESTAMPTZ</div>
+      </div>
+
+      <!-- snap JSON 상세 -->
+      <div class="db-schema">
+        <div class="table-name">▸ snap (JSON 구조)</div>
+        <div class="field"><span>stage</span>       단계</div>
+        <div class="field"><span>task</span>        소재명</div>
+        <div class="field"><span>goal</span>        목표</div>
+        <div class="field"><span>tools[]</span>     선정 도구</div>
+        <div class="field"><span>wfRows[]</span>    AI Work Flow</div>
+        <div class="field"><span>images[]</span>    첨부 이미지</div>
+        <div class="field"><span>driveUrls[]</span> 드라이브 링크</div>
+        <div class="field"><span>goodDirect</span>  Good Point</div>
+        <div class="field"><span>badDirect</span>   Bad Point</div>
+        <div class="field"><span>discovery</span>   새로 알게 된 사실</div>
+        <div class="field"><span>qaData</span>      품질 검증</div>
+      </div>
+
+      <!-- Edge Function -->
+      <div class="db-schema" style="border-color: var(--amber-border);">
+        <div class="table-name" style="color:var(--amber);">▸ Edge Function</div>
+        <div class="field"><span>gemini-proxy</span></div>
+        <div class="field">→ <span>Groq API</span> 호출</div>
+        <div class="field">← AI 분석 결과 반환</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 오른쪽: 열람 흐름 ══ -->
+  <div class="col">
+    <div class="col-label">② 열람 · 조회 흐름</div>
+
+    <!-- A. 열람자 -->
+    <div class="node node-coral" style="position:relative;">
+      <span class="flow-badge badge-coral">A</span>
+      <div class="node-title">열람자 (팀원/뷰어)</div>
+      <div class="node-sub">공유 링크 클릭<br>URL#UUID 접속</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line coral"></div>
+      <div class="arrow-label">브라우저 접속</div>
+    </div>
+
+    <!-- B. 카드 앱 로드 -->
+    <div class="node node-gray" style="position:relative;">
+      <span class="flow-badge badge-coral" style="background:var(--text3);">B</span>
+      <div class="node-title">카드 앱 로드</div>
+      <div class="node-sub">GitHub Pages 정적 파일<br>URL 해시에서 UUID 파싱</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line coral"></div>
+      <div class="arrow-label">GET /rest/v1/cards?id=UUID</div>
+    </div>
+
+    <!-- C. Supabase 조회 -->
+    <div class="node node-coral" style="position:relative;">
+      <span class="flow-badge badge-coral">C</span>
+      <div class="node-title">Supabase DB 조회</div>
+      <div class="node-sub">UUID로 snap 데이터<br>SELECT cards WHERE id</div>
+    </div>
+
+    <div class="arrow-wrap">
+      <div class="arrow-line coral"></div>
+      <div class="arrow-label">snap JSON 수신</div>
+    </div>
+
+    <!-- D. 뷰어 모드 -->
+    <div class="node node-coral" style="position:relative;">
+      <span class="flow-badge badge-coral">D</span>
+      <div class="node-title">뷰어 모드 렌더링</div>
+      <div class="node-sub">applySnapData() 호출<br>읽기 전용 카드 표시</div>
+    </div>
+
+    <div class="arrow-wrap" style="height:30px;"></div>
+
+    <!-- E. 클릭 상세 보기 -->
+    <div class="node node-gray">
+      <div class="node-title">상세 팝업 열람</div>
+      <div class="node-sub">필드 클릭 → 팝업<br>인사이트·WF 상세 확인</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── 수평 연결 설명 ── -->
+<div class="api-grid" style="max-width:1200px; width:100%; margin-top:32px; padding: 20px 24px; background:var(--bg2); border:1px solid var(--border); border-radius:12px; display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+  <div>
+    <div style="font-size:11px; font-family:'DM Mono',monospace; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px;">저장 API 흐름</div>
+    <div style="font-size:12px; color:var(--text2); line-height:2;">
+      카드 앱 → <code style="color:var(--teal); background:var(--teal-dim); padding:1px 6px; border-radius:3px;">POST /rest/v1/cards</code> → Supabase DB<br>
+      Supabase → <code style="color:var(--teal); background:var(--teal-dim); padding:1px 6px; border-radius:3px;">{ id: UUID }</code> → 카드 앱<br>
+      카드 앱 → 공유 링크 생성 <code style="color:var(--amber); background:var(--amber-dim); padding:1px 6px; border-radius:3px;">URL#UUID</code>
+    </div>
+  </div>
+  <div>
+    <div style="font-size:11px; font-family:'DM Mono',monospace; color:var(--coral); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px;">조회 API 흐름</div>
+    <div style="font-size:12px; color:var(--text2); line-height:2;">
+      URL 해시 파싱 → <code style="color:var(--coral); background:var(--coral-dim); padding:1px 6px; border-radius:3px;">GET /rest/v1/cards?id=UUID</code><br>
+      Supabase → <code style="color:var(--coral); background:var(--coral-dim); padding:1px 6px; border-radius:3px;">snap JSON</code> → 카드 앱<br>
+      카드 앱 → <code style="color:var(--coral); background:var(--coral-dim); padding:1px 6px; border-radius:3px;">applySnapData()</code> → 뷰어 렌더링
+    </div>
+  </div>
+</div>
+
+<!-- ── 범례 ── -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--purple);"></div>
+    작성자 흐름
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--teal);"></div>
+    Supabase 저장·조회
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--coral);"></div>
+    열람자 흐름
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:var(--amber);"></div>
+    AI 자동 채우기 / 공유 링크
+  </div>
+</div>
+
+<!-- ── 역할 설명 ── -->
+<div class="role-grid" style="max-width:1200px; width:100%; margin-top:32px; display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+  <!-- GitHub -->
+  <div style="background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:24px 28px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <div style="width:32px; height:32px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid var(--border2); display:flex; align-items:center; justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.607.069-.607 1.003.071 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.091-.646.349-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.748-1.026 2.748-1.026.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="rgba(255,255,255,0.6)"/>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:14px; font-weight:600; color:var(--text);">GitHub / GitHub Pages</div>
+        <div style="font-size:11px; font-family:'DM Mono',monospace; color:var(--text3); margin-top:2px;">코드 저장소 · 정적 웹 호스팅</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); margin-top:6px;"></div>
+        <div>
+          <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px;">카드 앱 파일을 보관하는 곳</div>
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            활동기록카드의 HTML·CSS·JS 소스 코드가 저장됩니다. 어드민이 코드를 수정하면 GitHub에 커밋하고, 변경사항이 자동으로 반영됩니다.
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); margin-top:6px;"></div>
+        <div>
+          <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px;">팀원이 카드를 여는 주소를 제공</div>
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            GitHub Pages가 index.html을 인터넷에 공개합니다. 팀원은 별도 설치 없이 브라우저에서 카드를 바로 작성할 수 있습니다.
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.3); margin-top:6px;"></div>
+        <div>
+          <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px;">데이터는 저장하지 않음</div>
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            GitHub는 앱 파일(코드)만 담습니다. 실제 카드 내용(데이터)은 저장하지 않으며, 데이터 저장은 Supabase가 담당합니다.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; padding:10px 14px; background:rgba(255,255,255,0.03); border-radius:8px; border-left:3px solid rgba(255,255,255,0.15);">
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:var(--text3);">비유하자면</div>
+      <div style="font-size:12px; color:var(--text2); margin-top:4px; line-height:1.6;">
+        GitHub는 <strong style="color:var(--text);">건물(앱 구조)</strong>을 짓고 주소를 부여하는 역할.<br>실제 데이터(카드 내용)는 건물 안의 금고(Supabase)에 보관.
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <div style="background:var(--bg2); border:1px solid var(--teal-border); border-radius:12px; padding:24px 28px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+      <div style="width:32px; height:32px; border-radius:8px; background:var(--teal-dim); border:1px solid var(--teal-border); display:flex; align-items:center; justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M3 8l7-5 7 5v9l-7 5-7-5V8z" stroke="var(--teal)" stroke-width="1.5" fill="none"/>
+          <path d="M10 12h4M12 10v4" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div style="font-size:14px; font-weight:600; color:var(--teal);">Supabase</div>
+        <div style="font-size:11px; font-family:'DM Mono',monospace; color:var(--text3); margin-top:2px;">데이터베이스 · 인증 · 서버 함수</div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:var(--teal); margin-top:6px;"></div>
+        <div>
+          <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px;">카드 데이터를 저장하는 금고</div>
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            작성자가 저장 버튼을 누르면 카드의 모든 내용(단계·도구·WF·인사이트 등)이 JSON 형태로 Supabase 데이터베이스에 저장됩니다.
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:var(--teal); margin-top:6px;"></div>
+        <div>
+          <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px;">공유 링크로 데이터를 꺼내주는 역할</div>
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            열람자가 공유 링크를 열면, URL의 고유 ID로 Supabase에 요청해 해당 카드 데이터를 불러옵니다. 이 데이터로 뷰어 모드가 구성됩니다.
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:12px; align-items:flex-start;">
+        <div style="min-width:6px; height:6px; border-radius:50%; background:var(--teal); margin-top:6px;"></div>
+        <div>
+          <div style="font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px;">AI 자동 채우기 중간 다리 역할</div>
+          <div style="font-size:12px; color:var(--text2); line-height:1.7;">
+            Edge Function(gemini-proxy)이 브라우저 대신 Groq AI API를 호출합니다. 보안 키를 서버에서 안전하게 관리하고 CORS 문제를 해결합니다.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px; padding:10px 14px; background:var(--teal-dim); border-radius:8px; border-left:3px solid var(--teal-border);">
+      <div style="font-size:11px; font-family:'DM Mono',monospace; color:var(--teal); opacity:0.7;">비유하자면</div>
+      <div style="font-size:12px; color:var(--text2); margin-top:4px; line-height:1.6;">
+        Supabase는 <strong style="color:var(--text);">우체국+금고+직원</strong> 역할.<br>
+        데이터를 보관(금고)하고, 링크로 꺼내주고(우체국), AI 요청도 대신 처리(직원).
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footnote">
+  vinylc UXD2 · AI 리터러시 활동기록카드 시스템 구성도<br>
+  GitHub Pages (정적 호스팅) · Supabase (DB + Edge Function) · Groq API (AI 프록시)
+</div>
+
+</body>
+</html>
