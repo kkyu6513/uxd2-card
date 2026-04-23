@@ -1,30 +1,7 @@
-  /* ── 새로고침 감지: 저장 데이터 초기화 ── */
-  if (performance.getEntriesByType?.('navigation')?.[0]?.type === 'reload') {
+  /* ── 진입/새로고침 시 항상 데이터 초기화 (뷰어 모드 제외) ── */
+  if (!location.hash) {
     localStorage.removeItem(SAVE_KEY);
     sessionStorage.removeItem(AUTO_SAVE_KEY);
-  }
-
-  /* ── LOAD ON START ── */
-  try {
-    const saved = localStorage.getItem(SAVE_KEY);
-    if (saved) applyData(JSON.parse(saved));
-  } catch(e) {}
-
-  // 자동저장 복원 (SAVE_KEY 없을 때만)
-  if (!localStorage.getItem(SAVE_KEY)) {
-    try {
-      const autoSaved = sessionStorage.getItem(AUTO_SAVE_KEY);
-      if (autoSaved) {
-        // 뷰어 모드이거나 자동저장이 있으면 팝업 없이 그냥 복원
-        const snap = JSON.parse(autoSaved);
-        const hasContent = snap.editName || snap.task || snap.goal || snap.problem || (snap.wfRows && snap.wfRows.length);
-        if (hasContent && !location.hash) {
-          applySnapData(snap);
-        } else {
-          sessionStorage.removeItem(AUTO_SAVE_KEY);
-        }
-      }
-    } catch(e) { sessionStorage.removeItem(AUTO_SAVE_KEY); }
   }
 
   // 자동저장 리스너 연결
