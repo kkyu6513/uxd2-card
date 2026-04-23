@@ -1,3 +1,9 @@
+  /* ── 새로고침 감지: 저장 데이터 초기화 ── */
+  if (performance.getEntriesByType?.('navigation')?.[0]?.type === 'reload') {
+    localStorage.removeItem(SAVE_KEY);
+    sessionStorage.removeItem(AUTO_SAVE_KEY);
+  }
+
   /* ── LOAD ON START ── */
   try {
     const saved = localStorage.getItem(SAVE_KEY);
