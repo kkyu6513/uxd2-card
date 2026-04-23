@@ -84,6 +84,20 @@
     });
   }
 
+  function expandViewerComboFields() {
+    ['goal-input-text', 'problem-input'].forEach(id => {
+      const input = document.getElementById(id);
+      if (!input) return;
+      const wrap = input.closest('.combo-wrap');
+      if (!wrap) return;
+      const div = document.createElement('div');
+      div.className = 'viewer-combo-text';
+      div.textContent = input.value || '';
+      input.style.display = 'none';
+      wrap.appendChild(div);
+    });
+  }
+
   function applySnapData(snap) {
     if (!snap) return;
     const se = id => document.getElementById(id);
