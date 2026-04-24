@@ -816,7 +816,7 @@ function buildMsDropdown(key, values) {
 }
 
 function initMsDropdowns() {
-  const names = ['유경구', '이수철', '이고은', '고우정', '정수정', '이태림', '최승일'];
+  const names = [...new Set(allCards.map(c=>c.editName||'').filter(n=>n))].sort((a,b)=>a.localeCompare(b,'ko'));
   const tools = [...new Set(allCards.flatMap(c=>c.toolActive||[]))].sort();
   buildMsDropdown('name', names);
   buildMsDropdown('tool', tools);
