@@ -116,6 +116,57 @@
     }
   }
 
+  /* ── AI Work Flow → 스텝 카드 리스트 렌더링 ── */
+  function renderViewerWfList() {
+    const wfList = document.querySelector('.wf-list');
+    if (!wfList || !wfRows || wfRows.length === 0) return;
+
+    const container = document.createElement('div');
+    container.className = 'viewer-wf-list';
+
+    wfRows.forEach((row, i) => {
+      const card = document.createElement('div');
+      card.className = 'viewer-wf-card';
+
+      // [Step.N] 헤더
+      const hd = document.createElement('div');
+      hd.className = 'viewer-wf-card-head';
+      hd.textContent = `Step.${i + 1}`;
+      card.appendChild(hd);
+
+      // 4개 항목
+      const fields = [
+        { label: '작성도구',       value: row.tool   },
+        { label: 'INTENT(의도)',   value: row.intent },
+        { label: '활동',           value: row.action },
+        { label: 'GOOD 프롬프트', value: row.prompt },
+      ];
+
+      fields.forEach(({ label, value }) => {
+        const item = document.createElement('div');
+        item.className = 'viewer-wf-item';
+
+        const lbl = document.createElement('span');
+        lbl.className = 'viewer-wf-label';
+        lbl.textContent = label;
+
+        const val = document.createElement('span');
+        val.className = 'viewer-wf-value' + (value ? '' : ' empty');
+        val.textContent = value || '—';
+
+        item.appendChild(lbl);
+        item.appendChild(val);
+        card.appendChild(item);
+      });
+
+      container.appendChild(card);
+    });
+
+    // 기존 wf-list 숨기고 교체
+    wfList.style.setProperty('display', 'none', 'important');
+    wfList.parentNode.insertBefore(container, wfList);
+  }
+
   /* ── 활동일 / 작성자 / 이메일 → 텍스트 div 교체 ── */
   function renderViewerDateAuthor() {
     const row = document.querySelector('.date-author-row');

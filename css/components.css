@@ -1099,6 +1099,57 @@
     font-weight: 300;
   }
 
+  /* ── AI Work Flow 뷰어 스텝 카드 ── */
+  .viewer-wf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .viewer-wf-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .viewer-wf-card-head {
+    padding: 8px 16px;
+    background: #1a1a1a;
+    font-size: 11px;
+    font-weight: 800;
+    color: #a8c060;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .viewer-wf-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 16px;
+    border-bottom: 1px solid #f3f3f3;
+  }
+  .viewer-wf-item::before {
+    content: '•';
+    color: #ccc;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .viewer-wf-item:last-child { border-bottom: none; }
+  .viewer-wf-label {
+    flex-shrink: 0;
+    width: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: .04em;
+  }
+  .viewer-wf-value {
+    font-size: 13px;
+    color: #1a1a1a;
+    line-height: 1.6;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+  .viewer-wf-value.empty { color: #ccc; }
+
   /* 도구 배지 — 다크 칩 */
   body.viewer .badge-grid {
     display: flex !important;

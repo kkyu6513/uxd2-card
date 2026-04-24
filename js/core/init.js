@@ -62,6 +62,7 @@
         setTimeout(() => {
           expandViewerComboFields();
           renderViewerDateAuthor();
+          renderViewerWfList();
           renderViewerDriveList();
           applyViewerEmptyState();
           if (window._registerInsViewClick) window._registerInsViewClick();
