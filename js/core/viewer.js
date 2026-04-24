@@ -136,10 +136,12 @@
     const nameVal  = nameEl?.options[nameEl.selectedIndex]?.text || '';
     const emailVal = (emailEl?.innerText || '').trim();
 
-    // 기존 요소 숨기기
-    if (dateEl)  dateEl.style.display  = 'none';
-    if (nameEl)  nameEl.style.display  = 'none';
-    if (emailEl) emailEl.style.display = 'none';
+    // 기존 요소 강제 숨기기 (캘린더 아이콘 포함)
+    [dateEl, nameEl, emailEl].forEach(el => {
+      if (!el) return;
+      el.style.setProperty('display', 'none', 'important');
+      el.setAttribute('hidden', '');
+    });
 
     // 새 텍스트 행 생성
     const wrap = document.createElement('div');
