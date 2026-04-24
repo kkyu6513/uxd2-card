@@ -825,7 +825,7 @@
     line-height: 1.5;
   }
   .ins-view-item.direct { border-left-color: #a8c060; background: #f5faec; }
-  body.viewer #discovery-input { cursor: pointer; }
+  body.viewer #discovery-input { cursor: pointer; color: #2563eb !important; font-weight: 700 !important; }
   body.viewer .ins-dd-trigger { pointer-events: none; opacity: 0.5; cursor: default; }
   body.viewer .ins-dd-panel { display: none !important; }
   body.viewer .ins-tag-del { display: none !important; }
@@ -960,6 +960,40 @@
     white-space: pre-wrap !important;
     line-height: 1.55 !important;
   }
+
+  /* 모바일 뷰어: 서브헤더 세로 분리 */
+  @media (max-width: 640px) {
+    body.viewer .card-sub {
+      flex-direction: column !important;
+      gap: 10px !important;
+      padding: 14px 20px !important;
+    }
+    body.viewer .sub-field {
+      flex-direction: row !important;
+      align-items: flex-start !important;
+      border-right: none !important;
+      padding-right: 0 !important;
+      margin-right: 0 !important;
+      border-bottom: 1px solid rgba(255,255,255,.10) !important;
+      padding-bottom: 10px !important;
+      margin-bottom: 0 !important;
+      flex: unset !important;
+      width: 100% !important;
+    }
+    body.viewer .sub-field:last-child {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+    body.viewer .sub-field label {
+      min-width: 80px !important;
+      font-size: 9px !important;
+      padding-top: 3px !important;
+    }
+    body.viewer .viewer-task-display {
+      font-size: 13px !important;
+    }
+  }
+
   body.viewer .edited-input {
     background: transparent !important;
     border: none !important;
