@@ -63,6 +63,7 @@
           expandViewerComboFields();
           renderViewerDateAuthor();
           renderViewerWfList();
+          renderViewerQaList();
           renderViewerDriveList();
           applyViewerEmptyState();
           if (window._registerInsViewClick) window._registerInsViewClick();

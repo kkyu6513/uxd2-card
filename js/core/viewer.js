@@ -167,6 +167,80 @@
     wfList.parentNode.insertBefore(container, wfList);
   }
 
+  /* ── 품질 검증 QA → 리스트 렌더링 ── */
+  function renderViewerQaList() {
+    const qaList = document.getElementById('qa-list');
+    if (!qaList) return;
+
+    const QA_META = {
+      accuracy:     { cat: '정확성',       q: 'AI 산출물의 내용이 사실에 부합하는가' },
+      completeness: { cat: '완성도',       q: '요청한 결과물이 누락 없이 완성되었는가' },
+      usability:    { cat: '활용 가능성', q: '실무에 바로 적용 가능한 수준인가' },
+      format:       { cat: '형식 적합성', q: '요청한 형식·구조와 일치하는가' },
+      bias:         { cat: '편향·오류 검토', q: '편향되거나 잘못된 내용은 없는가' },
+      prompt:       { cat: '프롬프트 최적화', q: '더 나은 결과를 위한 개선 시도를 했는가' },
+    };
+
+    const container = document.createElement('div');
+    container.className = 'viewer-qa-list';
+
+    QA_KEYS.forEach(key => {
+      const meta = QA_META[key];
+      const rowEl = qaList.querySelector(`.qa-row[data-key="${key}"]`);
+      if (!meta || !rowEl) return;
+
+      const isY = rowEl.classList.contains('is-y');
+      const isN = rowEl.classList.contains('is-n');
+      const ynText = isY ? 'Y' : isN ? 'N' : '—';
+      const ynClass = isY ? 'yn-y' : isN ? 'yn-n' : 'yn-none';
+
+      const card = document.createElement('div');
+      card.className = 'viewer-qa-card';
+
+      // [카테고리명] 헤더
+      const hd = document.createElement('div');
+      hd.className = 'viewer-qa-head';
+      hd.textContent = meta.cat;
+      card.appendChild(hd);
+
+      // 질문 항목
+      const qItem = document.createElement('div');
+      qItem.className = 'viewer-qa-item';
+      const qText = document.createElement('span');
+      qText.className = 'viewer-qa-q';
+      qText.textContent = meta.q;
+      const ynBadge = document.createElement('span');
+      ynBadge.className = `viewer-qa-yn ${ynClass}`;
+      ynBadge.textContent = ynText;
+      qItem.appendChild(qText);
+      qItem.appendChild(ynBadge);
+      card.appendChild(qItem);
+
+      // 스텝 항목
+      const steps = qaStepsMap[key] || [];
+      steps.forEach(({ idx, content }) => {
+        const wfRow = wfRows[idx];
+        if (!wfRow) return;
+        const stepItem = document.createElement('div');
+        stepItem.className = 'viewer-qa-item viewer-qa-step';
+        const stepLabel = document.createElement('span');
+        stepLabel.className = 'viewer-qa-step-label';
+        stepLabel.textContent = `STEP.${idx + 1}${wfRow.tool ? ' — ' + wfRow.tool : ''}`;
+        const stepContent = document.createElement('span');
+        stepContent.className = 'viewer-qa-step-content' + (content ? '' : ' empty');
+        stepContent.textContent = content || '—';
+        stepItem.appendChild(stepLabel);
+        stepItem.appendChild(stepContent);
+        card.appendChild(stepItem);
+      });
+
+      container.appendChild(card);
+    });
+
+    qaList.style.setProperty('display', 'none', 'important');
+    qaList.parentNode.insertBefore(container, qaList);
+  }
+
   /* ── 활동일 / 작성자 / 이메일 → 텍스트 div 교체 ── */
   function renderViewerDateAuthor() {
     const row = document.querySelector('.date-author-row');

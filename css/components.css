@@ -1099,6 +1099,70 @@
     font-weight: 300;
   }
 
+  /* ── 품질 검증 QA 뷰어 리스트 ── */
+  .viewer-qa-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .viewer-qa-card { display: flex; flex-direction: column; gap: 0; }
+  .viewer-qa-head {
+    font-size: 11px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: .06em;
+    padding: 0 0 6px 0;
+    border-bottom: 1.5px solid #1a1a1a;
+    margin-bottom: 6px;
+  }
+  .viewer-qa-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f3f3f3;
+  }
+  .viewer-qa-item:last-child { border-bottom: none; }
+  .viewer-qa-item::before {
+    content: '•';
+    color: #ccc;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+  .viewer-qa-q {
+    flex: 1;
+    font-size: 13px;
+    color: #1a1a1a;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .viewer-qa-yn {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: .04em;
+  }
+  .viewer-qa-yn.yn-y   { background: #1a1a1a; color: #a8c060; }
+  .viewer-qa-yn.yn-n   { background: #e53935; color: #fff; }
+  .viewer-qa-yn.yn-none { background: #f0f0f0; color: #bbb; }
+  .viewer-qa-step { padding-left: 8px; }
+  .viewer-qa-step-label {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: .05em;
+    white-space: nowrap;
+  }
+  .viewer-qa-step-content {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.5;
+  }
+  .viewer-qa-step-content.empty { color: #ccc; }
+
   /* ── AI Work Flow 뷰어 스텝 카드 ── */
   .viewer-wf-list {
     display: flex;
