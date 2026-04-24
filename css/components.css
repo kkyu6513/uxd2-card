@@ -961,8 +961,25 @@
     line-height: 1.55 !important;
   }
 
-  /* 모바일 뷰어: 서브헤더 세로 분리 */
+  /* 모바일 뷰어: 헤더 + 서브헤더 정렬 및 세로 분리 */
   @media (max-width: 640px) {
+    /* 헤더 — 패딩 축소로 좌측 정렬 맞춤 + 타이틀 줄바꿈 허용 */
+    body.viewer .card-header {
+      padding: 14px 20px !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      row-gap: 6px !important;
+    }
+    body.viewer .brand {
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+    body.viewer .brand-label {
+      white-space: normal !important;
+      word-break: break-word !important;
+      line-height: 1.4 !important;
+    }
+    /* 서브헤더 — 세로 분리 */
     body.viewer .card-sub {
       flex-direction: column !important;
       gap: 10px !important;
@@ -1655,3 +1672,111 @@
     margin-bottom: 2px !important;
   }
   body.viewer .viewer-field-sublabel:first-child { margin-top: 0 !important; }
+
+  /* ══════════════════════════════════════════════
+     DARK MODE × VIEWER — 본문 배경 + 전체 대비 처리
+     ══════════════════════════════════════════════ */
+  html.dark body.viewer .card-body {
+    background: #141414 !important;
+  }
+  html.dark body.viewer .sec {
+    border-top-color: #2e2e2e !important;
+  }
+  html.dark body.viewer .sec-title {
+    color: #e0e0e0 !important;
+    border-bottom-color: #e0e0e0 !important;
+  }
+
+  /* 기본정보 텍스트 */
+  html.dark body.viewer input[type="text"]:not(.wf-time),
+  html.dark body.viewer input[type="date"],
+  html.dark body.viewer input[type="url"],
+  html.dark body.viewer textarea:not(.img-caption),
+  html.dark body.viewer .gp-direct-textarea {
+    color: #d8d8d8 !important;
+  }
+  html.dark body.viewer .viewer-combo-text { color: #d8d8d8 !important; }
+  html.dark .viewer-date-author-value { color: #d8d8d8; }
+  html.dark .viewer-date-author-sep   { color: #444; }
+  html.dark body.viewer .field > label { color: #555 !important; }
+  html.dark body.viewer .viewer-field-sublabel { color: #555 !important; }
+  html.dark body.viewer #discovery-input { color: #4a8fe8 !important; }
+
+  /* WF 테이블 */
+  html.dark body.viewer .wf-list {
+    border-color: #3a3a3a !important;
+  }
+  html.dark body.viewer .wf-row {
+    background: #1c1c1c !important;
+    border-bottom-color: #2a2a2a !important;
+  }
+  html.dark body.viewer .wf-row:nth-child(even) { background: #212121 !important; }
+  html.dark body.viewer .wf-detail-btn { color: #d0d0d0 !important; }
+  html.dark body.viewer .wf-tool { color: #888 !important; }
+  html.dark body.viewer .wf-time { color: #666 !important; }
+  html.dark body.viewer .wf-total-label,
+  html.dark body.viewer .wf-total-value { color: #555 !important; }
+
+  /* WF 뷰어 스텝 카드 */
+  html.dark .viewer-wf-card {
+    border-color: #2e2e2e;
+    background: #1c1c1c;
+  }
+  html.dark .viewer-wf-item {
+    border-bottom-color: #2a2a2a;
+  }
+  html.dark .viewer-wf-label { color: #555; }
+  html.dark .viewer-wf-value { color: #d0d0d0; }
+  html.dark .viewer-wf-value.empty { color: #444; }
+
+  /* QA 리스트 */
+  html.dark body.viewer .qa-row { border-bottom-color: #252525 !important; }
+  html.dark body.viewer .qa-check-text { color: #c8c8c8 !important; }
+  html.dark body.viewer .qa-sub-text { color: #555 !important; }
+  html.dark body.viewer .qa-y,
+  html.dark body.viewer .qa-n { border-color: #383838 !important; color: #444 !important; }
+  html.dark body.viewer .qa-text-input { color: #888 !important; }
+
+  /* QA 뷰어 카드 */
+  html.dark .viewer-qa-head {
+    color: #e0e0e0;
+    border-bottom-color: #3a3a3a;
+  }
+  html.dark .viewer-qa-item { border-bottom-color: #252525; }
+  html.dark .viewer-qa-q { color: #c8c8c8; }
+  html.dark .viewer-qa-yn.yn-none { background: #2a2a2a; color: #555; }
+  html.dark .viewer-qa-step-content { color: #777; }
+  html.dark .viewer-qa-step-content.empty { color: #444; }
+
+  /* 인사이트 박스 */
+  html.dark body.viewer .ins-box { background: #1e1e1e !important; border-color: #2e2e2e !important; }
+  html.dark body.viewer .ins-tag-box { background: #252525 !important; border-bottom-color: #333 !important; }
+  html.dark body.viewer .ins-direct-ta { color: #c0c0c0 !important; }
+  html.dark body.viewer .i-tag { color: #555 !important; }
+  html.dark body.viewer .ins-tag-box-title { color: #555 !important; }
+
+  /* 인사이트 뷰어 카드 */
+  html.dark .viewer-ins-card { border-color: #2e2e2e; }
+  html.dark .viewer-ins-body { background: #1c1c1c; }
+  html.dark .viewer-ins-item { color: #c8c8c8; }
+  html.dark .viewer-ins-item.direct { color: #888; }
+  html.dark .viewer-ins-item.empty { color: #444; }
+
+  /* 드라이브 카드 */
+  html.dark .viewer-drive-card {
+    background: #1c1c1c;
+    border-color: #2e2e2e;
+  }
+  html.dark .viewer-drive-row { border-bottom-color: #2a2a2a; }
+  html.dark .viewer-drive-row-label { color: #555; }
+  html.dark .viewer-drive-row-value { color: #c8c8c8; }
+  html.dark .viewer-drive-row-value.empty { color: #444; }
+  html.dark .viewer-drive-row-value a { color: #4a8fe8; }
+
+  /* 이미지 캡션 */
+  html.dark body.viewer .img-caption {
+    background: #1e1e1e !important;
+    border-top-color: #2e2e2e !important;
+    color: #888 !important;
+  }
+  html.dark body.viewer .img-thumb { border-color: #2e2e2e !important; }
