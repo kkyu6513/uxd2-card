@@ -1345,6 +1345,7 @@
   }
 
   /* ── 이미지 ── */
+  body.viewer label:has(#img-count) { display: none !important; }
   body.viewer .img-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px !important;
