@@ -85,11 +85,19 @@
   }
 
   function expandViewerComboFields() {
+    const FIELD_LABELS = { 'goal-input-text': '목표', 'problem-input': '문제정의' };
     ['goal-input-text', 'problem-input'].forEach(id => {
       const input = document.getElementById(id);
       if (!input) return;
       const wrap = input.closest('.combo-wrap');
       if (!wrap) return;
+
+      // 각 필드 앞에 서브라벨 삽입
+      const lbl = document.createElement('div');
+      lbl.className = 'viewer-field-sublabel';
+      lbl.textContent = FIELD_LABELS[id] || '';
+      wrap.parentNode.insertBefore(lbl, wrap);
+
       const div = document.createElement('div');
       div.className = 'viewer-combo-text';
       div.textContent = input.value || '';
