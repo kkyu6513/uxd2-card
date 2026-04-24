@@ -96,6 +96,16 @@
       input.style.display = 'none';
       wrap.appendChild(div);
     });
+
+    // 소재명(task-input) — 화이트 + 줄바꿈 표시 div로 교체
+    const taskInput = document.getElementById('task-input');
+    if (taskInput) {
+      const div = document.createElement('div');
+      div.className = 'viewer-task-display';
+      div.textContent = taskInput.value || '';
+      taskInput.style.display = 'none';
+      taskInput.parentNode.insertBefore(div, taskInput);
+    }
   }
 
   function applySnapData(snap) {

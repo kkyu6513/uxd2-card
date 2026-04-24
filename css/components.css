@@ -916,7 +916,7 @@
   body.viewer .sub-field {
     flex: 1 !important;
     flex-direction: row !important;
-    align-items: baseline !important;
+    align-items: center !important;
     gap: 8px !important;
     padding-right: 20px !important;
     border-right: 1px solid rgba(255,255,255,.12) !important;
@@ -948,6 +948,17 @@
     -webkit-appearance: none !important;
     background-image: none !important;
     box-shadow: none !important;
+  }
+  /* 소재명 — 뷰어 모드 줄바꿈 표시 div */
+  body.viewer .viewer-task-display {
+    flex: 1 !important;
+    font-family: 'Pretendard', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    line-height: 1.55 !important;
   }
   body.viewer .edited-input {
     background: transparent !important;
