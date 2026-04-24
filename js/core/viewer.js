@@ -116,6 +116,59 @@
     }
   }
 
+  /* ── 활동일 / 작성자 / 이메일 → 텍스트 div 교체 ── */
+  function renderViewerDateAuthor() {
+    const row = document.querySelector('.date-author-row');
+    if (!row) return;
+
+    const dateEl  = document.getElementById('date-input');
+    const nameEl  = document.getElementById('edited-name');
+    const emailEl = document.getElementById('edited-email');
+
+    // 날짜 포맷: "2026-04-23" → "2026. 04. 23."
+    function fmtDate(val) {
+      if (!val) return '';
+      const [y, m, d] = val.split('-');
+      return y && m && d ? `${y}. ${m}. ${d}.` : val;
+    }
+
+    const dateVal  = fmtDate(dateEl?.value || '');
+    const nameVal  = nameEl?.options[nameEl.selectedIndex]?.text || '';
+    const emailVal = (emailEl?.innerText || '').trim();
+
+    // 기존 요소 숨기기
+    if (dateEl)  dateEl.style.display  = 'none';
+    if (nameEl)  nameEl.style.display  = 'none';
+    if (emailEl) emailEl.style.display = 'none';
+
+    // 새 텍스트 행 생성
+    const wrap = document.createElement('div');
+    wrap.className = 'viewer-date-author-wrap';
+
+    [
+      { label: '활동일', value: dateVal  },
+      { label: '작성자', value: nameVal  },
+      { label: '이메일', value: emailVal },
+    ].forEach(({ label, value }) => {
+      const item = document.createElement('div');
+      item.className = 'viewer-date-author-item';
+
+      const lbl = document.createElement('span');
+      lbl.className = 'viewer-date-author-label';
+      lbl.textContent = label;
+
+      const val = document.createElement('span');
+      val.className = 'viewer-date-author-value' + (value ? '' : ' empty');
+      val.textContent = value || '사용자가 입력하지 않음';
+
+      item.appendChild(lbl);
+      item.appendChild(val);
+      wrap.appendChild(item);
+    });
+
+    row.appendChild(wrap);
+  }
+
   /* ── 결과물 드라이브 섹션 → 구조형 리스트로 변환 ── */
   function renderViewerDriveList() {
     const DRIVE_KEYS = [

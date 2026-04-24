@@ -61,6 +61,7 @@
         // 뷰어 모드: 빈 필드에 "사용자가 입력하지 않음" 표시
         setTimeout(() => {
           expandViewerComboFields();
+          renderViewerDateAuthor();
           renderViewerDriveList();
           applyViewerEmptyState();
           if (window._registerInsViewClick) window._registerInsViewClick();
