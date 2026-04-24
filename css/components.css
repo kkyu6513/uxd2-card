@@ -1359,60 +1359,57 @@
   body.viewer .drive-table tbody tr:hover { background: transparent !important; }
   body.viewer .dt-col-action { display: none !important; }
 
-  /* ── 결과물 드라이브 테이블 → 세로 키-값 리스트 ── */
-  body.viewer .drive-table { border: none !important; }
-  body.viewer .drive-table thead { display: none !important; }
-  body.viewer .drive-table tbody {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 8px !important;
+  /* ── 결과물 드라이브 → JS 생성 구조형 리스트 ── */
+  .viewer-drive-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-  /* 각 tr = 세로 카드 */
-  body.viewer .drive-table tbody tr {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0 !important;
-    padding: 0 !important;
-    border: 1px solid #e8e8e8 !important;
-    border-radius: 6px !important;
-    overflow: hidden !important;
-    background: #fff !important;
+  .viewer-drive-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
   }
-  body.viewer .drive-table tbody tr:last-child { border-bottom: 1px solid #e8e8e8 !important; }
-  /* 각 td = 좌측 라벨 + 우측 값 한 행 */
-  body.viewer .drive-table td {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    padding: 8px 14px !important;
-    border: none !important;
-    border-bottom: 1px solid #f3f3f3 !important;
-    background: transparent !important;
-    gap: 0 !important;
+  .viewer-drive-card-head {
+    padding: 8px 14px;
+    background: #1a1a1a;
+    font-size: 11px;
+    font-weight: 800;
+    color: #a8c060;
+    letter-spacing: .1em;
+    text-transform: uppercase;
   }
-  body.viewer .drive-table td:last-of-type { border-bottom: none !important; }
-  /* 컬럼명 라벨 — ::before 로 좌측 고정 표시 */
-  body.viewer .drive-table .dt-col-type::before,
-  body.viewer .drive-table .dt-col-title::before,
-  body.viewer .drive-table .dt-col-process::before {
-    display: inline-block !important;
-    width: 62px !important;
-    flex-shrink: 0 !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    color: #bbb !important;
-    letter-spacing: .07em !important;
+  .viewer-drive-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #f3f3f3;
   }
-  body.viewer .drive-table .dt-col-type::before    { content: "구분" !important; }
-  body.viewer .drive-table .dt-col-title::before   { content: "타이틀" !important; }
-  body.viewer .drive-table .dt-col-process::before { content: "가공여부" !important; }
-  /* 값 영역 */
-  body.viewer .dt-col-type { width: auto !important; }
-  body.viewer .dt-col-title { width: 100% !important; }
-  body.viewer .dt-col-process { width: auto !important; }
-  body.viewer .drive-reg-link { font-size: 13px !important; color: #1a1a1a !important; font-weight: 500 !important; }
-  body.viewer .dt-empty { font-size: 12px !important; color: #ccc !important; }
-  body.viewer .drive-reg-process { font-size: 12px !important; color: #888 !important; }
+  .viewer-drive-row:last-child { border-bottom: none; }
+  .viewer-drive-row-label {
+    flex-shrink: 0;
+    width: 58px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #bbb;
+    letter-spacing: .06em;
+  }
+  .viewer-drive-row-value {
+    font-size: 13px;
+    color: #1a1a1a;
+    font-weight: 400;
+    word-break: break-all;
+    line-height: 1.5;
+  }
+  .viewer-drive-row-value.empty { color: #ccc; }
+  .viewer-drive-row-value a {
+    color: #3a78d4;
+    text-decoration: underline;
+    word-break: break-all;
+  }
 
   /* ── 01 기본정보 목표/문제정의 서브라벨 ── */
   body.viewer .viewer-field-sublabel {

@@ -116,6 +116,76 @@
     }
   }
 
+  /* ── 결과물 드라이브 섹션 → 구조형 리스트로 변환 ── */
+  function renderViewerDriveList() {
+    const DRIVE_KEYS = [
+      { key: 'material', label: '소스' },
+      { key: 'mid',      label: '중간 결과' },
+      { key: 'final',    label: '최종 결과' },
+      { key: 'prompt',   label: '프롬프트' },
+    ];
+    const EMPTY = '—';
+
+    // 기존 테이블 숨기고 새 컨테이너 삽입
+    const table = document.querySelector('.drive-table');
+    if (!table) return;
+    const field = table.closest('.field');
+    if (!field) return;
+
+    const container = document.createElement('div');
+    container.className = 'viewer-drive-list';
+
+    DRIVE_KEYS.forEach(({ key, label }) => {
+      const url     = (document.getElementById('drive-' + key)?.value || '').trim();
+      const title   = (document.getElementById('drive-' + key + '-name')?.value || '').trim();
+      const process = (document.getElementById('drive-' + key + '-process')?.value || '').trim();
+
+      const card = document.createElement('div');
+      card.className = 'viewer-drive-card';
+
+      // 헤더 — [소스] 형태
+      const hd = document.createElement('div');
+      hd.className = 'viewer-drive-card-head';
+      hd.textContent = label;
+      card.appendChild(hd);
+
+      // 3개 행: 타이틀 / URL / 가공여부
+      const rows = [
+        { label: '타이틀',  value: title,   isLink: false },
+        { label: 'URL',     value: url,     isLink: !!url },
+        { label: '가공여부', value: process, isLink: false },
+      ];
+      rows.forEach(({ label: rl, value, isLink }) => {
+        const row = document.createElement('div');
+        row.className = 'viewer-drive-row';
+
+        const lbl = document.createElement('span');
+        lbl.className = 'viewer-drive-row-label';
+        lbl.textContent = rl;
+
+        const val = document.createElement('span');
+        val.className = 'viewer-drive-row-value' + (value ? '' : ' empty');
+        if (isLink && value) {
+          const a = document.createElement('a');
+          a.href = value; a.target = '_blank'; a.rel = 'noopener';
+          a.textContent = value;
+          val.appendChild(a);
+        } else {
+          val.textContent = value || EMPTY;
+        }
+
+        row.appendChild(lbl);
+        row.appendChild(val);
+        card.appendChild(row);
+      });
+
+      container.appendChild(card);
+    });
+
+    table.style.display = 'none';
+    field.appendChild(container);
+  }
+
   function applySnapData(snap) {
     if (!snap) return;
     const se = id => document.getElementById(id);
