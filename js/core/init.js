@@ -64,6 +64,7 @@
           renderViewerDateAuthor();
           renderViewerWfList();
           renderViewerQaList();
+          renderViewerInsightList();
           renderViewerDriveList();
           applyViewerEmptyState();
           if (window._registerInsViewClick) window._registerInsViewClick();

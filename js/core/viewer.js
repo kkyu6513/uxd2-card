@@ -167,6 +167,73 @@
     wfList.parentNode.insertBefore(container, wfList);
   }
 
+  /* ── 인사이트 → 리스트 렌더링 ── */
+  function renderViewerInsightList() {
+    const INS_BOXES = [
+      { tagsId: 'aix-tags',  directId: 'aix-direct',  label: 'AI X — 비효율' },
+      { tagsId: 'aio-tags',  directId: 'aio-direct',  label: 'AI O — 효율'   },
+      { tagsId: 'good-tags', directId: 'good-direct', label: 'Good Point'    },
+      { tagsId: 'bad-tags',  directId: 'bad-direct',  label: 'Bad Point'     },
+    ];
+
+    INS_BOXES.forEach(({ tagsId, directId, label }) => {
+      const tagsEl  = document.getElementById(tagsId);
+      const directEl = document.getElementById(directId);
+      if (!tagsEl) return;
+
+      const insBox = tagsEl.closest('.ins-box');
+      if (!insBox) return;
+
+      // 선택된 항목 텍스트 수집
+      const items = [];
+      tagsEl.querySelectorAll('.ins-tag-box:not(.ins-direct-box) .ins-tag-box-item span:first-child').forEach(el => {
+        const txt = el.textContent.trim();
+        if (txt) items.push(txt);
+      });
+
+      // 직접 입력 텍스트
+      const directText = (directEl?.value || '').trim();
+
+      // 새 카드 생성
+      const card = document.createElement('div');
+      card.className = 'viewer-ins-card';
+
+      const hd = document.createElement('div');
+      hd.className = 'viewer-ins-head';
+      hd.textContent = label;
+      card.appendChild(hd);
+
+      const body = document.createElement('div');
+      body.className = 'viewer-ins-body';
+
+      if (items.length === 0 && !directText) {
+        const empty = document.createElement('div');
+        empty.className = 'viewer-ins-item empty';
+        empty.textContent = '사용자가 입력하지 않음';
+        body.appendChild(empty);
+      } else {
+        items.forEach(txt => {
+          const item = document.createElement('div');
+          item.className = 'viewer-ins-item';
+          item.textContent = txt;
+          body.appendChild(item);
+        });
+        if (directText) {
+          const item = document.createElement('div');
+          item.className = 'viewer-ins-item direct';
+          item.textContent = directText;
+          body.appendChild(item);
+        }
+      }
+
+      card.appendChild(body);
+
+      // insBox 숨기고 card로 교체
+      insBox.style.setProperty('display', 'none', 'important');
+      insBox.parentNode.insertBefore(card, insBox);
+    });
+  }
+
   /* ── 품질 검증 QA → 리스트 렌더링 ── */
   function renderViewerQaList() {
     const qaList = document.getElementById('qa-list');
