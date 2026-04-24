@@ -143,29 +143,21 @@
       el.setAttribute('hidden', '');
     });
 
-    // 새 텍스트 행 생성
+    // 데이터를 슬래시로 구분해 한 줄로 표시
     const wrap = document.createElement('div');
     wrap.className = 'viewer-date-author-wrap';
 
-    [
-      { label: '활동일', value: dateVal  },
-      { label: '작성자', value: nameVal  },
-      { label: '이메일', value: emailVal },
-    ].forEach(({ label, value }) => {
-      const item = document.createElement('div');
-      item.className = 'viewer-date-author-item';
-
-      const lbl = document.createElement('span');
-      lbl.className = 'viewer-date-author-label';
-      lbl.textContent = label;
-
+    [dateVal, nameVal, emailVal].forEach((value, i) => {
+      if (i > 0) {
+        const sep = document.createElement('span');
+        sep.className = 'viewer-date-author-sep';
+        sep.textContent = '/';
+        wrap.appendChild(sep);
+      }
       const val = document.createElement('span');
       val.className = 'viewer-date-author-value' + (value ? '' : ' empty');
-      val.textContent = value || '사용자가 입력하지 않음';
-
-      item.appendChild(lbl);
-      item.appendChild(val);
-      wrap.appendChild(item);
+      val.textContent = value || '—';
+      wrap.appendChild(val);
     });
 
     row.appendChild(wrap);

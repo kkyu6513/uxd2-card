@@ -1084,31 +1084,19 @@
   .viewer-date-author-wrap {
     display: flex;
     flex-direction: row;
-    gap: 24px;
-    align-items: baseline;
-    flex-wrap: wrap;
-  }
-  .viewer-date-author-item {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-  .viewer-date-author-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #aaa;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    align-items: center;
+    gap: 8px;
   }
   .viewer-date-author-value {
     font-size: 14px;
     font-weight: 500;
     color: #1a1a1a;
   }
-  .viewer-date-author-value.empty {
-    font-size: 12px;
+  .viewer-date-author-value.empty { color: #ccc; }
+  .viewer-date-author-sep {
+    font-size: 14px;
     color: #ccc;
-    font-style: italic;
+    font-weight: 300;
   }
 
   /* 도구 배지 — 다크 칩 */
