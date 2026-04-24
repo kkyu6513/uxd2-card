@@ -6,6 +6,7 @@
 <title>UXD2 AI 활동기록 어드민</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <style>
 :root {
   --bg:      #f4f5f7;
@@ -78,6 +79,8 @@ body { font-family:'Pretendard',sans-serif; background:var(--bg); color:var(--te
   font-family:'Pretendard',sans-serif; font-size:12px; font-weight:600;
   border-radius:8px; padding:7px 14px; cursor:pointer; transition:all .15s; border:none;
 }
+.tb-excel { background:var(--accent); color:#fff; }
+.tb-excel:hover { background:var(--accent2); }
 .tb-refresh { background:var(--bg3); color:var(--text2); }
 .tb-refresh:hover { background:var(--border); color:var(--text1); }
 .tb-logout { background:none; color:var(--text3); border:1px solid var(--border); }
@@ -511,6 +514,7 @@ tr:hover .tbl-del { opacity:1; }
     </div>
     <div class="topbar-right">
       <div class="topbar-stat">총 <span id="total-count">0</span>개</div>
+      <button class="tb-btn tb-excel" id="excel-btn">⬇ 엑셀 다운로드</button>
       <button class="tb-btn tb-refresh" id="refresh-btn">↻ 새로고침</button>
       <button class="tb-btn tb-logout" id="logout-btn">로그아웃</button>
     </div>
@@ -1094,6 +1098,68 @@ document.getElementById('modal-close').addEventListener('click',()=>document.get
 document.getElementById('detail-modal').addEventListener('click',e=>{ if(e.target===document.getElementById('detail-modal'))document.getElementById('detail-modal').classList.remove('open'); });
 document.getElementById('refresh-btn').addEventListener('click',fetchCards);
 document.getElementById('logout-btn').addEventListener('click',()=>{ localStorage.removeItem('admin_sb_url'); localStorage.removeItem('admin_sb_key'); location.reload(); });
+document.getElementById('excel-btn').addEventListener('click', downloadExcel);
+
+function downloadExcel() {
+  const list = getFiltered();
+  if (!list.length) { alert('다운로드할 데이터가 없습니다.'); return; }
+
+  const QA_KEYS = ['accuracy','completeness','usability','format','bias','prompt'];
+  const QA_KO   = ['정확성','완성도','활용가능성','형식적합성','편향오류검토','프롬프트최적화'];
+
+  const rows = list.map(c => {
+    const tools = (c.toolActive || []).join(', ');
+    const wfCount = (c.wfRows || []).length;
+    const wfTime  = (c.wfRows || []).reduce((s, r) => s + (parseInt(r.time) || 0), 0);
+    const wfDetail = (c.wfRows || []).map((r, i) =>
+      `STEP${i+1} [${r.tool||''}] ${r.intent||''} / ${r.action||''}`
+    ).join('\n');
+
+    const row = {
+      '작성자':       c.editName  || '',
+      '이메일':       c.editEmail || '',
+      '단계':         c.stage     || '',
+      '소재명':       c.task      || '',
+      '활동일':       c.date      || (c._created ? c._created.slice(0,10) : ''),
+      '목표·문제정의': c.problem   || '',
+      '선정 도구':    tools,
+      'WF 스텝 수':   wfCount,
+      '총 소요시간(분)': wfTime,
+      'WF 상세':      wfDetail,
+    };
+
+    QA_KEYS.forEach((k, i) => {
+      row[`QA_${QA_KO[i]}`] = (c.qaData?.[k]?.val || '').toUpperCase() || '—';
+    });
+
+    row['보완 권장'] = c.qaRecommend || '';
+    row['새로 알게 된 사실'] = c.discovery || '';
+    row['공유 링크'] = c._id
+      ? `${location.origin}${location.pathname.replace('admin.html','index.html')}#${c._id}`
+      : '';
+    row['등록일시'] = c._created ? c._created.replace('T',' ').slice(0,16) : '';
+
+    return row;
+  });
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+
+  // 컬럼 너비 설정
+  const colWidths = [
+    {wch:10},{wch:22},{wch:10},{wch:28},{wch:12},{wch:40},
+    {wch:24},{wch:8},{wch:12},{wch:50},
+    {wch:10},{wch:10},{wch:10},{wch:10},{wch:10},{wch:10},
+    {wch:30},{wch:20},{wch:48},{wch:18},
+  ];
+  ws['!cols'] = colWidths;
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '활동기록');
+
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+  XLSX.writeFile(wb, `UXD2_AI활동기록_${dateStr}.xlsx`);
+}
 document.querySelectorAll('[data-stage]').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('[data-stage]').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentStage=btn.dataset.stage; renderCards(); }));
 document.querySelectorAll('.sort-tab').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.sort-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentSort=btn.dataset.sort; renderCards(); }));
 document.getElementById('search-inp').addEventListener('input',e=>{ renderCards(); });
