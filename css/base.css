@@ -421,3 +421,94 @@
   html.dark .drive-reg-edit { color: #666; border-color: #444; }
   html.dark .drive-reg-process { color: #888; background: #2e2e2e; }
   html.dark .tool-memo-input { background: var(--bg-sec); }
+
+  /* ── 서브헤더 입력 (하드코딩 컬러 오버라이드) ── */
+  html.dark .sub-field select,
+  html.dark .sub-field input { color: var(--text-p); }
+
+  /* ── WF ── */
+  html.dark .wf-detail-btn:hover { background: #2a2a2a; border-color: #555; }
+  html.dark .wf-row-add { background: #2a2a2a; color: #666; }
+  html.dark .wf-row-del { background: #2a2a2a; color: #555; }
+  html.dark .wf-add-btn { background: #252525; color: #666; }
+  html.dark .wf-add-btn:hover { background: #1a1a1a; color: #eee; }
+  html.dark .wf-modal-field input,
+  html.dark .wf-modal-field textarea { background: #1e1e1e; color: #d8d8d8; border-color: #444; }
+  html.dark .wf-modal-field input:focus,
+  html.dark .wf-modal-field textarea:focus { background: #222; border-color: #5a8fd0; }
+  html.dark .wf-modal-cancel { background: #2a2a2a; color: #888; }
+  html.dark .wf-modal-cancel:hover { background: #333; }
+  html.dark .flow-modal-box { background: #1c1c1c; }
+  html.dark .flow-modal-body { background: #181818; }
+  html.dark #flow-result { background: #1e1e1e; }
+  html.dark .flow-modal-footer { border-top-color: #333; }
+
+  /* ── QA ── */
+  html.dark .qa-row { background: #1e1e1e; }
+  html.dark .qa-row.is-y { background: #182018; border-color: #3a6a1a; }
+  html.dark .qa-row.is-n { background: #2a1818; border-color: #6a2a2a; }
+  html.dark .qa-y,
+  html.dark .qa-n { background: #252525; border-color: #404040; color: #888; }
+  html.dark .qa-y:hover { background: #1a2a1a; border-color: #4a8a4a; color: #6ab86a; }
+  html.dark .qa-n:hover { background: #2a1a1a; border-color: #8a4040; color: #c07070; }
+  html.dark .qa-text-input { background: #1e1e1e; }
+  html.dark .qa-step-input,
+  html.dark .qa-content-input { background: #1e1e1e; color: var(--text-p); }
+
+  /* ── 인사이트 드롭다운 ── */
+  html.dark .ins-dd-panel { background: #242424; border-color: #404040; }
+  html.dark .ins-dd-direct { color: #5a9fe0; border-bottom-color: #333; }
+  html.dark .ins-dd-direct:hover { background: #1e2a38; }
+  html.dark .ins-dd-group { border-bottom-color: #2e2e2e; }
+  html.dark .ins-dd-group-title { color: #888; }
+  html.dark .ins-dd-group-title:hover { background: #2a2a2a; }
+  html.dark .ins-dd-item { color: #c0c0c0; }
+  html.dark .ins-dd-item:hover { background: #2e2e2e; }
+  html.dark .ins-dd-footer { background: #242424; border-top-color: #383838; }
+  html.dark .ins-tag-box { border-color: #2e2e2e; }
+  html.dark .ins-tag-box-title { background: #252525; color: #666; }
+  html.dark .ins-box.good .ins-tag-box-title { background: #1a2a1a; color: #5a9a5a; }
+  html.dark .ins-box.bad  .ins-tag-box-title { background: #2a1a1a; color: #c06060; }
+  html.dark .ins-box.aix  .ins-tag-box-title { background: #2a1e12; color: #c07840; }
+  html.dark .ins-box.aio  .ins-tag-box-title { background: #121e2a; color: #4a8ab0; }
+  html.dark .ins-tag-box-item { color: #c0c0c0; border-top-color: #2a2a2a; }
+  html.dark .ins-direct-ta { color: #c0c0c0; }
+
+  /* ── 도구 배지 ── */
+  html.dark .tool-badge { background: #252525; border-color: #3a3a3a; color: #888; }
+  html.dark .tool-badge:hover { background: #2e2e2e; border-color: #555; color: #bbb; }
+  html.dark .add-tool-btn { background: #252525; color: #666; border-color: #3a3a3a; }
+  html.dark .add-tool-btn:hover { background: #1a1a1a; color: #eee; }
+  html.dark .add-tool-input { background: #1e1e1e; color: var(--text-p); border-color: #3a3a3a; }
+  html.dark .add-tool-popup { background: #1e1e1e; border-color: #333; }
+  html.dark .atp-cancel { background: #2a2a2a; color: #888; }
+  html.dark .atp-cancel:hover { background: #333; }
+
+  /* ── 드라이브 모달 ── */
+  html.dark .drive-modal-box { background: #1e1e1e; }
+  html.dark .drive-modal-head { border-bottom-color: #333; }
+  html.dark .drive-modal-head span { color: #e0e0e0; }
+  html.dark .drive-modal-close { color: #555; }
+  html.dark .drive-modal-close:hover { color: #bbb; }
+  html.dark .drive-modal-field label { color: #555; }
+  html.dark .drive-modal-field input,
+  html.dark .drive-modal-field select { background: #1a1a1a; border-color: #3a3a3a; color: #d8d8d8; }
+  html.dark .drive-modal-footer { border-top-color: #333; }
+  html.dark .drive-modal-cancel { background: #2a2a2a; color: #888; }
+  html.dark .drive-modal-cancel:hover { background: #333; }
+
+  /* ── 링크 공유 모달 ── */
+  html.dark .link-modal-box { background: #1e1e1e; }
+  html.dark .link-modal-title { color: #e0e0e0; }
+  html.dark .link-modal-url { background: #151515; border-color: #333; color: #aaa; }
+
+  /* ── Supabase 설정 모달 ── */
+  html.dark .sb-modal-box { background: #1e1e1e; }
+  html.dark .sb-status { background: #252525; }
+  html.dark .sb-status-txt { color: #888; }
+  html.dark .sb-desc { color: #555; }
+  html.dark .sb-field label { color: #555; }
+  html.dark .sb-field input { background: #1a1a1a; border-color: #3a3a3a; color: #d8d8d8; }
+  html.dark .sb-test-btn { background: #252525; color: #777; border-color: #3a3a3a; }
+  html.dark .sb-divider { border-top-color: #2e2e2e; }
+  html.dark .sb-team-desc { color: #555; }
